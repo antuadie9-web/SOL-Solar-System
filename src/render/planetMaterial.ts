@@ -229,7 +229,8 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
         // Individual craters are synthetic (REPRESENTATIVE); the population statistics are what is constrained.
         const qq = positionLocal.add(vec3(proc.seed * 0.00137, proc.seed * 0.00071, proc.seed * 0.00213)), fpx = length(fwidth(dirLocal));
         let crs: any = float(0);
-        for (const sc of [1, 2.7, 7.3, 19.7]) crs = crs.add(craters({ p: qq.mul(sc), scale: float(3) }).div(3 * sc).mul(smoothstep(0.35, 0.12, fpx.mul(3 * sc))));
+        // mantled moons: the fine octaves are buried by the ring-particle mantle (Pan/Atlas/Telesto/Calypso/Helene: smooth at Cassini resolution)
+        for (const sc of (fam === 9 ? [1, 2.7] : [1, 2.7, 7.3, 19.7])) crs = crs.add(craters({ p: qq.mul(sc), scale: float(3) }).div(3 * sc).mul(smoothstep(0.35, 0.12, fpx.mul(3 * sc))));
         const dD = fam === 9 ? 0.04 : fam === 3 ? 0.10 : 0.12;
         height = crs.mul(dD / 0.3);
       }
