@@ -3,7 +3,7 @@
 # partial-new2 (+UI shots), rings-pre.
 Q=/workspace/projects/8d0bae14-e35b-4bd2-a140-a931eb700554/work/qa; R=/workspace/projects/8d0bae14-e35b-4bd2-a140-a931eb700554/work/src380/sol-solar-system-v3.8-final; cd $R
 cap() { DPR=1 VIEWS="$3" timeout 4000 node tools/qa/smoke.mjs --software --url "http://localhost:$1/?qa-off=small,smallcompute" --script golden38 --out $Q/$2 --wait 180000 --w 960 --h 540 > $Q/$2.log 2>&1; echo DONE > $Q/$2.done; }
-if ! curl -s -o /dev/null localhost:4177/; then
+if [ ! -f $Q/rev2-cp2.done ] && ! curl -s -o /dev/null localhost:4177/; then
   rm -rf /tmp/cp2tag && mkdir -p /tmp/cp2tag && git archive v3.8.1-cp2 -- src index.html vite.config.ts package.json tsconfig.json | tar -x -C /tmp/cp2tag && ln -sfn $R/node_modules /tmp/cp2tag/node_modules
   mkdir -p /tmp/cp2tag/public/assets/tex; for d in $R/public/*; do n=$(basename $d); [ "$n" != assets ] && ln -sfn $d /tmp/cp2tag/public/$n; done; for d in $R/public/assets/*; do n=$(basename $d); [ "$n" != tex ] && ln -sfn $d /tmp/cp2tag/public/assets/$n; done; for f in $R/public/assets/tex/*; do ln -sfn $f /tmp/cp2tag/public/assets/tex/$(basename $f); done
   (cd /tmp/cp2tag && nohup npx vite --port 4177 --strictPort > /tmp/vite-cp2.log 2>&1 &); sleep 10
