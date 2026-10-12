@@ -9,6 +9,7 @@ import { Engine } from './render/engine';
 import { blackbodyRGB } from './render/points';
 import { rowMV, rowBand } from './galaxy/photometry';
 import { Settings } from './core/settings';
+import { MEASURED_RADII, R_SUN_KM } from './galaxy/stellarRadii';
 import { loadBinary, loadJSON, loadArrayBuffer, loadTexture, loadPNGTexture } from './core/assets';
 import { TextureStore } from './core/textures';
 import { probeNativeWebGPU, GpuUnavailable, QA } from './core/gpu';
@@ -115,7 +116,8 @@ async function boot() {
       const nr = new Float32Array(nrBuf);
       sys.addStars(named.map((n, j) => {
         const r = nr.subarray(j * 10, j * 10 + 10), M = r[6], T = r[7];
-        const L = Math.pow(10, -0.4 * (M - 4.67)), R = Math.sqrt(L) / Math.pow(T / 5772, 2) * 695700;   // bolometric correction ignored → order-of-magnitude
+        const L = Math.pow(10, -0.4 * (M - 4.67)), Rest = Math.sqrt(L) / Math.pow(T / 5772, 2) * 695700;   // bolometric correction ignored → order-of-magnitude
+        const MR = MEASURED_RADII[n.name], R = MR ? MR.rSun * R_SUN_KM : Rest;   // v3.8.1 STAR-381-R: measured radius where published
         // v3.8 DEF-38-011: every named star had the same fixed colour (1, 0.95, 0.9) — Proxima (≈ 3,000 K) looked solar.
         // Colour now from the catalogue Teff (Planck spectrum → linear sRGB, luminance-normalised), as in the 3-D star layer.
         const bb = blackbodyRGB(T), bl = 0.2126 * bb[0] + 0.7152 * bb[1] + 0.0722 * bb[2] || 1;
@@ -123,7 +125,7 @@ async function boot() {
           subtitle: `Star · ${n.distPc < 100 ? n.distPc.toFixed(2) : n.distPc.toFixed(0)} pc from the Sun`,
           desc: `${n.name} is drawn at its measured position (${(r[8] & 2) ? 'Hipparcos' : 'Gaia DR3'} astrometry) and distance from its parallax. SOL does not yet render resolved stellar surfaces or planetary systems for other stars; travelling here shows the true sky from its neighbourhood.`,
           pos: (jd: number) => { const y = (jd - 2457389.0) / 365.25; return [(r[0] + r[3] * y) * PCKM, (r[1] + r[4] * y) * PCKM, (r[2] + r[5] * y) * PCKM] as [number, number, number]; },
-          info: { absMag: rowMV(M, T, r[8]).toFixed(2), absMagBand: 'V', absMagSrc: `${M.toFixed(2)} (${rowBand(r[8]) === 'G' ? 'Gaia G' : 'Hipparcos Hp'})`, teff: `${Math.round(T)} K`, radiusNote: `≈ ${(R / 695700).toFixed(2)} R☉ (from M and Teff, no bolometric correction)`, distErr: `±${(r[9] * 100).toFixed(1)} %`, hasRV: (r[8] & 1) ? '1' : '0', source: (r[8] & 2) ? 'Hipparcos (van Leeuwen 2007)' : 'Gaia DR3' } };
+          info: { catIndex: String(n.index), rSunMeasured: MR ? '1' : '0', absMag: rowMV(M, T, r[8]).toFixed(2), absMagBand: 'V', absMagSrc: `${M.toFixed(2)} (${rowBand(r[8]) === 'G' ? 'Gaia G' : 'Hipparcos Hp'})`, teff: `${Math.round(T)} K`, radiusNote: MR ? `${MR.rSun} ± ${MR.sigma} R☉ — MEASURED (${MR.method}; ${MR.source})` : `≈ ${(R / 695700).toFixed(2)} R☉ — ESTIMATED from M and Teff without a bolometric correction (order of magnitude)`, distErr: `±${(r[9] * 100).toFixed(1)} %`, hasRV: (r[8] & 1) ? '1' : '0', source: (r[8] & 2) ? 'Hipparcos (van Leeuwen 2007)' : 'Gaia DR3' } };
       }));
       // v3.8 (spec §26): selected deep-sky reference objects — labelled markers at measured ICRS position + distance
       sys.addStars(DEEP_SKY.map(o => {

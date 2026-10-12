@@ -90,3 +90,11 @@ test('SUN-381-03: Scientific look is neutral; the default look is a gentle warm 
   assert.deepEqual(SUN_LOOKS.scientific.tint, [1, 1, 1]);
   assert.ok(Math.min(...SUN_LOOKS.natural.tint) >= 0.9);
 });
+import { MEASURED_RADII, surfaceBrightnessRelSun, limbDarkeningV } from '../../src/galaxy/stellarRadii';
+test('STAR-381-R/D: measured radii carry sources and σ; the Sun has unit relative surface brightness; Proxima V-band surface brightness is ≈ 2×10⁻³ of the solar value', () => {
+  for (const [n, r] of Object.entries(MEASURED_RADII)) { assert.ok(r.rSun > 0.05 && r.rSun < 3 && r.sigma > 0 && r.sigma < 0.1 * r.rSun, n); assert.match(r.source, /\d{4}/); }
+  assert.ok(Math.abs(surfaceBrightnessRelSun(4.83, 1) - 1) < 1e-12);
+  const S = surfaceBrightnessRelSun(15.53, MEASURED_RADII['Proxima Centauri'].rSun);   // M_V(Proxima) ≈ 15.5
+  assert.ok(S > 1e-3 && S < 3e-3, `Proxima V surface brightness ${S}`);
+  assert.ok(limbDarkeningV(3000) > limbDarkeningV(9900), 'cool dwarfs darken more strongly toward the limb (representative trend)');
+});

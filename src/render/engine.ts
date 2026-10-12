@@ -23,6 +23,8 @@ import { makeRingSystem, smoothRingColour, buildProfileLOD, decodeProfile, peakI
 const RS_PROF = (e: any, id: string, def: any) => (def.profile ? e.ringProfiles[id] ?? null : null);
 import { RING_SYSTEMS, ringLabels } from '../data/rings';
 import { makePlumes, plumePeakIF } from './plumes';
+import { makeStarDisc } from './starDisc';
+import { limbDarkeningV, surfaceBrightnessRelSun, R_SUN_KM } from '../galaxy/stellarRadii';
 import { makeSun, makeGlare, SUN_L0, SUN_L_MEAN, SUN_LOOKS, sunMeterWeight, glareWeight, sunDiscScale, glareAmplitudes, glareExtentRad, type SunLook } from './sun';
 import { makeCorona } from './corona';
 import { Stars3D, PC_KM, Star3DCatalog } from '../galaxy/stars3d';
@@ -168,7 +170,8 @@ export class Engine {
     this.pipeline.outputNode = qaOff('bloom') ? base : base.add(bl.mul(this.bloomStrength.div(0.35)));
     this.resize();
   }
-  corona!: ReturnType<typeof makeCorona>;
+  corona!: ReturnType<typeof makeCorona>; starDisc!: ReturnType<typeof makeStarDisc>;
+  /** v3.8.1 resolved-star diagnostics */ resolvedStar: { id: string; rpx: number; weight: number; S: number } | null = null;
   ringProfiles: Record<string, ProfileLOD> = {};
   ringColour: THREE.Texture | null | undefined = undefined; ringColourPre: THREE.Texture | null = null;
   /** v3.7 per-ring-system render state for diagnostics / screenshot metadata */
@@ -229,6 +232,7 @@ export class Engine {
     // glare
     this.glare = makeGlare(); if (!qaOff('glare')) this.scene.add(this.glare.mesh);
     this.corona = makeCorona(); if (!qaOff('corona')) this.scene.add(this.corona.mesh);
+    this.starDisc = makeStarDisc(); this.scene.add(this.starDisc.mesh);   // v3.8.1 STAR-381-D
     // comets
     for (const b of this.sys.bodies) if (b.kind === 'comet') { if (qaOff('comets')) continue; const t = new CometTail(20000, b.id.length * 97 + 3); this.tails.set(b.id, t); this.scene.add(t.mesh); }
   }
@@ -468,6 +472,7 @@ export class Engine {
     const sunVis = this.sunVisibility(cam); this.sunRpx = 0; this.sunVisNow = sunVis; this.sunPointExposure = 0; this.perf.preparedThisFrame = 0;
     const fwd = new THREE.Vector3(0, 0, -1).applyQuaternion(rig.quat);
     const occAll = (v: BodyView) => v.occluders;
+    let xRes: { b: Body; rpx: number; relS: THREE.Vector3; dist: number } | null = null;
     for (const b of sys.bodies) {
       const rel = sub(b.pos, cam), dist = len(rel);
       const relS = sceneVec(rel);
@@ -479,7 +484,12 @@ export class Engine {
       const scr = { x: (tmpV.x * 0.5 + 0.5) * this.W, y: (-tmpV.y * 0.5 + 0.5) * this.H, z: tmpV.z, r: rpx, vis: inFront && Math.abs(tmpV.x) < 1.2 && Math.abs(tmpV.y) < 1.2, dist, bright: rpx > 0.55 ? 1 : 0 };
       this.screen.set(b.id, scr);
       // catalogue stars are drawn by the 3D star layer; label them only once the camera has left the planetary system
-      if (b.kind === 'xstar') { scr.bright = inFront && len(cam) > 1000 * AU ? 0.05 : 0; scr.r = 0; continue; }
+      if (b.kind === 'xstar') {
+        scr.bright = inFront && len(cam) > 1000 * AU ? 0.05 : 0; scr.r = 0;
+        // v3.8.1 STAR-381-D: resolved stellar disc (nearest resolved catalogue star only), flux handed over from the PSF
+        if (!b.info?.dsoKind && b.info?.catIndex && inFront && rpx > 0.6 && (!xRes || rpx > xRes.rpx)) xRes = { b, rpx, relS: relS.clone(), dist };
+        continue;
+      }
       const resolved = rpx > 0.55 && inFront;
       // v3.7.1 (ATM-011 root cause): fraction of the disc that is inside the frame. v3.3–3.7 metered every resolved body in
       // the forward HEMISPHERE, so an off-screen Sun 85° from the view axis (Venus terminator view: 6.7-px disc, meter weight
@@ -613,6 +623,22 @@ export class Engine {
       }
     }
     this.points.commit(nPts);
+    {
+      const D = this.starDisc, s3 = this.stars3d;
+      if (xRes && s3) {
+        const b = xRes.b, w = smooth(1.2, 3.5, xRes.rpx), MV = parseFloat(b.info.absMag), T = parseFloat(b.info.teff) || 5772;
+        const S = surfaceBrightnessRelSun(MV, b.radius / R_SUN_KM);
+        // display: the star's V-band mean radiance on the sky exposure (it sits among the stars), with the same local HDR
+        // presentation as the Sun's disc outside Scientific so a resolved photosphere shows limb darkening instead of clipping
+        const Lmean = SUN_L_MEAN * S * skyE, ds = sunDiscScale(Lmean, xRes.rpx, mode);
+        const c = b.def.color as [number, number, number];
+        D.U.center.value.copy(xRes.relS); D.U.radius.value = b.radius; D.U.u.value = limbDarkeningV(T);
+        D.U.right.value.set(1, 0, 0).applyQuaternion(rig.quat); D.U.up.value.set(0, 1, 0).applyQuaternion(rig.quat);
+        D.U.L.value.set(c[0], c[1], c[2]).multiplyScalar(Lmean * ds); D.U.weight.value = w; D.mesh.visible = w > 0.001;
+        s3.U.hideIndex.value = +b.info.catIndex; s3.U.hideKeep.value = 1 - w;
+        this.resolvedStar = { id: b.id, rpx: xRes.rpx, weight: w, S };
+      } else { D.mesh.visible = false; if (s3) { s3.U.hideIndex.value = -1; s3.U.hideKeep.value = 1; } this.resolvedStar = null; }
+    }
     // v3.5 fix: the Saturn ring particle slice is updated only while Saturn's view is drawn; when the camera leaves
     // (travel to another world, Saturn no longer resolved) v3.4 left the last slice visible in front of every other
     // world (seen in the earth-polar / mars-night QA captures after ring-flythrough). Hide it unless touched this frame.

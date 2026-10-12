@@ -8,7 +8,7 @@
 // relative position error is ~1e-7 of the star's heliocentric distance (≈3·10⁶ km at Proxima — sub-milliarcsecond
 // in direction). The resolved-star close-up (photosphere disc) is NOT part of this layer.
 import * as THREE from 'three/webgpu';
-import { Fn, uniform, attribute, vec3, float, pow, length, max, log } from 'three/tsl';
+import { Fn, uniform, attribute, vec3, float, pow, length, max, log, instanceIndex, select } from 'three/tsl';
 import { psfMaterial, PX, blackbodyRGB } from '../render/points';
 import { rowMV } from './photometry';
 
@@ -17,7 +17,8 @@ export interface Star3DCatalog { data: Float32Array; count: number; named: { nam
 export class Stars3D {
   mesh: THREE.Mesh;
   // v3.8.1 STAR-J01: camera position split into float32 hi + lo parts (see starPrecision.ts); camPc kept for diagnostics
-  U = { camPc: uniform(new THREE.Vector3()), camHi: uniform(new THREE.Vector3()), camLo: uniform(new THREE.Vector3()), years: uniform(0), fade: uniform(0) };
+  // v3.8.1 STAR-381-D: one catalogue row can be faded out while its resolved disc is drawn (flux handed over, not doubled)
+  U = { hideIndex: uniform(-1), hideKeep: uniform(1), camPc: uniform(new THREE.Vector3()), camHi: uniform(new THREE.Vector3()), camLo: uniform(new THREE.Vector3()), years: uniform(0), fade: uniform(0) };
   /** Set the camera (heliocentric, scene axes, parsecs, float64) — splits it into hi/lo float32 uniforms. */
   setCamera(x: number, y: number, z: number) {
     const f = Math.fround, hx = f(x), hy = f(y), hz = f(z);
@@ -52,7 +53,8 @@ export class Stars3D {
       const d = max(length(relPc), 1e-7);
       const m = c.w.add(log(d).mul(2.1714724)).sub(5);                  // 5·log10(d) = 2.1714724·ln(d)
       const F = float(3.14159265).mul(pow(10, m.add(26.74).mul(-0.4))).mul(1e10).mul(U.fade);
-      return c.xyz.mul(F);
+      const keep = select(instanceIndex.toFloat().equal(U.hideIndex), U.hideKeep, float(1));
+      return c.xyz.mul(F).mul(keep);
     })();
     this.mesh = new THREE.Mesh(g, psfMaterial(center, flux, { gain: PX.starGain, farPlane: true, maxSize: 72, wing: 0.045, compress: float(1) }));
     this.mesh.frustumCulled = false; this.mesh.renderOrder = -89;
