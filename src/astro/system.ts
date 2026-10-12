@@ -283,7 +283,7 @@ export class SolarSystem {
       const shapeParams = M.shape === 'ridged' ? { ridge: 0.12 } : undefined;
       const OS = OBSERVED_SHAPES[s.name.replace(/_/g, ' ')];
       const obsRadii = OS ? OS.extentKm.map(x => x / 2) as [number, number, number] : null;
-      const b = new Body({ id, name: s.name.replace(/_/g, ' '), kind: 'moon', parent: pid, radius: r, radii: obsRadii ?? M.radii,   // v3.8.1: mesh scaled by the model's own bounding box; mean radius stays the published value albedo: M.albedo, color: M.tint,
+      const b = new Body({ id, name: s.name.replace(/_/g, ' '), kind: 'moon', parent: pid, radius: r, radii: obsRadii ?? M.radii, albedo: M.albedo, color: M.tint,   // v3.8.1: observed mesh scaled by its own bounding box; mean radius stays the published value
         ...(OS ? { model: OS.model, ...(OS.bodyFixed ? { modelFrame: 'body-fixed' } : {}) } : {}),
         procedural: { seed: s.code % 997, craters: M.craters, rough: M.rough, tint: M.tint },
         identity: { tier: M.status.startsWith('MEASURED') ? 'C' : 'D', shape: M.shape === 'ridged' ? 'cratered' : M.shape, surface: M.surface, craterDensity: M.craters, roughness: M.rough, shapeParams,
