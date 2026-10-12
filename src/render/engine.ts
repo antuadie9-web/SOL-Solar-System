@@ -488,6 +488,12 @@ export class Engine {
         scr.bright = inFront && len(cam) > 1000 * AU ? 0.05 : 0; scr.r = 0;
         // v3.8.1 STAR-381-D: resolved stellar disc (nearest resolved catalogue star only), flux handed over from the PSF
         if (!b.info?.dsoKind && b.info?.catIndex && inFront && rpx > 0.6 && (!xRes || rpx > xRes.rpx)) xRes = { b, rpx, relS: relS.clone(), dist };
+        // cp2 (STAR-381-D2): a resolved photosphere meters exactly like the Sun's (same weight law, its own surface brightness),
+        // so Scientific shows it at a physical exposure instead of a frame-filling over-exposed blob
+        if (!b.info?.dsoKind && b.info?.catIndex && inFront && rpx > 4) {
+          const Sx = surfaceBrightnessRelSun(parseFloat(b.info.absMag), b.radius / R_SUN_KM), mk = mode === 'scientific' ? 1 : mode === 'exploration' ? 0.8 : 0.7;
+          subject = Math.max(subject, SUN_L_MEAN * Sx * sunMeterWeight(rpx) * mk);
+        }
         continue;
       }
       const resolved = rpx > 0.55 && inFront;
@@ -630,7 +636,10 @@ export class Engine {
         const S = surfaceBrightnessRelSun(MV, b.radius / R_SUN_KM);
         // display: the star's V-band mean radiance on the sky exposure (it sits among the stars), with the same local HDR
         // presentation as the Sun's disc outside Scientific so a resolved photosphere shows limb darkening instead of clipping
-        const Lmean = SUN_L_MEAN * S * skyE, ds = sunDiscScale(Lmean, xRes.rpx, mode);
+        // exposure glides in log space from the sky exposure (point-like, among the stars) to the scene exposure as the disc
+        // becomes the metered subject — the same rule as the Sun's point→disc transition (SUN-010)
+        const wE = smooth(4, 40, xRes.rpx), Ex = Math.exp(Math.log(Math.max(skyE, 1e-30)) * (1 - wE) + Math.log(Math.max(LS, 1e-30)) * wE);
+        const Lmean = SUN_L_MEAN * S * Ex, ds = sunDiscScale(Lmean, xRes.rpx, mode);
         const c = b.def.color as [number, number, number];
         D.U.center.value.copy(xRes.relS); D.U.radius.value = b.radius; D.U.u.value = limbDarkeningV(T);
         D.U.right.value.set(1, 0, 0).applyQuaternion(rig.quat); D.U.up.value.set(0, 1, 0).applyQuaternion(rig.quat);
