@@ -492,7 +492,10 @@ export class Engine {
         // so Scientific shows it at a physical exposure instead of a frame-filling over-exposed blob
         if (!b.info?.dsoKind && b.info?.catIndex && inFront && rpx > 4) {
           const Sx = surfaceBrightnessRelSun(parseFloat(b.info.absMag), b.radius / R_SUN_KM), mk = mode === 'scientific' ? 1 : mode === 'exploration' ? 0.8 : 0.7;
-          subject = Math.max(subject, SUN_L_MEAN * Sx * sunMeterWeight(rpx) * mk);
+          // highlight protection: meter on the brightest CHANNEL of the star's colour (an M dwarf's red channel is ≈ 1.6× its
+          // luminance; metering luminance clipped red and flattened the limb darkening)
+          const c = b.def.color as number[], cy = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2], hi = Math.max(c[0], c[1], c[2]) / Math.max(cy, 1e-6);
+          subject = Math.max(subject, SUN_L_MEAN * Sx * hi * sunMeterWeight(rpx) * mk);
         }
         continue;
       }
@@ -639,8 +642,9 @@ export class Engine {
         // exposure glides in log space from the sky exposure (point-like, among the stars) to the scene exposure as the disc
         // becomes the metered subject — the same rule as the Sun's point→disc transition (SUN-010)
         const wE = smooth(4, 40, xRes.rpx), Ex = Math.exp(Math.log(Math.max(skyE, 1e-30)) * (1 - wE) + Math.log(Math.max(LS, 1e-30)) * wE);
-        const Lmean = SUN_L_MEAN * S * Ex, ds = sunDiscScale(Lmean, xRes.rpx, mode);
-        const c = b.def.color as [number, number, number];
+        const c = b.def.color as [number, number, number], hiC = Math.max(...c) / Math.max(0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2], 1e-6);
+        // local HDR presentation on the brightest channel (target 1.3 display-linear) so a red photosphere keeps its limb darkening
+        const Lmean = SUN_L_MEAN * S * Ex, ds = sunDiscScale(Lmean * hiC, xRes.rpx, mode, 1.3);
         D.U.center.value.copy(xRes.relS); D.U.radius.value = b.radius; D.U.u.value = limbDarkeningV(T);
         D.U.right.value.set(1, 0, 0).applyQuaternion(rig.quat); D.U.up.value.set(0, 1, 0).applyQuaternion(rig.quat);
         D.U.L.value.set(c[0], c[1], c[2]).multiplyScalar(Lmean * ds); D.U.weight.value = w; D.mesh.visible = w > 0.001;
