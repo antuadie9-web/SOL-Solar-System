@@ -112,14 +112,14 @@ export class GalMap {
       if (b.info?.dsoKind) continue; const g = eclToGal(b.pos as any); if (Math.hypot(g[0], g[1]) > 6 * PC) continue;
       const [px, py] = toInset(g); ctx.fillStyle = b === target ? '#ffd9a3' : 'rgba(200,215,240,0.8)'; ctx.fillRect(px - u, py - u, 2 * u, 2 * u);
       if (b === target || /Proxima|Sirius|Barnard|Wolf 359|Procyon|Altair/.test(b.name)) {
-        ctx.font = `${8 * u}px Inter, system-ui, sans-serif`; const nm = b.name.replace('Centauri', 'Cen'), tw = ctx.measureText(nm).width, lx = Math.min(px + 3 * u, ix + iw - tw - 2 * u), ly = py - 9 * u;
+        ctx.font = `${8 * u}px Inter, system-ui, sans-serif`; const nm = b.name.replace("Centauri", "Cen").replace(" Star", ""), tw = ctx.measureText(nm).width, lx = Math.max(ix + 2 * u, Math.min(px + 3 * u, ix + iw - tw - 2 * u)), ly = py - 9 * u;
         if (!insetPlaced.some(([a, c, d]) => Math.abs(ly - c) < 9 * u && lx < a + d && a < lx + tw)) { ctx.fillStyle = 'rgba(220,228,240,0.8)'; ctx.fillText(nm, lx, py - 2 * u); insetPlaced.push([lx, ly, tw]); }
       }
     }
     ctx.fillStyle = '#f2c27f'; ctx.fillRect(ix + ic - 1.5 * u, iy + ic - 1.5 * u, 3 * u, 3 * u);
     const gc = eclToGal(camKm), [cx, cy] = toInset(gc);
     ctx.strokeStyle = '#8fd9b0'; ctx.lineWidth = 1.5 * u; ctx.beginPath(); ctx.arc(Math.max(ix + 3 * u, Math.min(ix + iw - 3 * u, cx)), Math.max(iy + 3 * u, Math.min(iy + iw - 3 * u, cy)), 3.5 * u, 0, Math.PI * 2); ctx.stroke();
-    ctx.fillStyle = 'rgba(238,240,244,0.7)'; ctx.font = `${9 * u}px Inter, system-ui, sans-serif`; ctx.fillText('local ±6 pc (measured stars) · camera ◯', ix + 4 * u, iy + 11 * u);
+    ctx.fillStyle = 'rgba(238,240,244,0.7)'; ctx.font = `${9 * u}px Inter, system-ui, sans-serif`; ctx.fillText('±6 pc · measured stars', ix + 4 * u, iy + 11 * u);
     const lbd = galacticLBD(camKm), R = Math.hypot(-MW.R0_kpc.value + gc[0] / PC / 1000, gc[1] / PC / 1000);
     this.info.textContent = `Camera  l ${lbd.l.toFixed(2)}°  b ${lbd.b.toFixed(2)}°\n${(lbd.d / PC).toFixed(4)} pc from the Sun\nGalactocentric R ${R.toFixed(4)} kpc · z ${((gc[2] / PC) + MW.zSun_pc.value).toFixed(2)} pc (model frame)`;
     void azimuthToXY;
