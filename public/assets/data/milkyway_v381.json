@@ -1,0 +1,41 @@
+{
+ "id": "SKY-381-04",
+ "version": "3.8.1",
+ "source": {
+  "title": "The colour of the sky from Gaia's Early Data Release 3 \u2013 equirectangular projection",
+  "file": "Gaia_EDR3_flux_cartesian_16k.png",
+  "url": "https://sci.esa.int/web/gaia/-/the-colour-of-the-sky-from-gaia-s-early-data-release-3-equirectangular-projection",
+  "credit": "ESA/Gaia/DPAC; CC BY-SA 3.0 IGO. Acknowledgement: A. Moitinho",
+  "licence": "CC BY-SA 3.0 IGO (share-alike applies to these derivatives)",
+  "retrieved": "2026-10-12",
+  "sha256": "10a372d392e9493f6333b7f782e6a973742b71a8da8adc926e0129807462b7e9",
+  "size": [
+   16000,
+   8000
+  ]
+ },
+ "evidence": "OBSERVED (projected 2-D integrated-light map; display colour of Gaia BP/RP, not a calibrated V-band spectrum)",
+ "projection": "Galactic equirectangular, l=0 at centre, l increasing to the left; texture row 0 = b \u221290\u00b0",
+ "method": "Lanczos 16k\u21928192\u00d74096; the 99,049 catalogue stars SOL draws (V \u2264 9.5) masked at their positions (r 1\u20133 px) and replaced by min(map, 7\u00d77 median); no blur; dark structure untouched; luminance log-encoded r8 + triangular dither; chroma 2048\u00d71024 sRGB",
+ "luma": {
+  "file": "tex/milkyway_luma_8k.bin.gz",
+  "width": 8192,
+  "height": 4096,
+  "format": "r8 log-encoded, gzip",
+  "lnMin": -11.512925464970229,
+  "lnMax": 0.0,
+  "sha256": "57de22e9fb82c1fd8966142d3e6d038203dfe964d6e9795e83f67e8c214872b8"
+ },
+ "chroma": {
+  "file": "tex/milkyway_chroma_2k.jpg",
+  "width": 2048,
+  "height": 1024,
+  "sha256": "86b75c6251e18e0f5d3cc5f73bfc5685504d09dd7e0c8bd9504defd048496729"
+ },
+ "removedFluxFraction": 0.01315450668334961,
+ "maskedPixelFraction": 0.020668476819992065,
+ "bandMedianY": 0.18009741604328156,
+ "poleMedianY": 0.0005644387565553188,
+ "p50Y": 0.007631765212863684,
+ "p99Y": 0.4708574116230011
+}

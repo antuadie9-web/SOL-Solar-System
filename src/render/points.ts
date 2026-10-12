@@ -40,7 +40,7 @@ export const PSF_WING = { star: 0.045, body: 0.035 } as const;
 // sprite radius only bounds where the profile is below display visibility; it never adds light.
 export function psfMaterial(centerNode: any, fluxNode: any, opts: { gain: any; maxSize?: number; minSize?: number; farPlane?: boolean; halo?: number; compress?: any; wing?: number }) {
   const m = new THREE.MeshBasicNodeMaterial({ transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
-  const vI = varying(vec3(0), 'vI'), vR = varying(float(1), 'vR'), vCorner = varying(vec2(0), 'vC');
+  const vI = varying(vec3(0), 'vI'), vR = varying(float(1), 'vR'), vCorner = varying(vec2(0), 'vC'), vWs = varying(float(1), 'vWs');
   const wingF = float(opts.wing ?? PSF_WING.star);
   m.vertexNode = Fn(() => {
     const c = cameraProjectionMatrix.mul(cameraViewMatrix.mul(vec4(centerNode, 1)));
@@ -59,7 +59,13 @@ export function psfMaterial(centerNode: any, fluxNode: any, opts: { gain: any; m
     // visible extent (device px): Gaussian core above `thresh`, and the wing (peak_w = wing·L/(2πa²)) above `thresh`
     const sEff = sqrt(s2eff), aW = PX.sigma.mul(3).max(1.2);
     const rCore = sEff.mul(sqrt(max(log(max(peak.div(PX.thresh), 1.0001)).mul(2.0), 0.0))).add(1.0);
-    const peakW = peak.mul(s2eff).mul(wingF).div(aW.mul(aW).mul(float(1).sub(wingF)));
+    const peakW0 = peak.mul(s2eff).mul(wingF).div(aW.mul(aW).mul(float(1).sub(wingF)));
+    // v3.8.1 SUN-381-01: the wing of an extremely over-exposed source (the unresolved Sun at 1.5–1,000 AU: peaks 10⁵–10¹²
+    // × display white even after the knee) would clip into a flat white disc tens of pixels wide. Its display amplitude
+    // is compressed above 2× white (peak' = 2·(peak/2)^0.3); the Sun's large-scale halo is the angle-space glare (sun.ts).
+    const wS = select(peakW0.greaterThan(2), float(2).mul(pow(peakW0.div(2).max(1), 0.3)).div(peakW0.max(1e-30)), float(1));
+    const peakW = peakW0.mul(wS);
+    vWs.assign(wS);
     const rWing = aW.mul(sqrt(max(pow(max(peakW.div(PX.thresh), 1.0), 0.6667).sub(1), 0.0)));
     const radDev = clamp(max(rCore, rWing), PX.dpr.mul(opts.minSize ?? 1.5), PX.dpr.mul(opts.maxSize ?? 48));
     vI.assign(flux.div(pixSAdev));                     // radiance × device-pixel SA = flux: profile integrates to 1
@@ -85,7 +91,7 @@ export function psfMaterial(centerNode: any, fluxNode: any, opts: { gain: any; m
     const aW = PX.sigma.mul(3).max(1.2), r2 = d.dot(d);
     const wing = pow(float(1).add(r2.div(aW.mul(aW))), -1.5).div(aW.mul(aW).mul(6.2831853));
     const edge = smoothstep(vR, vR.mul(0.8), length(d));
-    return vec4(vI.mul(core.mul(float(1).sub(wingF)).add(wing.mul(wingF).mul(edge))), 1);
+    return vec4(vI.mul(core.mul(float(1).sub(wingF)).add(wing.mul(wingF).mul(vWs).mul(edge))), 1);
   })();
   return m;
 }

@@ -23,7 +23,7 @@ import { makeRingSystem, smoothRingColour, buildProfileLOD, decodeProfile, peakI
 const RS_PROF = (e: any, id: string, def: any) => (def.profile ? e.ringProfiles[id] ?? null : null);
 import { RING_SYSTEMS, ringLabels } from '../data/rings';
 import { makePlumes, plumePeakIF } from './plumes';
-import { makeSun, makeGlare, SUN_L0, SUN_L_MEAN, SUN_LOOKS, sunMeterWeight, glareWeight, type SunLook } from './sun';
+import { makeSun, makeGlare, SUN_L0, SUN_L_MEAN, SUN_LOOKS, sunMeterWeight, glareWeight, sunDiscScale, glareAmplitudes, glareExtentRad, type SunLook } from './sun';
 import { makeCorona } from './corona';
 import { Stars3D, PC_KM, Star3DCatalog } from '../galaxy/stars3d';
 import { TerrainBody } from '../terrain/terrain';
@@ -114,7 +114,9 @@ export class Engine {
   constructor(public sys: SolarSystem, public assets: Assets, public settings: Settings) {}
 
   async init(canvas: HTMLCanvasElement) {
-    const r = this.renderer = new THREE.WebGPURenderer({ canvas, antialias: false, reversedDepthBuffer: true, powerPreference: 'high-performance', outputBufferType: THREE.HalfFloatType } as any);
+    // v3.8.1 PERF-381-01: GPU timestamp queries only for the benchmark (?bench=1) — they add resolve work every frame
+    const bench = typeof location !== 'undefined' && new URLSearchParams(location.search).has('bench');
+    const r = this.renderer = new THREE.WebGPURenderer({ canvas, antialias: false, reversedDepthBuffer: true, powerPreference: 'high-performance', outputBufferType: THREE.HalfFloatType, trackTimestamp: bench } as any);
     // three's WebGPURenderer silently installs a WebGL2 fallback backend; SOL is native-WebGPU only, so remove it:
     // if WebGPU initialisation fails, init() now rejects instead of creating a WebGL context.
     (r as any)._getFallback = null;
@@ -176,7 +178,7 @@ export class Engine {
   grade = { contrast: uniform(1), saturation: uniform(1), vignette: uniform(0) };
   pres: PresentationParams = { ...MODE_PARAMS.exploration }; skyExp = 1; veil = 0; sunVeil = 0; meter: any = null;
   /** v3.8 far-Sun diagnostics: exposure the unresolved Sun point is drawn with, and the display-referred glare level */
-  sunPointExposure = 0; glareDisplay = 0;
+  sunPointExposure = 0; glareDisplay = 0; sunDiscScaleNow = 1;
   /** v3.8 performance counters: views prepared ahead of time vs built on the frame they first became visible */
   perf = { prepared: 0, lateViews: 0, preparedThisFrame: 0 };
   enhancement = { inspect: false, skyDecoupled: false, mode: 'exploration' as ViewMode, rings: null as null | { body: string; gain: number }, plumes: null as null | string, plumeGain: 1 };
@@ -670,15 +672,20 @@ export class Engine {
       // ≈ 3 AU to ≈ 300 AU the same saturated blob was drawn, then it collapsed. Outside Scientific the display-referred
       // glare is compressed (∝ x^0.4, the same philosophy as the star highlight knee): it still rises and falls monotonically
       // with distance and exposure but never balloons. Scientific keeps the linear camera PSF (capped only for safety).
-      const gx = F * 0.6 * (this.sunRpx > 0 && this.sunRpx > 3.5 ? LS : this.sunPointExposure || LS);
-      const gComp = mode === 'scientific' ? Math.min(gx, 3) : Math.min(0.3 * Math.pow(gx, 0.4), 3);
-      this.glare.U.flux.value = front && st.get('glare') ? gComp * glareWeight(this.sunRpx, this.H) * P.glare : 0;
-      this.glareDisplay = gComp;
-      const look = SUN_LOOKS[(st.get('sunLook') as SunLook) || 'natural'] ?? SUN_LOOKS.natural; this.glare.U.tint.value.set(1.0, 0.94 * look.tint[1] / 0.955, 0.84 * look.tint[2] / 0.9);
-      this.glare.U.aspect.value = this.W / this.H;
-      this.glare.U.angRad.value = Math.max(0.004, Math.atan(R_SUN / dist) / (rig.fov * DEG / 2) * 0.8);
-      this.glare.U.exposure.value = 1;
-      this.glare.U.spikes.value = st.get('lensSpikes') ? 1 : 0;
+      // v3.8.1 SUN-381-01: angle-space glare (sun.ts makeGlare). Display flux x = F·E with the exposure the Sun is actually
+      // drawn with (the resolved disc's local presentation scale included), so glare and disc stay consistent: a resolved,
+      // locally compressed disc gets a halo below its own limb brightness instead of a brighter blob around it.
+      const Eg = this.sunRpx > 3.5 ? LS * (this.sunDiscScaleNow || 1) : (this.sunPointExposure || LS);
+      const amp = glareAmplitudes(F * Eg);
+      const on = front && st.get('glare') ? glareWeight(this.sunRpx, this.H) * P.glare : 0;
+      const angR = Math.atan(R_SUN / dist), th1 = Math.max(angR * 2.2, this.pxAng * 2.5);
+      const G = this.glare.U;
+      G.halo.value = amp.halo * on; G.veil.value = amp.veil * on * (mode === 'scientific' ? 0.6 : 1);
+      G.angRad.value = angR; G.th1.value = th1; G.pxAng.value = this.pxAng; G.viewport.value.set(this.W, this.H);
+      G.extentPx.value = Math.min(1.6 * Math.max(this.W, this.H), glareExtentRad(G.halo.value, G.veil.value, th1, 0.0087) / this.pxAng);
+      G.spikes.value = st.get('lensSpikes') && mode !== 'scientific' ? 1 : 0;
+      G.tint.value.set(...(mode === 'scientific' ? [1, 1, 1] : mode === 'cinematic' ? [1.0, 0.93, 0.84] : [1.0, 0.975, 0.94]) as [number, number, number]);
+      this.glareDisplay = amp.halo;
       this.glareFlux = F;
       // corona billboard (physical Baumbach brightness; structure simulated) facing the camera
       const C = this.corona.U;
@@ -693,6 +700,13 @@ export class Engine {
       C.aureole.value = st.get('sunLook') === 'cinematic' ? 2.4 : st.get('sunLook') === 'scientific' ? 0 : 1.4;
       // the aureole belongs to the visible disc: it fades with the eclipse and with the disc→point transition
       C.aureole.value *= sunVis * (this.views.get('sun')?.discWeight ?? 0);
+      // v3.8.1 SUN-381-04: the art-directed aureole is "5 % of the mean disc radiance at the limb"; with the disc 10⁴–10⁶ ×
+      // over display white (1–5 AU) that clipped to a flat white blob ≈ 3 R☉ across — the dominant part of the owner's
+      // "featureless white spot" (isolated by switching layers off: tools/qa captures iso-nocorona). Its DISPLAY amplitude
+      // at the limb is now capped at 1.2× white and follows the disc's local presentation scale; the large-scale halo is
+      // the angle-space glare. The physical Baumbach corona is unchanged.
+      { const limbDisp = 0.05 * SUN_L_MEAN * LS * (this.sunDiscScaleNow || 1) * Math.max(C.aureole.value, 1e-9);
+        C.aureole.value *= Math.min(1, 1.2 / Math.max(limbDisp, 1e-9)) * (this.sunDiscScaleNow || 1); }
       this.corona.mesh.visible = front || dist < R_SUN * 20;
     }
     // asteroids
@@ -800,6 +814,9 @@ export class Engine {
       SU.granT.value = this.granT; SU.days.value = (sys.jd - 2451545) % 36525;
       const look = SUN_LOOKS[(this.settings.get('sunLook') as SunLook) || 'natural'] ?? SUN_LOOKS.natural;
       SU.tint.value.set(...look.tint); SU.contrast.value = look.contrast; SU.limbGrade.value = look.limbGrade;
+      // v3.8.1 SUN-381-02: local HDR presentation of the resolved disc (Exploration/Cinematic; identity in Scientific)
+      { const rpxD = Math.atan(b.radius / Math.max(relS.length(), 1)) / this.pxAng; const mode = (this.settings.get('viewMode') as ViewMode) || 'exploration';
+        const ds = sunDiscScale(SUN_L0 * LS * v.discWeight, rpxD, mode); SU.discScale.value = ds; this.sunDiscScaleNow = ds; }
       SU.detail.value = this.settings.get('sunDetail') === 'low' ? 0.35 : this.settings.get('sunDetail') === 'medium' ? 0.7 : 1;
       return;
     }

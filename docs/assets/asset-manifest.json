@@ -1,6 +1,6 @@
 {
- "generated": "2026-10-11",
- "count": 1513,
+ "generated": "2026-10-12",
+ "count": 1516,
  "unmatched": [],
  "exactDuplicates": [],
  "nonCommercial": [
@@ -1455,6 +1455,16 @@
    "licence": "SOL project data (derived statistics)",
    "commercial": "yes",
    "content": "luminance percentiles of the diffuse sky layer used by the runtime calibration",
+   "truth": "derived (measured on the derivative image)"
+  },
+  {
+   "path": "assets/data/milkyway_v381.json",
+   "bytes": 1819,
+   "sha256": "dacd161df426f8db99be929d413e9b321d954d0766256cc2cf599a8eb424def6",
+   "source": "SOL v3.8.1 tools/ingest/sky_v381.py",
+   "licence": "SOL project data (derived statistics)",
+   "commercial": "yes",
+   "content": "encoding range, band/pole luminance statistics, removed-flux fraction and SHA-256 of the v3.8.1 sky layer",
    "truth": "derived (measured on the derivative image)"
   },
   {
@@ -20736,6 +20746,21 @@
    "truth": "observed (projected)"
   },
   {
+   "path": "assets/tex/milkyway_chroma_2k.jpg",
+   "bytes": 562791,
+   "sha256": "86b75c6251e18e0f5d3cc5f73bfc5685504d09dd7e0c8bd9504defd048496729",
+   "source": "Derived (SOL v3.8.1, tools/ingest/sky_v381.py) from the same ESA/Gaia/DPAC EDR3 equirectangular map",
+   "url": "https://sci.esa.int/web/gaia/-/the-colour-of-the-sky-from-gaia-s-early-data-release-3-equirectangular-projection",
+   "licence": "CC BY-SA 3.0 IGO (derivative, same licence)",
+   "commercial": "yes (share-alike + attribution)",
+   "attribution": "ESA/Gaia/DPAC; acknowledgement A. Moitinho",
+   "content": "2048×1024 sRGB colour of the star-removed EDR3 sky (chroma only; structure comes from the 8k luminance)",
+   "projection": "Galactic equirectangular",
+   "coverage": "full sky",
+   "truth": "observed display colour (Gaia BP/RP rendition, not a calibrated spectrum)",
+   "retrieved": "2026-10-12"
+  },
+  {
    "path": "assets/tex/milkyway_diffuse.jpg",
    "bytes": 1265082,
    "sha256": "ebec5be355e90e04236df0da398ff6534244f34876a9df881d95d356a8bd0d7c",
@@ -20749,6 +20774,22 @@
    "coverage": "full sky",
    "truth": "observed (projected), point sources removed; radiance calibration DERIVED (presentation.ts SKY_CAL)",
    "retrieved": "2026-10-09"
+  },
+  {
+   "path": "assets/tex/milkyway_luma_8k.bin.gz",
+   "bytes": 26058185,
+   "sha256": "57de22e9fb82c1fd8966142d3e6d038203dfe964d6e9795e83f67e8c214872b8",
+   "source": "Derived (SOL v3.8.1, tools/ingest/sky_v381.py) from ESA/Gaia/DPAC \"The colour of the sky from Gaia's Early Data Release 3 – equirectangular projection\" (16000×8000 PNG, sha256 10a372d3…)",
+   "url": "https://sci.esa.int/web/gaia/-/the-colour-of-the-sky-from-gaia-s-early-data-release-3-equirectangular-projection",
+   "licence": "CC BY-SA 3.0 IGO (derivative, same licence)",
+   "commercial": "yes (share-alike + attribution)",
+   "attribution": "ESA/Gaia/DPAC; acknowledgement A. Moitinho; luminance derivative by SOL",
+   "content": "8192×4096 log-encoded luminance of the integrated Gaia EDR3 sky with the 99,049 catalogue stars SOL draws individually (V ≤ 9.5) removed at their positions; no blur",
+   "projection": "Galactic equirectangular (l=0 centre, l increasing left; row 0 = b −90°)",
+   "coverage": "full sky",
+   "resolution": "2.64′/px",
+   "truth": "observed (projected 2-D map, not 3-D geometry); colour is a display rendition of Gaia BP/RP; radiance calibration DERIVED (presentation.ts SKY_CAL)",
+   "retrieved": "2026-10-12"
   },
   {
    "path": "assets/tex/mimas.jpg",

@@ -159,6 +159,24 @@ async function boot() {
     } catch (e) { console.info('3D star catalogue unavailable', e); }
   };
   setTimeout(() => void loadStars3D(), 1500);
+  // v3.8.1 SKY-381-04: stream the Gaia EDR3 8192×4096 Galactic sky layer (log-luminance r8 + 2k chroma) after boot. The
+  // boot-time v3.5 4k diffuse map stays in use until it lands (and if it fails); same calibration, so only detail changes.
+  const loadSky381 = async () => {
+    if (QA.get('qa-off')?.split(',').includes('sky381')) return;
+    try {
+      const meta = await loadJSON<any>('data/milkyway_v381.json');
+      const [buf, chroma] = await Promise.all([loadArrayBuffer(meta.luma.file), loadTexture('milkyway_chroma_2k')]);
+      const ds = new Response(new Blob([buf]).stream().pipeThrough(new DecompressionStream('gzip')));
+      const px = new Uint8Array(await ds.arrayBuffer());
+      if (px.length !== meta.luma.width * meta.luma.height) throw new Error(`sky luma size ${px.length}`);
+      const t = new THREE.DataTexture(px, meta.luma.width, meta.luma.height, THREE.RedFormat, THREE.UnsignedByteType);
+      t.wrapS = THREE.RepeatWrapping; t.wrapT = THREE.ClampToEdgeWrapping; t.magFilter = THREE.LinearFilter; t.minFilter = THREE.LinearMipmapLinearFilter;
+      t.generateMipmaps = true; t.colorSpace = THREE.NoColorSpace; t.needsUpdate = true;
+      chroma.colorSpace = THREE.SRGBColorSpace;
+      engine.sky.setHiRes(t, chroma, meta); (window as any).__solSky = { layer: 'gaia-edr3-8k', meta };
+    } catch (e) { console.info('v3.8.1 sky layer unavailable — keeping the v3.5 4k diffuse map', e); (window as any).__solSky = { layer: 'v3.5-diffuse-4k', error: String(e) }; }
+  };
+  setTimeout(() => void loadSky381(), 800);
   // ── loop ───────────────────────────────────────────────────────────────
   let last = performance.now(); let streamed = false;
   const frame = () => {
@@ -175,5 +193,7 @@ async function boot() {
   ui.loader.ready();
   (window as any).__sol = { engine, sys, clock, settings, ui, textures, sampled: SAMPLED, advance };
   (window as any).__solVersion = __SOL_VERSION__; (window as any).__solCommit = __SOL_COMMIT__;
+  // v3.8.1 PERF-381-01: owner hardware benchmark (open with ?bench=1)
+  if (new URLSearchParams(location.search).has('bench')) setTimeout(() => { void import('./qa/bench').then(m => m.runBenchmark((window as any).__sol)); }, 2500);
 }
 boot().catch(e => { console.error(e); (window as any).__err = String(e?.stack ?? e); });

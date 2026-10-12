@@ -34,6 +34,8 @@ export default async function (page, { out }) {
   const MODE = process.env.MODE || null;
   if (MODE) await page.evaluate((m) => { const s = window.__sol; s.settings.set('viewMode', m); window.__qaMode = m; }, MODE);
   await page.evaluate(() => { const e = window.__sol.engine; if ('terrainBuildMs' in e) e.terrainBuildMs = 400; });
+  // v3.8.1: wait for the streamed Gaia EDR3 sky layer (candidate builds only; set SKYWAIT=1)
+  if (process.env.SKYWAIT) { try { await page.waitForFunction(() => !!window.__solSky, null, { timeout: 120000 }); } catch { console.error('sky layer did not report within 120 s'); } }
   await page.evaluate((ms) => { const s = window.__sol; document.querySelector('#loader .enter, #loader .ld-enter')?.dispatchEvent(new MouseEvent('click', { bubbles: true })); document.body.classList.add('cine');
     s.clock.paused = true; const jdUtc = ms / 86400000 + 2440587.5; s.clock.set(jdUtc + 69.184 / 86400); s.advance(); }, EPOCH_MS);
   for (const [name, id, d] of VIEWS) {

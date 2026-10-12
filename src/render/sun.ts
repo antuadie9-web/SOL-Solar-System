@@ -182,16 +182,41 @@ fn activeRegions(p: vec3<f32>, t: f32, activity: f32) -> vec4<f32> {
 }`, [noiseLib, vnoise]);
 
 export type SunLook = 'natural' | 'cinematic' | 'scientific';
+// v3.8.1 (SUN-381-03): SOL's scene white balance is "sunlight = white" (planet lighting and the 3-D star colours are
+// normalised to the 5,772 K photosphere), so the physically consistent disc colour is NEUTRAL, reddened only by the
+// measured per-channel limb darkening. v3.3–3.8.0 tinted the default "natural" disc (1, 0.74, 0.46) — a strongly orange
+// lamp. The Sun's colour relative to a D65 display white is ≈ (1, 0.93, 0.83) (Planck 5,772 K vs 6,504 K through the CIE
+// 1931 fit in points.ts); "natural" now applies HALF of that offset as a gentle, labelled warm grade.
 export const SUN_LOOKS: Record<SunLook, { tint: [number, number, number]; contrast: number; limbGrade: number; prominence: number; label: string; note: string }> = {
-  natural: { tint: [1.0, 0.74, 0.46], contrast: 1.0, limbGrade: 0.6, prominence: 2500, label: 'Natural warm-white', note: 'A gently warm grade of the white-light disc (the true colour of a 5,772 K photosphere is close to white; the warmth is display grading, as in most filtered solar photography). Default.' },
-  cinematic: { tint: [1.0, 0.64, 0.32], contrast: 1.3, limbGrade: 1.0, prominence: 10000, label: 'Cinematic gold', note: 'Art-directed warmer grade with a little more contrast and a soft aureole. Not a measured colour.' },
-  scientific: { tint: [1.0, 1.0, 1.0], contrast: 1.0, limbGrade: 0, prominence: 1, label: 'Scientific neutral', note: 'Neutral white-light rendering comparable to HMI continuum (6173 Å) greyscale imagery.' },
+  natural: { tint: [1.0, 0.965, 0.915], contrast: 1.0, limbGrade: 0.35, prominence: 2500, label: 'Natural (gentle warm grade)', note: 'Display grade only: half of the photosphere\'s offset from a D65 display white (5,772 K vs 6,504 K). In space the Sun is essentially white; limb reddening is the measured limb darkening. Default.' },
+  cinematic: { tint: [1.0, 0.86, 0.70], contrast: 1.2, limbGrade: 0.8, prominence: 10000, label: 'Cinematic gold', note: 'Art-directed warm grade with more contrast and a soft aureole. Not a measured colour.' },
+  scientific: { tint: [1.0, 1.0, 1.0], contrast: 1.0, limbGrade: 0, prominence: 1, label: 'Scientific neutral', note: 'Neutral white-light rendering (sunlight = white balance), comparable to HMI continuum (6173 Å) greyscale imagery.' },
 };
-
+/** v3.8.1 (SUN-381-02) local disc presentation: fraction of the physical disc radiance shown so the disc centre lands at
+ *  `target` display-linear once the disc is resolved enough to show structure (3 → 12 px radius). Scientific: 1 (the
+ *  physical camera clips). Pure presentation (labelled HDR compression); exposure, lighting and irradiance unchanged. */
+export function sunDiscScale(centreDisplay: number, rpx: number, mode: 'scientific' | 'exploration' | 'cinematic', target = 2.4) {
+  if (mode === 'scientific' || !(centreDisplay > target)) return 1;
+  const t = Math.max(0, Math.min(1, (rpx - 3) / 9)), w = t * t * (3 - 2 * t);
+  return Math.exp(w * Math.log(target / centreDisplay));
+}
+/** v3.8.1 (SUN-381-01) glare amplitude (display-linear) from the Sun's display flux x = F·E. Logarithmic in brightness,
+ *  so the visible glare radius grows and shrinks smoothly with distance and exposure and never saturates into a disc. */
+export function glareAmplitudes(x: number) {
+  const xs = Math.max(x, 0);
+  return { halo: Math.min(4.0, 0.22 * Math.pow(xs, 0.3)), veil: Math.min(0.18, 0.015 * Math.pow(xs, 0.22)) };
+}
+/** Angular radius (rad) beyond which the glare profile is below `thr` display-linear (sizes the glare quad). */
+export function glareExtentRad(halo: number, veil: number, th1: number, th0: number, thr = 0.002) {
+  const rH = th1 * Math.sqrt(Math.max(0, Math.pow(Math.max(halo / thr, 1), 2 / 3) - 1));
+  const rV = th0 * Math.max(0, Math.sqrt(Math.max(veil / thr, 1)) - 1);
+  return Math.max(rH, rV, th1 * 2);
+}
 export function makeSun() {
   const U = {
     cam: uniform(new THREE.Vector3()), time: uniform(0), granT: uniform(0), days: uniform(0), L0: uniform(1), activity: uniform(0.75),
     tint: uniform(new THREE.Vector3(1, 0.82, 0.6)), contrast: uniform(1), detail: uniform(1), limbGrade: uniform(0.6),
+    discScale: uniform(1),   // v3.8.1 SUN-381-02 local HDR presentation of the resolved disc (sunDiscScale)
   };
   const m = new THREE.MeshBasicNodeMaterial();
   m.colorNode = Fn(() => {
@@ -244,7 +269,7 @@ export function makeSun() {
     // after AgX, and keep the centre a touch below white so granulation/spot contrast survives the tone curve
     const limbWarm = mix(vec3(1, 1, 1), vec3(1.0, 0.86, 0.66), pow(om, 1.6).mul(U.limbGrade));
     const graded = I.mul(U.tint).mul(limbWarm);
-    return vec4(graded.mul(U.L0), 1);
+    return vec4(graded.mul(U.L0).mul(U.discScale), 1);
   })();
   return { material: m, U };
 }
@@ -252,29 +277,42 @@ export function makeSun() {
 // Camera glare around very bright sources: wide PSF halo + soft starburst, drawn as a screen-facing quad. This is the
 // CAMERA's response (scattering in optics), separate from solar emission; it fades as the disc becomes a resolved
 // extended source that fills the frame, so a close Sun no longer turns the whole screen into haze.
+// v3.8.1 (SUN-381-01) — glare reconstructed in ANGLE space. v3.3–3.8.0 drew a quad of fixed size (0.9 NDC, i.e. 45 % of
+// the frame height at every distance and FOV) whose profile was measured in units of the solar radius plus a constant
+// exp(−10 r) "fog" term and 6-fold spikes at fixed screen size, so from 1 to 300 AU the same warm blob filled the frame.
+// Now the profile is a function of the angle θ from the Sun's centre (radians), the same at every FOV:
+//   G(θ) = halo · (1 + (θ/θ1)²)^−1.5      near-field scattering (θ1 ≈ 2.2 solar radii, ≥ 2.5 px)
+//        + veil · (θ0 / (θ + θ0))²          long-range veiling glare ∝ θ⁻² (Stiles–Holladay-like), θ0 = 0.5°
+//        + spikes (optional, diffraction-like, length ∝ halo)
+// with amplitudes logarithmic in the Sun's display flux (glareAmplitudes), so the glare shrinks continuously with
+// distance. The glare never brightens the disc itself (it starts at the limb), and its colour is the mode's grade.
 export function makeGlare() {
-  const U = { center: uniform(new THREE.Vector3()), flux: uniform(0), exposure: uniform(1), angRad: uniform(0.005), aspect: uniform(1), rot: uniform(0), spikes: uniform(0.5), tint: uniform(new THREE.Vector3(1.0, 0.94, 0.84)) };
+  const U = { center: uniform(new THREE.Vector3()), halo: uniform(0), veil: uniform(0), pxAng: uniform(1e-3), extentPx: uniform(100), viewport: uniform(new THREE.Vector2(1920, 1080)),
+    angRad: uniform(0.0046), th1: uniform(0.01), rot: uniform(0), spikes: uniform(0), tint: uniform(new THREE.Vector3(1.0, 0.97, 0.93)),
+    // legacy fields kept for diagnostics compatibility
+    flux: uniform(0), exposure: uniform(1), aspect: uniform(1) };
   const g = new THREE.PlaneGeometry(2, 2);
   const m = new THREE.MeshBasicNodeMaterial({ transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending });
-  const vUv = varying(vec2(0), 'gUv');
+  const vPx = varying(vec2(0), 'gPx');
   m.vertexNode = Fn(() => {
     const c = cameraProjectionMatrix.mul(cameraViewMatrix.mul(vec4(U.center, 1)));
-    const size = float(0.9);
-    vUv.assign(positionGeometry.xy);
-    return vec4(c.x.div(c.w).add(positionGeometry.x.mul(size).div(U.aspect)), c.y.div(c.w).add(positionGeometry.y.mul(size)), 0.0001, 1);
+    vPx.assign(positionGeometry.xy.mul(U.extentPx));
+    const off = positionGeometry.xy.mul(U.extentPx).mul(2).div(U.viewport);
+    return vec4(c.x.div(c.w).add(off.x), c.y.div(c.w).add(off.y), 0.0001, 1);
   })();
   m.fragmentNode = Fn(() => {
-    const q = vUv;
-    const r = length(q).max(1e-4);
-    const th = r.mul(0.9);
-    const x = th.div(U.angRad);
-    const halo = float(1).div(pow(float(1).add(x.mul(x)), 1.25)).mul(0.02);
-    const wide = exp(r.mul(-10.0)).mul(0.001);
-    const ang = atan(q.y, q.x).add(U.rot);
-    const star = pow(ang.mul(3).cos().abs(), 80).add(pow(ang.mul(3).add(0.52).cos().abs(), 120).mul(0.45)).mul(exp(r.mul(-7))).mul(0.005).mul(U.spikes);
-    const fade = smoothstep(1, 0.6, r);
-    const I = halo.add(wide).add(star).mul(U.flux).mul(U.exposure).mul(fade);
-    return vec4(U.tint.mul(I), 1);
+    const th = length(vPx).mul(U.pxAng).max(1e-7);           // angle from the Sun's centre (small-angle, rad)
+    const outside = smoothstep(U.angRad.mul(0.98), U.angRad.mul(1.25), th);   // glare starts at the limb
+    const x1 = th.div(U.th1);
+    const halo = pow(float(1).add(x1.mul(x1)), -1.5).mul(U.halo);
+    const th0 = float(0.0087);
+    const veil = th0.div(th.add(th0)).pow(2).mul(U.veil);
+    // diffraction-like spikes (4 + 4 at 45°, thin, length ∝ halo amplitude) — optional "lens spikes" setting
+    const ang = atan(vPx.y, vPx.x).add(U.rot);
+    const sp = pow(ang.mul(2).cos().abs(), 260).add(pow(ang.mul(2).add(0.785398).cos().abs(), 400).mul(0.35));
+    const spike = sp.mul(U.halo).mul(0.03).mul(exp(th.div(U.th1.mul(6)).negate())).mul(U.spikes);
+    const fade = smoothstep(1, 0.75, length(vPx).div(U.extentPx));
+    return vec4(U.tint.mul(halo.add(veil).add(spike)).mul(outside).mul(fade), 1);
   })();
   const mesh = new THREE.Mesh(g, m); mesh.frustumCulled = false; mesh.renderOrder = 100;
   return { mesh, U };
