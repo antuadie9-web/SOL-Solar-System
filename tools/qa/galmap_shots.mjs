@@ -6,6 +6,7 @@ for (const [port, f, big] of [[4174, 'L0-galmap-v380.png', false], [4175, 'L1-ga
   const p = await b.newPage({ viewport: { width: 1600, height: 900 }, deviceScaleFactor: 1 });
   await p.goto(`http://localhost:${port}/?qa-software-gpu=1&qa-off=small,smallcompute`);
   await p.waitForSelector('#loader .ld-enter.show', { timeout: 240000 });
+  await p.waitForFunction(() => window.__sol?.sys.bodies.some(x => x.name === 'Proxima Centauri'), null, { timeout: 120000 });
   await p.evaluate((big) => { document.querySelector('#loader .ld-enter').click(); const s = window.__sol, r = s.engine.rig, t = s.sys.bodies.find(x => x.name === 'Proxima Centauri');
     s.clock.paused = true; r.flight = null; s.ui.following = false; r.setTarget(t, 3.0856775814913673e13 * 0.3); s.ui.galmap.auto = false; s.ui.galmap.toggle(true);
     if (big) s.ui.galmap.el.querySelector('.grow')?.click(); }, big);

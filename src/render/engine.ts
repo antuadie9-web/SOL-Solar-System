@@ -619,7 +619,13 @@ export class Engine {
         // at high phase — protect it too (v3.6 QA: the Mars night-side view clipped 2.6 % of the disc to white otherwise)
         let hr = (vv?.hiAlb ?? 0.5) * fpk / (rS * rS);
         if (vv?.atmoLuts && (vv.atmoLuts as any).ready !== false && w > 0.05 && this.settings.get('atmospheres')) {
-          if (!(this.frameNo % 8) || vv.limbL === undefined) { const cl = toLocal(b, scale(rel, -1)), sl = toLocal(b, sub(sun.pos, b.pos)).normalize(); vv.limbL = limbLuminance(vv.atmoLuts.A, vv.atmoLuts, [cl.x, cl.y, cl.z], [sl.x, sl.y, sl.z]); }
+          // v3.8.1 cp2 (EXP-381-02): refresh also when the viewing geometry changed (> 2° of camera or Sun direction, or > 5 %
+          // in distance) — the 8-frame cache alone let a cut to a new view meter on the PREVIOUS view's limb (sat-backlit
+          // regression capture: 0.59 vs 0.05, ≈ 1 EV exposure difference depending on what was viewed before)
+          const cl = toLocal(b, scale(rel, -1)), sl = toLocal(b, sub(sun.pos, b.pos)).normalize(), cd = cl.length(), cu = cl.clone().divideScalar(cd);
+          const lk = (vv as any).limbKey as { c: THREE.Vector3; d: number; s: THREE.Vector3 } | undefined;
+          const moved = !lk || cu.dot(lk.c) < 0.99939 || sl.dot(lk.s) < 0.99939 || Math.abs(cd / lk.d - 1) > 0.05;
+          if (!(this.frameNo % 8) || vv.limbL === undefined || moved) { vv.limbL = limbLuminance(vv.atmoLuts.A, vv.atmoLuts, [cl.x, cl.y, cl.z], [sl.x, sl.y, sl.z]); (vv as any).limbKey = { c: cu, d: cd, s: sl.clone() }; }
           // v3.7: capped at +2 EV of the disc highlight — the GPU march (16 steps) under-samples thin cloud-top hazes at grazing
           // incidence, so an uncapped CPU limb estimate under-exposed the Venus terminator by ≈ 5.6 EV (v3.7 QA, ATM-011)
           hr = Math.max(hr, Math.min(Math.PI * vv.limbL / (rS * rS), hr * 4));
