@@ -9,6 +9,7 @@ export const EPOCH_MS = Date.UTC(2026, 9, 8, 12, 0, 0);
 const AU = 149597870.7, RS = 695700;
 import { V37 } from './views37.mjs';
 import { V38 } from './views38.mjs';
+import { V381 } from './views381.mjs';
 export const ALL = [
   ['earth-orbit', 'earth', 3.2], ['earth-terminator', 'earth', { radii: 3.2, yawOff: 2.4 }], ['earth-limb', 'earth', { altKm: 400, look: 1.12 }],
   ['mars', 'mars', 3.2], ['mars-crescent', 'mars', { radii: 3.2, yawOff: 2.6 }], ['mars-limb', 'mars', { altKm: 250, look: 1.1 }],
@@ -24,6 +25,7 @@ export const ALL = [
   ['sun-0.05AU', 'sun', { km: 0.05 * AU }], ['sun-limb', 'sun', { km: 1.25 * RS, look: 0.5 }], ['sun-close', 'sun', { km: 1.06 * RS, look: 1.0 }], ['sun-grazing', 'sun', { km: 1.012 * RS, look: 1.33 }],
   ...V37,
   ...V38,
+  ...V381,
 ];
 export default async function (page, { out }) {
   const only = (process.env.VIEWS || '').split(',').filter(Boolean);

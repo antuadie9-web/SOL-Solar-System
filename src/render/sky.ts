@@ -2,8 +2,9 @@
 // Celestial background: ESA Gaia all-sky map (galactic equirectangular) as the diffuse Milky Way,
 // plus constellation figures and coordinate grids drawn on the celestial sphere.
 import * as THREE from 'three/webgpu';
-import { Fn, uniform, texture, positionLocal, vec2, vec3, vec4, float, normalize, mat3, atan, asin, clamp, pow, max, dot, mix, fract, sin } from 'three/tsl';
+import { Fn, uniform, texture, positionLocal, vec2, vec3, vec4, float, normalize, mat3, atan, asin, clamp, pow, max, dot, mix, fract, sin, sqrt, log2 } from 'three/tsl';
 import { radianceFromSB, SKY_CAL } from './presentation';
+import { PX } from './points';
 import { EQ2GAL, ECL2EQ } from '../astro/frames';
 import { mulMM } from '../astro/vec';
 
@@ -24,14 +25,21 @@ export function makeSky(tex: THREE.Texture, cal?: { bandMedianY: number }) {
     const d = normalize(uM.mul(normalize(positionLocal)));
     const l = atan(d.y, d.x), b = asin(clamp(d.z, -1, 1));
     const uvc = vec2(float(0.5).sub(l.mul(0.15915494)), b.mul(0.31830989).add(0.5));
-    const c = texture(tex, uvc).rgb;
+    // v3.8.1 SKY-381-02: explicit mip level from the pixel's angular size. With implicit derivatives the atan() wrap at
+    // l = ±180° (the Galactic ANTICENTRE) produced a 1-px seam sampled from the coarsest mip, and mip selection shimmered
+    // with the equirectangular stretch. Texel = 2π/width rad; device pixel = √(pixelSA)/dpr rad.
+    const texW = float((tex.image as any)?.width ?? 4096);
+    const lod = max(log2(sqrt(PX.pixelSA).div(PX.dpr).mul(texW).div(6.2831853)), 0);
+    const c = texture(tex, uvc).level(lod).rgb;
     const Y = max(dot(c, vec3(0.2126, 0.7152, 0.0722)), 1e-6);
     const L = clamp(U.Lband.mul(pow(Y.div(U.Yband), U.gamma)), U.Lfloor, U.Lpeak);
     // keep the map's colour (Gaia BP/RP-like), slightly desaturated: diffuse starlight is less saturated than the
     // stretched map suggests
     const chroma = mix(vec3(1, 1, 1), c.div(Y), 0.5);
     // ±½ LSB dither (display domain ≈ 1/255 of the band's displayed value) against banding in the 8-bit source
-    const n = fract(sin(dot(uvc.mul(vec2(4096, 2048)).floor().add(U.frame), vec2(12.9898, 78.233))).mul(43758.5453)).sub(0.5);
+    // v3.8.1 SKY-381-03: the dither is fixed to the sky. v3.5–3.8.0 added the frame number (mod 64) to the hash, so the
+    // whole Milky Way re-noised every frame — a ±1 % temporal boil visible as crawling texture during slow pans.
+    const n = fract(sin(dot(uvc.mul(vec2(4096, 2048)).floor(), vec2(12.9898, 78.233))).mul(43758.5453)).sub(0.5);
     return vec4(chroma.mul(L).mul(U.gain).mul(float(1).add(n.mul(0.02))), 1);
   })();
   const mesh = new THREE.Mesh(new THREE.SphereGeometry(1e10, 128, 64), m);

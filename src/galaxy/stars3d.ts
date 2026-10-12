@@ -16,7 +16,13 @@ export const PC_KM = 3.0856775814913673e13;
 export interface Star3DCatalog { data: Float32Array; count: number; named: { name: string; index: number; distPc: number }[] }
 export class Stars3D {
   mesh: THREE.Mesh;
-  U = { camPc: uniform(new THREE.Vector3()), years: uniform(0), fade: uniform(0) };
+  // v3.8.1 STAR-J01: camera position split into float32 hi + lo parts (see starPrecision.ts); camPc kept for diagnostics
+  U = { camPc: uniform(new THREE.Vector3()), camHi: uniform(new THREE.Vector3()), camLo: uniform(new THREE.Vector3()), years: uniform(0), fade: uniform(0) };
+  /** Set the camera (heliocentric, scene axes, parsecs, float64) — splits it into hi/lo float32 uniforms. */
+  setCamera(x: number, y: number, z: number) {
+    const f = Math.fround, hx = f(x), hy = f(y), hz = f(z);
+    this.U.camPc.value.set(x, y, z); this.U.camHi.value.set(hx, hy, hz); this.U.camLo.value.set(f(x - hx), f(y - hy), f(z - hz));
+  }
   private attrs: THREE.InstancedBufferAttribute[] = [];
   private dirty = false; private lastFlush = 0;
   /** rows streamed in so far (v3.4 sector shards; rows not yet loaded are drawn at M = 99, i.e. invisible) */
@@ -35,7 +41,10 @@ export class Stars3D {
     g.setAttribute('sP', aP); g.setAttribute('sV', aV); g.setAttribute('sC', aC);
     g.instanceCount = n;
     const U = this.U;
-    const relPc = Fn(() => attribute('sP', 'vec3').add(attribute('sV', 'vec3').mul(U.years)).sub(U.camPc))();
+    // v3.8.1 STAR-J01: rel = ((sP − camHi) + sV·years) − camLo. v3.4–3.8.0 computed (sP + sV·years) − camPc with one
+    // float32 camera: near another star (|cam| ≈ 1.3 pc, ulp 0.0245 AU) the drawn star snapped by up to 3.7 million km per
+    // frame — measured 38.9 px RMS frame-to-frame jitter zooming 50 → 0.05 AU to Proxima (tools/qa/star-stability.ts).
+    const relPc = Fn(() => attribute('sP', 'vec3').sub(U.camHi).add(attribute('sV', 'vec3').mul(U.years)).sub(U.camLo))();
     // draw on a 1e9-km sphere in the camera's direction (far-plane points), like the directional catalogue
     const center = Fn(() => relPc.div(max(length(relPc), 1e-9)).mul(1e9))();
     const flux = Fn(() => {
@@ -45,7 +54,7 @@ export class Stars3D {
       const F = float(3.14159265).mul(pow(10, m.add(26.74).mul(-0.4))).mul(1e10).mul(U.fade);
       return c.xyz.mul(F);
     })();
-    this.mesh = new THREE.Mesh(g, psfMaterial(center, flux, { gain: PX.starGain, farPlane: true, maxSize: 72, halo: 0.006, compress: float(1) }));
+    this.mesh = new THREE.Mesh(g, psfMaterial(center, flux, { gain: PX.starGain, farPlane: true, maxSize: 72, wing: 0.045, compress: float(1) }));
     this.mesh.frustumCulled = false; this.mesh.renderOrder = -89;
   }
   private P: Float32Array; private V: Float32Array; private C: Float32Array;

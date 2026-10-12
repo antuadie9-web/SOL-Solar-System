@@ -64,7 +64,7 @@ export class SmallBodies {
     const g = new THREE.InstancedBufferGeometry();
     g.setAttribute('position', new THREE.Float32BufferAttribute([-1, -1, 0, 1, -1, 0, 1, 1, 0, -1, 1, 0], 3));
     g.setIndex([0, 1, 2, 0, 2, 3]); g.instanceCount = n;
-    this.mesh = new THREE.Mesh(g, psfMaterial(center, flux, { gain: float(1), maxSize: 6, minSize: 1.2, halo: 0 }));
+    this.mesh = new THREE.Mesh(g, psfMaterial(center, flux, { gain: float(1), maxSize: 6, minSize: 1.2, wing: 0 }));
     this.mesh.frustumCulled = false; this.mesh.renderOrder = 4;
   }
   record(k: number) { const r = this.raw.subarray(k * 10, k * 10 + 10); return { a: r[0], e: r[1], i: r[2], om: r[3], w: r[4], ma: r[5], epoch: r[6] + 2451545, H: r[7], diam: r[8], cls: r[9] }; }

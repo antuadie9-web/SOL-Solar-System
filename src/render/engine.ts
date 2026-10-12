@@ -3,7 +3,7 @@
 import * as THREE from 'three/webgpu';
 import { pass, uniform, vec4, vec3, float, mrt, output, Fn, screenUV } from 'three/tsl';
 import * as TSL from 'three/tsl';
-import { MODE_PARAMS, approachParams, skyExposure, meterLuminance, photometricPeak, HIGHLIGHT_TARGET, type ViewMode, type PresentationParams, type MeterBody, type PhotometricKind } from './presentation';
+import { MODE_PARAMS, approachParams, skyExposure, skyExposureV381, sunGlareVeil, meterLuminance, photometricPeak, HIGHLIGHT_TARGET, type ViewMode, type PresentationParams, type MeterBody, type PhotometricKind } from './presentation';
 import { radianceFromSB } from './presentation';
 import { airglowPeakPerKm } from './atmosphere';
 import { limbLuminance } from './atmoModel';
@@ -174,7 +174,7 @@ export class Engine {
   ringDiag(id: string) { return this.ringState[id] ?? null; }
   /** v3.5 viewing mode state: current (interpolated) presentation parameters, sky exposure and what is enhanced */
   grade = { contrast: uniform(1), saturation: uniform(1), vignette: uniform(0) };
-  pres: PresentationParams = { ...MODE_PARAMS.exploration }; skyExp = 1; veil = 0; meter: any = null;
+  pres: PresentationParams = { ...MODE_PARAMS.exploration }; skyExp = 1; veil = 0; sunVeil = 0; meter: any = null;
   /** v3.8 far-Sun diagnostics: exposure the unresolved Sun point is drawn with, and the display-referred glare level */
   sunPointExposure = 0; glareDisplay = 0;
   /** v3.8 performance counters: views prepared ahead of time vs built on the frame they first became visible */
@@ -423,7 +423,7 @@ export class Engine {
     this.camera.quaternion.copy(rig.quat); this.camera.position.set(0, 0, 0);
     this.camera.fov = rig.fov; this.camera.updateProjectionMatrix(); this.camera.updateMatrix(); this.camera.updateMatrixWorld(true);
     this.pxAng = 2 * Math.tan(rig.fov * DEG / 2) / this.H;
-    PX.pixelSA.value = this.pxAng * this.pxAng; PX.viewport.value.set(this.W, this.H);
+    PX.pixelSA.value = this.pxAng * this.pxAng; PX.viewport.value.set(this.W, this.H); PX.dpr.value = this.renderer.getPixelRatio();
     // v3.5 viewing mode: approved presentation parameters glide to the selected mode (no popping on a switch)
     const mode = ((st.get('viewMode') as ViewMode) in MODE_PARAMS ? st.get('viewMode') : 'exploration') as ViewMode;
     this.pres = this.expSettle ? { ...MODE_PARAMS[mode] } : approachParams(this.pres, MODE_PARAMS[mode], dt, st.get('reducedMotion') ? 0.15 : 0.45);
@@ -432,7 +432,8 @@ export class Engine {
     LINE_GLOBAL.invExp.value = 1; LS = exposure;
     // sky-layer exposure (presentation.ts): physical in Scientific, dark-adapted & weakly coupled otherwise; the veil
     // (sunlit air around the camera, the Sun in the frame) from the previous frame re-couples it
-    const skyE = this.skyExp = skyExposure(exposure, P, this.veil, st.get('skyEV') as number);
+    // v3.8.1 EXP-381-01: daylit-air veil re-couples (physical); the Sun's glare veil is a bounded, continuous EV reduction
+    const skyE = this.skyExp = skyExposureV381(exposure, P, this.veil, this.sunVeil, st.get('skyEV') as number);
     PX.starKnee.value = P.starKnee; PX.starGamma.value = P.starGamma;
     this.grade.contrast.value = P.contrast; this.grade.saturation.value = P.saturation; this.grade.vignette.value = P.vignette;
     this.enhancement.mode = mode; this.enhancement.skyDecoupled = skyE > exposure * 1.5;
@@ -442,7 +443,7 @@ export class Engine {
     {
       const rSun = len(cam) / AU, w3 = this.stars3d ? smooth(1000, 10000, rSun) : 0;
       this.dirStarFade.value = 1 - w3;
-      if (this.stars3d) { this.stars3d.flush(); const s3 = this.stars3d.U; s3.fade.value = w3; s3.camPc.value.set(cam[0] / PC_KM, cam[2] / PC_KM, -cam[1] / PC_KM); s3.years.value = (this.sys.jd - 2457389.0) / 365.25; this.stars3d.mesh.visible = w3 > 0.001; }
+      if (this.stars3d) { this.stars3d.flush(); const s3 = this.stars3d.U; s3.fade.value = w3; this.stars3d.setCamera(cam[0] / PC_KM, cam[2] / PC_KM, -cam[1] / PC_KM); s3.years.value = (this.sys.jd - 2457389.0) / 365.25; this.stars3d.mesh.visible = w3 > 0.001; }
     }
     PX.starGain.value = st.get('stars') ? (st.get('starBrightness') as number) * skyE * 1e-10 : 0;
     PX.bodyGain.value = 1;
@@ -630,8 +631,16 @@ export class Engine {
       const atmoDay = avgLum - avgLum0;
       const sRel = sceneVec(sub(sun.pos, cam)); const sDir = sRel.clone().normalize();
       tmpV.copy(sRel).applyMatrix4(this.camera.matrixWorldInverse).applyMatrix4(this.camera.projectionMatrix);
-      const onScreen = sDir.dot(fwd) > 0 && Math.abs(tmpV.x) < 1.1 && Math.abs(tmpV.y) < 1.1 ? 1 : 0;
-      const vTarget = Math.max(smooth(0.001, 0.03, atmoDay), 0.45 * onScreen * sunVis);
+      // v3.8.1 EXP-381-01: v3.5–3.8.0 folded a binary "Sun centre within ±1.1 NDC" step (×0.45) into this coupling veil,
+      // so the entire sky dropped 7–12 EV whenever the Sun's centre crossed the frame edge. The atmosphere veil keeps the
+      // physical coupling; the Sun's glare is a separate continuous veil (presentation.ts sunGlareVeil).
+      const vTarget = smooth(0.001, 0.03, atmoDay);
+      const halfY = rig.fov * DEG / 2, halfX = Math.atan(Math.tan(halfY) * this.W / this.H);
+      const sunMagV = -26.74 + 5 * Math.log10(Math.max(len(sub(sun.pos, cam)) / AU, 1e-6));
+      const sTarget = sunGlareVeil({ ndcX: tmpV.x, ndcY: tmpV.y, inFront: sDir.dot(fwd) > 0, halfFovX: halfX, halfFovY: halfY, sunVis, sunMagV });
+      const kV = 1 - Math.exp(-dt / 0.6);              // symmetric 0.6 s adaptation, frame-rate independent
+      this.sunVeil = Number.isFinite(sTarget) ? this.sunVeil + (sTarget - this.sunVeil) * kV : 0;
+      if (this.expSettle) this.sunVeil = sTarget;
       this.veil = Number.isFinite(vTarget) ? this.veil + (vTarget - this.veil) * (1 - Math.exp(-4 * dt)) : 0;
       if (this.expSettle) this.veil = vTarget;
     }
@@ -722,7 +731,7 @@ export class Engine {
       textures: this.assets.textures.stats(), terrain: this.terrainStats, net: { ...netStats }, exposureEV: +Math.log2(this.displayExposure).toFixed(2),
       detail: this.targetDetail(),
       // v3.5 exposure/visibility state
-      view: { mode: this.enhancement.mode, sceneEV: +Math.log2(this.displayExposure).toFixed(2), skyEV: +Math.log2(this.skyExp).toFixed(2), veil: +this.veil.toFixed(3),
+      view: { mode: this.enhancement.mode, sceneEV: +Math.log2(this.displayExposure).toFixed(2), skyEV: +Math.log2(this.skyExp).toFixed(2), veil: +this.veil.toFixed(3), sunVeil: +this.sunVeil.toFixed(3),
         meter: this.meter, inspect: this.enhancement.inspect, skyDecoupled: this.enhancement.skyDecoupled },
       tiers: [...this.views.values()].reduce((o: Record<string, number>, v) => { if (v.group.visible) o['D' + v.tier] = (o['D' + v.tier] ?? 0) + 1; return o; }, {}),
     };

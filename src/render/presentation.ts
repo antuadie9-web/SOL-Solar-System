@@ -43,6 +43,9 @@ export interface PresentationParams {
   contrast: number; saturation: number; vignette: number;
   /** exposure key offset in EV. */
   keyEV: number;
+  /** v3.8.1 (EXP-381-01): the most the Sun's glare may darken the decoupled sky, in EV (bounded local adaptation).
+   *  Ignored when the sky is physically coupled (Scientific). */
+  sunVeilEV: number;
 }
 export const MODE_INFO: Record<ViewMode, { label: string; short: string; note: string }> = {
   scientific: { label: 'Scientific', short: 'SCI', note: 'One physical camera for the whole scene. Unlit surfaces stay dark; faint stars and the Milky Way disappear when a sunlit world dominates the exposure, as in real spacecraft imagery. Exposure compensation never changes the simulation.' },
@@ -50,9 +53,9 @@ export const MODE_INFO: Record<ViewMode, { label: string; short: string; note: s
   cinematic: { label: 'Cinematic', short: 'CIN', note: 'Art-directed presentation of the same physical scene: slightly richer contrast and sky, softer glare, a gentle vignette. Positions, sizes, phases and light directions are unchanged.' },
 };
 export const MODE_PARAMS: Record<ViewMode, PresentationParams> = {
-  scientific: { skyCoupling: 1, skyEV: 0, starKnee: 1e9, starGamma: 1, milkyWay: 1, inspect: 0, nightCapEV: 40, airglow: 1, bloom: 1, glare: 1, contrast: 1, saturation: 1, vignette: 0, keyEV: 0 },
-  exploration: { skyCoupling: 0.06, skyEV: 0, starKnee: 0.35, starGamma: 0.5, milkyWay: 0.8, inspect: 0.03, nightCapEV: 1.5, airglow: 0.12, bloom: 1, glare: 0.85, contrast: 1, saturation: 1, vignette: 0, keyEV: 0 },
-  cinematic: { skyCoupling: 0.1, skyEV: 0.4, starKnee: 0.3, starGamma: 0.55, milkyWay: 1.05, inspect: 0.015, nightCapEV: 1.2, airglow: 0.15, bloom: 1.15, glare: 1.0, contrast: 1.08, saturation: 1.06, vignette: 0.16, keyEV: -0.15 },
+  scientific: { skyCoupling: 1, skyEV: 0, starKnee: 1e9, starGamma: 1, milkyWay: 1, inspect: 0, nightCapEV: 40, airglow: 1, bloom: 1, glare: 1, contrast: 1, saturation: 1, vignette: 0, keyEV: 0, sunVeilEV: 0 },
+  exploration: { skyCoupling: 0.06, skyEV: 0, starKnee: 0.35, starGamma: 0.5, milkyWay: 0.8, inspect: 0.03, nightCapEV: 1.5, airglow: 0.12, bloom: 1, glare: 0.85, contrast: 1, saturation: 1, vignette: 0, keyEV: 0, sunVeilEV: 2.0 },
+  cinematic: { skyCoupling: 0.1, skyEV: 0.4, starKnee: 0.3, starGamma: 0.55, milkyWay: 1.05, inspect: 0.015, nightCapEV: 1.2, airglow: 0.15, bloom: 1.15, glare: 1.0, contrast: 1.08, saturation: 1.06, vignette: 0.16, keyEV: -0.15, sunVeilEV: 1.6 },
 };
 /** Fields a mode may set — the test suite asserts the parameter set never grows into physics. */
 export const PRESENTATION_KEYS = Object.keys(MODE_PARAMS.scientific) as (keyof PresentationParams)[];
@@ -104,6 +107,44 @@ export function skyExposure(sceneExposure: number, p: Pick<PresentationParams, '
   // never expose the sky darker than the scene camera would (a decoupled sky is a *brighter* domain only)
   const ln = Math.max(lnS, lnRef + c * Math.min(0, lnS - lnRef));
   return Math.exp(ln) * user;
+}
+/**
+ * v3.8.1 (EXP-381-01) — the Sun's glare veil over the sky, as a CONTINUOUS function of geometry.
+ *
+ * Root cause of the owner's "the Milky Way and stars go black when the Sun enters the view": v3.5–3.8.0 set
+ * veil = 0.45 × [Sun centre within ±1.1 NDC] — a binary step on the frame edge, independent of how bright the Sun
+ * appears — and fed it into the sky COUPLING (c = 0.06 → 0.48). With the scene metered for a sunlit disc 15–25 EV below
+ * the sky reference, the whole sky dropped 7–12 EV the instant the Sun's centre crossed the edge, at 1 AU and at
+ * 1,000 AU alike, and recovered the instant it left.
+ *
+ * Now: veil ∈ [0, 1] = visibility × apparent-brightness weight × angular proximity to the frame. Inside the frame it is
+ * 1; outside it falls smoothly to 0 over `marginDeg` of angular distance from the nearest frame edge (stray light from a
+ * source just outside the field). Brightness weight: full while the Sun is brighter than V ≈ −16 (≲ 2,000 AU), none
+ * once it is a mere bright star (V > −8, ≳ 0.35 ly). The veil then darkens the decoupled sky by at most `sunVeilEV`
+ * (bounded, labelled local adaptation) instead of re-coupling it to the scene camera. Faint stars right next to the Sun
+ * are still lost in its glare PSF (sun.ts glare), which is where a real optical system loses them.
+ */
+export function sunGlareVeil(o: { ndcX: number; ndcY: number; inFront: boolean; halfFovX: number; halfFovY: number; sunVis: number; sunMagV: number; marginDeg?: number }) {
+  const margin = (o.marginDeg ?? 12) * Math.PI / 180;
+  let outside = 0;
+  if (!o.inFront) outside = Math.PI;
+  else {
+    // angular distance outside the frame along each axis (tan-space → angle), combined as a Euclidean distance
+    const ax = Math.max(0, Math.atan(Math.abs(o.ndcX) * Math.tan(o.halfFovX)) - o.halfFovX);
+    const ay = Math.max(0, Math.atan(Math.abs(o.ndcY) * Math.tan(o.halfFovY)) - o.halfFovY);
+    outside = Math.hypot(ax, ay);
+  }
+  const prox = 1 - smooth(0, margin, outside);
+  const bright = smooth(-8, -16, o.sunMagV);
+  return clamp(prox * bright * clamp(o.sunVis, 0, 1), 0, 1);
+}
+/** v3.8.1 sky exposure: atmospheric veil re-couples physically (no stars through a daylit sky); the Sun's glare veil
+ *  applies a bounded EV reduction to the decoupled sky. Never darker than the scene camera. */
+export function skyExposureV381(sceneExposure: number, p: Pick<PresentationParams, 'skyCoupling' | 'skyEV' | 'sunVeilEV'>, atmoVeil = 0, sunVeil = 0, userSkyEV = 0) {
+  const e = skyExposure(sceneExposure, p, atmoVeil, userSkyEV);
+  const c = clamp(lerp(p.skyCoupling, 1, clamp(atmoVeil, 0, 1)), 0, 1);
+  if (c >= 0.999) return e;
+  return Math.max(sceneExposure * Math.pow(2, userSkyEV), e * Math.pow(2, -clamp(sunVeil, 0, 1) * Math.max(0, p.sunVeilEV)));
 }
 /** Star highlight compression (matches the WGSL in points.ts). Monotonic; identity below the knee. */
 export function compressPeak(peak: number, knee: number, gamma: number) {
