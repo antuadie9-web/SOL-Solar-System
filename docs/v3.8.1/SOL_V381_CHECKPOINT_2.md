@@ -150,8 +150,12 @@ Uranus' north pole faces the Sun near the 2028 solstice. The comparison is there
   of the edge that are darker than 0.45× the observed median, are now treated as unobserved. Unobserved fractions are
   now 61.7 / 63.0 / 61.8 % for Ariel / Titania / Oberon.
 - **AST-381-01c.** Bilinear filtering across the observed→0 step passed through dark values that the no-data threshold
-  missed. The mask is now the maximum over half-texel neighbours, a shader change for every partial-mosaic body.
+  missed. The mask is now the maximum over half-texel neighbours, a shader change for every partial-mosaic body (Ariel,
+  Titania, Oberon, Triton, Pluto, Charon). The first version read the texel size from the texture *before* it streamed in
+  (a 1×1 placeholder), so the neighbours landed in the black hemisphere and the whole map became reconstruction. The
+  Voyager-epoch capture caught it; the texel size now comes from the bound image at draw time (`textureSize`).
 
+The seam is reduced but a faint dark line is still visible at some boundary segments (tracked as AST-381-01d).
 Titania's observed area at the captured longitude reaches only ≈−20° to −30°: that is the real limit of the Voyager
 coverage there. The Albers map looked fuller because it added processed Uranus-shine imagery, which the rights-cleared
 map does not include.
@@ -215,6 +219,8 @@ Two exposure defects were found and fixed while verifying the disc:
   in log space from sky to scene as it becomes the subject.
 - **STAR-381-D3.** Metering on luminance clipped an M dwarf's red channel (≈1.6× its luminance), flattening the limb.
   Metering and the local HDR target now use the brightest channel.
+
+![Before/after D2/D3 (both v3.8.1).](img/B0-proxima-fix.png)
 
 ![Proxima Centauri at 40 and 8 radii: v3.8.0 draws Proxima as a glare blob displaced from the aim point (the float32 camera bug, STAR-J01) at an estimated radius; v3.8.1 shows a centred, measured-radius, limb-darkened disc in both Exploration and Scientific.](img/B1-proxima-close.png)
 
