@@ -207,7 +207,7 @@ export function sunDiscScale(centreDisplay: number, rpx: number, mode: 'scientif
  *  so the visible glare radius grows and shrinks smoothly with distance and exposure and never saturates into a disc. */
 export function glareAmplitudes(x: number) {
   const xs = Math.max(x, 0);
-  return { halo: Math.min(2.5, 0.22 * Math.pow(xs, 0.3)), veil: Math.min(0.18, 0.015 * Math.pow(xs, 0.22)) };   // cap 4 → 2.5 (REV2-01)
+  return { halo: Math.min(0.8, 0.07 * Math.pow(xs, 0.3)), veil: Math.min(0.06, 0.005 * Math.pow(xs, 0.22)) };   // REV2-01: ×0.32 (cap 4 → 0.8) so the unresolved-Sun glare (sky exposure) never exceeds the resolved-disc glare at the 3.5–8 px handover — audit: 2.8k vs 0.78k px-units before
 }
 /** v3.8.1 cp2 (SUN-381-06) glare of a RESOLVED disc. Scattered light from a disc of radiance L and solid angle Ω at angle θ is
  *  L·Ω·P(θ); the glare profile is scaled in angle by th1 ∝ the disc's angular radius, so the amplitude at th1 is ∝ L — a

@@ -12,6 +12,9 @@ d = sys.argv[1]
 lin = lambda a: np.where(a <= 0.04045, a / 12.92, ((a + 0.055) / 1.055) ** 2.4)
 rows = []
 shots = {}
+ref = {}
+if len(sys.argv) > 2:   # geometry (Sun radius in px) from a reference run of the same views
+    for r in json.load(open(os.path.join(sys.argv[2], 'glare-audit.json'))): ref[(r['au'], r['fov'], r['mode'])] = r['rpx']
 for rf in [x for x in os.listdir(d) if x.startswith('result') and x.endswith('.json')]:
     for sh in json.load(open(os.path.join(d, rf)))['scenario']['shots']: shots[sh['name']] = sh
 for f in sorted(os.listdir(d)):
@@ -22,13 +25,13 @@ for f in sorted(os.listdir(d)):
     sg = (shots.get(f[:-4], {}).get('diag') or {}).get('sunGlare') or {}
     a = lin(np.asarray(Image.open(os.path.join(d, f)).convert('RGB'), float) / 255) @ np.array([0.2126, 0.7152, 0.0722])
     H, W = a.shape; cy, cx = H / 2, W / 2; yy, xx = np.mgrid[0:H, 0:W]; r = np.hypot(yy - cy, xx - cx)
-    rd = max(sg.get('rpx', 1.0), 1.0)
+    rd = max(sg.get('rpx') or ref.get((au, fov, mode)) or 1.0, 1.0)
     out = r > 2 * rd + 3
     spike = out & ((np.abs(yy - cy) < 2) | (np.abs(xx - cx) < 2) | (np.abs(np.abs(yy - cy) - np.abs(xx - cx)) < 2))
     bg = np.median(a[r > 0.45 * H])
     G = float(np.clip(a[out] - bg, 0, None).sum()); S = float(np.clip(a[spike] - bg, 0, None).sum())
     r50 = float(np.sqrt(((a - bg) > 0.5).sum() / np.pi))      # radius of the ≥ 50 % white blob (px)
-    rows.append({'au': au, 'fov': fov, 'mode': mode, 'rpx': sg.get('rpx'), 'EV': j.get('exposureEV'), 'halo': sg.get('halo'), 'veil': sg.get('veil'),
+    rows.append({'au': au, 'fov': fov, 'mode': mode, 'rpx': sg.get('rpx') or ref.get((au, fov, mode)), 'EV': j.get('exposureEV'), 'halo': sg.get('halo'), 'veil': sg.get('veil'),
                  'F_rel': round(1 / au ** 2, 3), 'G': round(G, 1), 'spikeFrac': round(S / max(G, 1e-9), 3), 'blob50_px': round(r50, 1)})
 rows.sort(key=lambda r: (r['mode'], r['fov'], r['au']))
 json.dump(rows, open(os.path.join(d, 'glare-audit.json'), 'w'), indent=1)
