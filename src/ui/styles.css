@@ -80,14 +80,24 @@ body.cine #ui > :not(#labels):not(#toasts), body.cine .omark, body.cine #labels 
 @keyframes flash { 0% { opacity: .5 } 100% { opacity: 0 } }
 
 /* ── loader ──────────────────────────────────────────────────────── */
-#loader { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: radial-gradient(90% 70% at 50% 120%, #15110a 0%, #06070a 55%, #020203 100%); transition: opacity 1.2s var(--ease); }
+#loader { position: fixed; inset: 0; z-index: 100; display: grid; align-items: center; justify-items: start; padding: 0 clamp(28px, 8vw, 140px); background: #020203; overflow: hidden; transition: opacity 1.1s var(--ease); }
 #loader.gone { opacity: 0; pointer-events: none; }
-.ld-sky { position: absolute; inset: 0; opacity: .6; background-image: radial-gradient(1px 1px at 12% 22%, #fff9, transparent), radial-gradient(1px 1px at 78% 64%, #fff7, transparent), radial-gradient(1.4px 1.4px at 42% 84%, #fffa, transparent), radial-gradient(1px 1px at 88% 18%, #fff6, transparent), radial-gradient(1px 1px at 8% 72%, #fff7, transparent), radial-gradient(1.2px 1.2px at 58% 12%, #fff8, transparent), radial-gradient(1px 1px at 30% 50%, #fff5, transparent), radial-gradient(1px 1px at 66% 36%, #fff6, transparent); }
-.ld { position: relative; width: min(420px, 86vw); text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; color: var(--t2); }
-.ld-mark { color: var(--t2); animation: drift 14s linear infinite; }
-@keyframes drift { to { transform: rotate(360deg); } }
-.ld h1 { font: 400 54px/1 var(--serif); letter-spacing: .32em; margin-right: -.32em; color: var(--t1); margin-top: 4px; }
-.ld-sub { font-size: var(--fs-s); letter-spacing: .2em; text-transform: uppercase; color: var(--t3); margin-bottom: 18px; }
+/* v3.8.1 intro anchor: resolved solar limb entering from the right, slow drift (removed under reduced motion) */
+.ld-limb { position: absolute; right: -78vmin; top: 50%; width: 150vmin; height: 150vmin; transform: translateY(-50%); opacity: 0; transition: opacity 2.4s var(--ease); animation: limbDrift 90s linear infinite alternate; pointer-events: none; }
+#loader .ld-limb { opacity: .92; }
+.ld-limb svg { width: 100%; height: 100%; display: block; }
+@keyframes limbDrift { from { transform: translateY(-50%) rotate(0deg); } to { transform: translateY(-51.5%) rotate(-3deg); } }
+@media (prefers-reduced-motion: reduce) { .ld-limb { animation: none; } }
+.ld { position: relative; width: min(520px, 84vw); text-align: left; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; color: var(--t2); text-shadow: 0 1px 12px rgba(0,0,0,.6); }
+.ld-kicker { font-size: var(--fs-xs); letter-spacing: .22em; text-transform: uppercase; color: var(--amber); opacity: .85; }
+.ld h1 { font: 300 clamp(64px, 9vw, 112px)/0.95 var(--serif); letter-spacing: .28em; color: var(--t1); margin: 2px 0 4px -0.04em; }
+.ld-sub { font-size: var(--fs); line-height: 1.5; color: var(--t2); max-width: 30em; margin-bottom: 14px; }
+.ld-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.ld-resume { height: 40px; padding: 0 18px; opacity: 0; pointer-events: none; transition: opacity .5s var(--ease); }
+.ld-resume.show { opacity: 1; pointer-events: auto; }
+.ld-skip { display: flex; align-items: center; gap: 8px; font-size: var(--fs-xs); color: var(--t3); margin-top: 4px; cursor: pointer; }
+.ld-skip input { accent-color: var(--amber); width: 14px; height: 14px; }
+.ld-ledger { width: min(420px, 84vw); margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--hair2); }
 /* v3.8 truthful stage list */
 .ld-stages { list-style: none; width: 100%; display: grid; gap: 6px; margin: 4px 0 12px; text-align: left; }
 .ld-stages li { display: grid; grid-template-columns: 14px 1fr auto; align-items: center; gap: 10px; font-size: var(--fs-s); color: var(--t4); transition: color var(--dur) var(--ease); }
@@ -101,11 +111,11 @@ body.cine #ui > :not(#labels):not(#toasts), body.cine .omark, body.cine #labels 
 .ld-bar { width: 100%; height: 2px; border-radius: 2px; background: rgba(255,255,255,.08); overflow: hidden; }
 .ld-bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #8a5a22, var(--amber), #fff2d8); transition: width .5s var(--ease); }
 .ld-meta { width: 100%; display: flex; justify-content: space-between; font-size: var(--fs-xs); color: var(--t3); }
-.ld-enter { margin-top: 18px; height: 40px; padding: 0 26px; opacity: 0; transform: translateY(6px); pointer-events: none; transition: opacity .5s var(--ease), transform .5s var(--ease); }
+.ld-enter { height: 40px; padding: 0 26px; opacity: 0; transform: translateY(6px); pointer-events: none; transition: opacity .5s var(--ease), transform .5s var(--ease); }
 .ld-enter.show { opacity: 1; transform: none; pointer-events: auto; }
 .ld-fact { min-height: 2.8em; margin-top: 18px; font-size: var(--fs-s); color: var(--t3); opacity: 0; transition: opacity .5s var(--ease); max-width: 340px; }
 .ld-fact.on { opacity: 1; }
-.ld-foot { position: fixed; bottom: 22px; left: 0; right: 0; font-size: var(--fs-xs); color: var(--t4); letter-spacing: .12em; text-transform: uppercase; }
+.ld-foot { position: fixed; bottom: 22px; left: clamp(28px, 8vw, 140px); right: 0; font-size: var(--fs-xs); color: var(--t4); letter-spacing: .12em; text-transform: uppercase; }
 .ld-fail { margin-top: 18px; display: flex; flex-direction: column; gap: 10px; align-items: center; padding: 18px; border: 1px solid rgba(240,140,125,.35); border-radius: var(--r2); background: rgba(240,140,125,.06); color: var(--t2); text-align: left; }
 .ld-fail b { color: var(--bad); font-weight: 600; }
 

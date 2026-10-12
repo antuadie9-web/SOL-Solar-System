@@ -15,12 +15,14 @@ export default async function (page, { out }) {
     const t0 = Date.now(); while (Date.now() - t0 < 60000) { const n = await page.evaluate(() => window.__sol.engine.stars3d?.loadedRows ?? 0); if (n > 1000) break; await page.waitForTimeout(1000); await page.evaluate(() => window.__solStarsTick?.()); }
     await page.waitForTimeout(1500);
     for (let k = 0; k < NF; k++) {
-      await page.evaluate(() => new Promise(res => { const s = window.__sol; s.clock.set(s.sys.jd + 1 / 24); s.advance(); const f0 = window.__frames; const chk = () => (window.__frames - f0 >= 2 ? res(0) : requestAnimationFrame(chk)); chk(); }));
+      // orbit-mode zoom toward the star: 4 % closer per frame (the CPU trace showed zoom is where the float32 camera snaps)
+      await page.evaluate(([D, k]) => new Promise(res => { const s = window.__sol, r = s.engine.rig; r.dist = r.tDist = D * 149597870.7 * Math.pow(0.96, k); const f0 = window.__frames; const chk = () => (window.__frames - f0 >= 2 ? res(0) : requestAnimationFrame(chk)); chk(); }), [D, k]);
       const vp = page.viewportSize(); const c = 120;
       const file = path.join(out, `star-D${String(D).replace('.', 'p')}-f${k}.png`);
       await page.screenshot({ path: file, clip: { x: vp.width / 2 - c, y: vp.height / 2 - c, width: 2 * c, height: 2 * c }, timeout: 120000 });
       const st = await page.evaluate(() => ({ jd: window.__sol.sys.jd, rows: window.__sol.engine.stars3d?.loadedRows ?? 0, dpr: window.devicePixelRatio, canvas: [window.__sol.engine.renderer.domElement.width, window.__sol.engine.renderer.domElement.height] }));
       res.frames.push({ D, k, file: path.basename(file), ...st });
+      fs.writeFileSync(path.join(out, 'stars381.json'), JSON.stringify(res, null, 1));   // incremental (slow software adapter)
     }
   }
   fs.writeFileSync(path.join(out, 'stars381.json'), JSON.stringify(res, null, 1));

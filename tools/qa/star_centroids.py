@@ -21,7 +21,8 @@ for d in sys.argv[1:]:
     out = {}
     for D, pts in rows.items():
         p = np.array(pts); st = np.hypot(*np.diff(p, axis=0).T)
-        out[str(D)] = {'frames': len(p), 'stepRmsPx': round(float(np.sqrt((st ** 2).mean())), 3), 'stepMaxPx': round(float(st.max()), 3),
+        off = np.hypot(*(p - 120).T)
+        out[str(D)] = {'frames': len(p), 'offsetFromAimPx_mean': round(float(off.mean()), 3), 'offsetFromAimPx_max': round(float(off.max()), 3), 'stepRmsPx': round(float(np.sqrt((st ** 2).mean())), 3), 'stepMaxPx': round(float(st.max()), 3),
                        'peakToPeakPx': round(float(np.hypot(*(p.max(0) - p.min(0)))), 3), 'meanOffsetFromCentrePx': [round(float(x), 2) for x in p.mean(0) - 120]}
     json.dump(out, open(os.path.join(d, 'centroids.json'), 'w'), indent=1)
     print(d, json.dumps(out))

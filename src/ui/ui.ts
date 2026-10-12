@@ -50,25 +50,41 @@ const FACTS = ['Every distance and every size here is true to scale.', 'Light fr
 type StageKey = 'gpu' | 'data' | 'scene' | 'shaders' | 'live';
 const STAGES: [StageKey, string][] = [['gpu', 'WebGPU validation'], ['data', 'Essential astronomical data'], ['scene', 'Primary scene resources'], ['shaders', 'Renderer & shader preparation'], ['live', 'Interactive — optional layers stream in the background']];
 class Loader {
-  el: HTMLElement; private factI = 0; private factT: any; onEnter?: () => void; private t0: Record<string, number> = {};
-  constructor() {
+  el: HTMLElement; private factI = 0; private factT: any; onEnter?: () => void; onResume?: () => void; private t0: Record<string, number> = {};
+  /** v3.8.1 (UX-381-01) "Into the Universe" intro. Composition: deep black, a resolved white-light solar limb as the visual
+   *  anchor (SVG; neutral photosphere with the measured per-channel limb darkening — the same physics as the renderer),
+   *  the SOL wordmark, a one-line purpose, a primary "Begin exploration", an optional "Resume <last target>", and the
+   *  TRUTHFUL stage ledger (real work only). Repeat visitors can skip the intro (enters as soon as the scene is ready).
+   *  No particles, no autoplay media, no mandatory animation; reduced-motion removes the slow limb drift. */
+  constructor(resumeName?: string | null) {
+    const skip = (() => { try { return localStorage.getItem('sol.skipIntro') === '1'; } catch { return false; } })();
     this.el = h('div', '', `
-      <div class="ld-sky" aria-hidden="true"></div>
-      <div class="ld" role="dialog" aria-modal="true" aria-labelledby="ld-title" aria-describedby="ld-stages">
-        <div class="ld-mark" aria-hidden="true">${solMark(88)}</div>
+      <div class="ld-limb" aria-hidden="true">${solarLimb()}</div>
+      <div class="ld" role="dialog" aria-modal="true" aria-labelledby="ld-title" aria-describedby="ld-purpose">
+        <p class="ld-kicker">Scientific atlas · true scale · native WebGPU</p>
         <h1 id="ld-title">SOL</h1>
-        <p class="ld-sub">The Solar System at true scale</p>
-        <ol class="ld-stages" id="ld-stages" aria-live="polite">${STAGES.map(([k, l]) => `<li data-st="${k}" class="pending"><i aria-hidden="true"></i><span class="sl">${l}</span><span class="sd num"></span></li>`).join('')}</ol>
-        <div class="ld-meta"><span class="lbl">Checking for native WebGPU</span><span class="pct num"></span></div>
-        <button class="ld-enter btn btn-primary">Enter</button>
+        <p class="ld-sub" id="ld-purpose">The Solar System and its stellar neighbourhood, from measured positions, sizes and light.</p>
+        <div class="ld-actions">
+          <button class="ld-enter btn btn-primary" aria-describedby="ld-status">Begin exploration</button>
+          ${resumeName ? `<button class="ld-resume btn" aria-describedby="ld-status">Resume · ${esc(resumeName)}</button>` : ''}
+        </div>
+        <label class="ld-skip"><input type="checkbox" ${skip ? 'checked' : ''}> Skip this screen next time</label>
+        <div class="ld-ledger" id="ld-status">
+          <ol class="ld-stages" id="ld-stages" aria-live="polite">${STAGES.map(([k, l]) => `<li data-st="${k}" class="pending"><i aria-hidden="true"></i><span class="sl">${l}</span><span class="sd num"></span></li>`).join('')}</ol>
+          <div class="ld-meta"><span class="lbl">Checking for native WebGPU</span><span class="pct num"></span></div>
+        </div>
         <p class="ld-fact" aria-live="polite"></p>
-        <p class="ld-foot">v${typeof __SOL_VERSION__ !== 'undefined' ? __SOL_VERSION__ : ''} · native WebGPU · desktop Chrome</p>
-      </div>`);
+      </div>
+      <p class="ld-foot">v${typeof __SOL_VERSION__ !== 'undefined' ? __SOL_VERSION__ : ''} · desktop Chrome · imagery: NASA, ESA/Gaia/DPAC, USGS — see Credits</p>`);
     this.el.id = 'loader'; document.body.appendChild(this.el);
     $('.ld-enter', this.el).onclick = () => this.onEnter?.();
+    const rb = this.el.querySelector('.ld-resume') as HTMLButtonElement | null; if (rb) rb.onclick = () => this.onResume?.();
+    const cb = $('.ld-skip input', this.el) as HTMLInputElement; cb.onchange = () => { try { localStorage.setItem('sol.skipIntro', cb.checked ? '1' : '0'); } catch { /* storage blocked */ } };
+    this.skip = skip;
     this.cycle();
     this.stage('gpu', 'active');
   }
+  skip = false;
   cycle() { const f = $('.ld-fact', this.el); if (!f) return; f.classList.remove('on'); setTimeout(() => { f.textContent = FACTS[this.factI++ % FACTS.length]; f.classList.add('on'); }, 500); this.factT = setTimeout(() => this.cycle(), 5600); }
   show() { }
   /** set a stage's state; `detail` is real information (adapter, file count, megabytes), never an invented percentage */
@@ -81,7 +97,12 @@ class Loader {
     if (state === 'active') $('.lbl', this.el).textContent = STAGES.find(s => s[0] === k)![1] + (detail ? ` — ${detail}` : '');
   }
   progress(label: string, d: number, t: number) { $('.lbl', this.el).textContent = label; $('.pct', this.el).textContent = `${d} / ${t} files`; }
-  ready() { this.stage('live', 'done'); $('.lbl', this.el).textContent = 'Ready'; $('.pct', this.el).textContent = ''; const b = $('.ld-enter', this.el); b.classList.add('show'); setTimeout(() => b.focus(), 50); }
+  ready() {
+    this.stage('live', 'done'); $('.lbl', this.el).textContent = 'Ready — interactive'; $('.pct', this.el).textContent = '';
+    this.el.classList.add('is-ready'); const b = $('.ld-enter', this.el); b.classList.add('show'); this.el.querySelector('.ld-resume')?.classList.add('show');
+    if (this.skip && !QA_HARNESS()) { setTimeout(() => this.onEnter?.(), 60); return; }   // fast bypass for repeat users
+    setTimeout(() => b.focus(), 50);
+  }
   fail(t: string, m: string) {
     clearTimeout(this.factT); this.el.classList.add('failed');
     const act = $('.ld-stages li.active', this.el); if (act) act.className = 'failed';
@@ -90,6 +111,30 @@ class Loader {
     setTimeout(() => (this.el.querySelector('.ld-fail .btn') as HTMLButtonElement | null)?.focus(), 50);
   }
   hide() { clearTimeout(this.factT); this.el.classList.add('gone'); setTimeout(() => this.el.remove(), 1400); }
+}
+/** Last visited target from the persisted recent list, as a readable label (catalogue not loaded yet at intro time). */
+function resumeLabel(): string | null {
+  try { const r = JSON.parse(localStorage.getItem('sol.recent.v1') || '[]'); const id = Array.isArray(r) ? r[0] : null; if (typeof id !== 'string' || id === 'earth') return null;
+    const n = id.replace(/^star:/, '').replace(/^sat\d+$/, 'last moon').replace(/-/g, ' '); return n.charAt(0).toUpperCase() + n.slice(1); } catch { return null; }
+}
+/** Harness/QA runs never auto-skip the intro (screenshots of the loader stay reproducible). */
+const QA_HARNESS = () => /qa-|bench/.test(location.search);
+/** v3.8.1 intro anchor: the limb of a resolved Sun in white light. Radial profile from the same per-channel quadratic
+ *  limb-darkening law as sun.ts (Neckel & Labs fits; I(μ)/I₀ at ≈650/550/450 nm), sampled into SVG gradient stops; a
+ *  soft angular glare outside the limb. Neutral (sunlight = white balance) with the gentle 'natural' grade. */
+function solarLimb() {
+  const stops: string[] = [];
+  for (let i = 0; i <= 10; i++) {
+    const r = i / 10, mu = Math.sqrt(Math.max(0, 1 - r * r)), om = 1 - mu, om2 = 1 - mu * mu;
+    const ch = [[0.48, 0.18], [0.58, 0.20], [0.70, 0.20]].map(([a, b]) => Math.max(0.05, 1 - a * om - b * om2));
+    const tint = [1.0, 0.965, 0.915], k = 0.96;
+    const c = ch.map((x, j) => Math.round(255 * Math.min(1, Math.pow(x * tint[j] * k, 1 / 2.2))));
+    stops.push(`<stop offset="${(r * 100).toFixed(0)}%" stop-color="rgb(${c.join(',')})"/>`);
+  }
+  return `<svg viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice"><defs>
+    <radialGradient id="ldDisc" cx="500" cy="500" r="420" gradientUnits="userSpaceOnUse">${stops.join('')}</radialGradient>
+    <radialGradient id="ldGlare" cx="500" cy="500" r="520" gradientUnits="userSpaceOnUse"><stop offset="0.78" stop-color="#fff6e8" stop-opacity=".22"/><stop offset="0.84" stop-color="#fff2e0" stop-opacity=".06"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>
+    <circle cx="500" cy="500" r="520" fill="url(#ldGlare)"/><circle cx="500" cy="500" r="420" fill="url(#ldDisc)"/></svg>`;
 }
 /** SOL brand mark: a limb-darkened disc inside an orbit ellipse (pure SVG, no raster). */
 function solMark(size: number) {
@@ -100,7 +145,7 @@ function solMark(size: number) {
 
 type Panel = 'atlas' | 'overlays' | 'journeys' | null;
 export class UI {
-  canvas: HTMLCanvasElement; loader = new Loader(); root!: HTMLElement;
+  canvas: HTMLCanvasElement; loader = new Loader(resumeLabel()); root!: HTMLElement;
   engine!: Engine; sys!: SolarSystem; clock!: Clock; settings!: Settings; names: [string, number][] = [];
   sel: Body | null = null; hover: Body | null = null; following = true;
   labels = new Map<string, HTMLElement>(); reticle!: HTMLElement; tip!: HTMLElement; diag!: HTMLPreElement;
@@ -123,6 +168,7 @@ export class UI {
       if (k === 'showFps') $('#fps').hidden = !v;
     });
     this.loader.onEnter = () => this.enter();
+    this.loader.onResume = () => { const id = this.store.recent[0], b = id ? this.sys.get(id) : null; this.enter(); if (b && b.id !== 'earth') setTimeout(() => this.select(b, true), 600); };
   }
   applyA11y() {
     const r = document.documentElement;
