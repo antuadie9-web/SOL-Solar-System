@@ -174,3 +174,10 @@ Classification: **D** = confirmed defect, **P** = visual preference / presentati
 | REV2-05 STAR/SKY | P2 | P/U | Proxima disc very uniform; Gaia background flat/brown | xstar-proxima-*, sky views | OPEN |
 | REV2-06 UX-381-02 | P2 | D (overlap) / P (intro) | Intro solar disc featureless; enlarged Galactic card overlaps header/breadcrumbs; footer version | U*, L2 captures | OPEN |
 | REV2-07 | — | process | Preserve verified improvements; SW≠HW; full evidence | all | standing rule |
+
+### CONT-381 cross-system continuity audit (owner 2026-10-13) — plan & inventory in docs/v3.8.1/CONTINUITY_AUDIT.md
+| ID | Sev | Status |
+|---|---|---|
+| CONT-01 Sun point↔disc | P1 | CONFIRMED (=SUN-381-07), fixed in shared laws, verifying |
+| CONT-08 thick-atmosphere twilight/fill | P1 | CONFIRMED, fixed (ATM-381-01 iter 2), verifying |
+| CONT-02…07, 09…13 | — | risks under investigation (not confirmed) |
