@@ -1,6 +1,6 @@
 // v3.8.1 intro captures (candidate :4175, baseline :4174). Output: work/qa/sheets/U*.png. Software WebGPU.
 import { chromium } from '../../node_modules/playwright-core/index.mjs';
-const Q = '/workspace/projects/8d0bae14-e35b-4bd2-a140-a931eb700554/work/qa/sheets/';
+const Q = process.env.SHOTDIR || '/workspace/projects/8d0bae14-e35b-4bd2-a140-a931eb700554/work/qa/sheets/';
 const b = await chromium.launch({ executablePath: '/usr/lib/chromium/chromium', args: ['--enable-unsafe-webgpu', '--enable-features=Vulkan', '--use-vulkan=swiftshader', '--use-angle=vulkan', '--enable-unsafe-swiftshader'] });
 for (const [port, w, h, dpr, f, wait] of [[4175, 1600, 900, 1, 'U1-intro-1600-loading.png', 6000], [4175, 1600, 900, 1, 'U2-intro-1600-ready.png', 0], [4175, 1280, 800, 2, 'U3-intro-1280-dpr2-ready.png', 0], [4174, 1600, 900, 1, 'U0-intro-v380-ready.png', 0]]) {
   const p = await b.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: dpr });
