@@ -129,3 +129,20 @@ Severity P0 = correctness/stability blocker, P1 = major fidelity/UX gap, P2 = po
 | CLD-001 | P1 | All | No volumetric clouds, cloud shadows or weather anywhere | OPEN |
 | NAV-001 | P1 | Moon/Mars | No surface walking/collision mode; descents shown as ordered frames only | OPEN |
 | INT-001 | P1 | Interstellar | True-scale interstellar travel demonstration not attempted (P7/P8 prerequisites) | OPEN |
+
+## v3.8.1 (2026-10-12) — visual foundation reconstruction (register; details in docs/v3.8.1/WORKLOG.md)
+| ID | Sev | Area | Finding (evidence) | Status |
+|---|---|---|---|---|
+| STAR-J01 | P0 | Stars | Single-float32 camera in the 3-D star layer → selected-star jitter 38.9 px RMS (Proxima zoom 50→0.05 AU), 70 px (Sirius); CPU trace tools/qa/star-stability.ts | FIXED — hi/lo split camera, reordered subtraction (5.5e-5 px); HW confirmation pending |
+| STAR-P01 | P1 | Stars | PSF σ 0.85 CSS px (1.7 device px on 2× displays), point-sampled | FIXED — σ 0.62 device px, exact per-pixel erf integral, normalised θ⁻³ wing; tests psf381 |
+| EXP-381-01 | P0 | Exposure | Binary "Sun centre within ±1.1 NDC" veil re-coupled the whole sky (7–12 EV drop at the frame edge) | FIXED — continuous angular/brightness veil, bounded ≤ 2 EV (Exploration), 1.6 EV (Cinematic); Scientific physical |
+| SKY-381-02 | P1 | Sky | Implicit mip selection across the atan wrap → anticentre seam | FIXED — explicit LOD from pixel angle |
+| SKY-381-03 | P2 | Sky | Dither hash re-seeded every frame → temporal boil | FIXED — static |
+| SKY-381-04 | P0 | Sky | Runtime Milky Way = 4k DR2 map + 5×5 median + box blur (≈ 20′ effective) → muddy, no dust detail | FIXED — Gaia EDR3 8192×4096 log-luma + 2k chroma, catalogue-matched removal of the 99,049 drawn stars only (1.3 % flux), streamed after boot |
+| SKY-381-05/06 | P1 | Sky | Brown wash (dim + saturated chroma) | IMPROVED — luminance-dependent chroma, Exploration/Cinematic presentation gains (labelled) |
+| SUN-381-01 | P0 | Sun | Fixed-size (45 % frame) glare quad with constant fog term and fixed 6-fold spikes | FIXED — angle-space glare, log-amplitude, extent from threshold |
+| SUN-381-02 | P1 | Sun | Resolved disc clipped by 10⁴–10⁶ below 40 px radius | FIXED (Exploration/Cinematic) — local HDR disc presentation 3→12 px; Scientific physical |
+| SUN-381-03 | P1 | Sun | Default "natural" disc tint (1, 0.74, 0.46) = orange lamp | FIXED — neutral white balance (sunlight = white), gentle labelled grade |
+| SUN-381-04/05 | P0 | Sun | White blob ≈ 3–5 R☉ = art aureole (5 % of disc) + physical corona both 10²–10³ × white at 1–5 AU (isolated by layer switch-off captures) | FIXED (Exploration/Cinematic) — display caps / local corona scale, eclipse metering untouched |
+| PERF-381-01 | P0 | Perf | No real-GPU evidence possible in the sandbox | KIT READY — in-app ?bench=1 + Windows launcher; awaiting owner results |
+| ARCH-381-01 | P2 | Release | Supplied v3.8.0 archive contains no .git → tag a0cfcc6 unverifiable | NOTED — new repository, baseline tag v3.8.0-supplied |
