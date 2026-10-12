@@ -39,3 +39,12 @@ numerical trace or unit test, **HW** = owner-supplied real-GPU evidence (none ye
   run against a snapshot copy (/tmp/cand, :4175), baseline against /tmp/base (:4174).
 - Evidence: docs/v3.8.1/SOL_V381_CHECKPOINT_1.md/.pdf, img/A1, D0, D1, D2, C1; originals in the checkpoint evidence archive.
 - Open tuning items (SW-only judgement): Mercury-distance glow restrained; Exploration MW gain ×1.4 first pass.
+
+## 2026-10-12 — Checkpoint 2 (owner QA requirements 1–5)
+- Req. 1 sky removal QA (radiance domain), Req. 2 rendered-frame centroid runs (640×360 @ DPR 1/2, 1280×720), Req. 3 Sun
+  ladder incl. 20° FOV / Scientific / Cinematic / far transitions, Req. 4 Uranian maps replaced (JPL/USGS), Req. 5 benchmark
+  kit (no install/admin/upload) verified end-to-end in the sandbox with the packaged serve.mjs.
+- Also: Cassini shape models for 11 small moons, measured stellar radii + resolved stellar disc, free-look smoothing,
+  Galactic card redesign, new intro.
+- Lessons: /tmp and system packages can vanish between sessions → tools/qa/sandbox/setup.sh, outputs in work/qa; always run a
+  browser boot smoke after data-model edits (BOOT-381-01 was only caught by a capture run).

@@ -146,3 +146,13 @@ Severity P0 = correctness/stability blocker, P1 = major fidelity/UX gap, P2 = po
 | SUN-381-04/05 | P0 | Sun | White blob ≈ 3–5 R☉ = art aureole (5 % of disc) + physical corona both 10²–10³ × white at 1–5 AU (isolated by layer switch-off captures) | FIXED (Exploration/Cinematic) — display caps / local corona scale, eclipse metering untouched |
 | PERF-381-01 | P0 | Perf | No real-GPU evidence possible in the sandbox | KIT READY — in-app ?bench=1 + Windows launcher; awaiting owner results |
 | ARCH-381-01 | P2 | Release | Supplied v3.8.0 archive contains no .git → tag a0cfcc6 unverifiable | NOTED — new repository, baseline tag v3.8.0-supplied |
+| SKY-381-07 | P1 | Sky | Owner req.: validate star removal in the rendered domain | DONE — tools/qa/sky_removal_qa.py; double counting ≤ 0.5 % after (≤ 11.7 % before), no holes/halos/seam/colour artefacts vs random-sky reference |
+| AST-381-01 | P1 | Rights | Ariel/Titania/Oberon non-commercial (AST-003) | FIXED — USGS Voyager mosaics via NASA/JPL (JPL Image Use Policy); registration verified vs IAU Gazetteer; 0 non-commercial assets |
+| AST-381-02 | P1 | Moons | Smooth generic small Saturnian moons | FIXED (shape) — Cassini ISS shape models (Thomas et al., PDS) for 11 moons; surfaces still procedural (labelled) |
+| STAR-381-R | P1 | Stars | Radii without bolometric correction (Proxima ≈ 0.07 R☉) | FIXED for 6 nearest stars (measured, cited); others labelled estimated |
+| STAR-381-D | P1 | Stars | No resolved stellar disc | IMPLEMENTED — physically constrained impostor, PSF flux hand-over |
+| CAM-381-01 | P0 | Camera | Free-look applied per mouse event → judder at real frame rates | FIXED — frame-rate-independent smoothing; test fails on v3.8.0 |
+| GAL-381-01 | P1 | UI | Galactic card illegible, provenance thin | REDESIGNED — legend, coverage, scale, HiDPI, enlarge |
+| UX-381-01 | P1 | UI | Intro modest | REDESIGNED — "Into the Universe", resume, skip for repeat users |
+| BOOT-381-01 | P0 | Startup | (found in cp2 QA) observed-shape moons lost colour/albedo → boot crash | FIXED + regression test |
+| QA-381-01 | P2 | QA | Galactic card covered the aim point in 640×360 captures | FIXED — hidden in clean-capture mode |
