@@ -25,7 +25,7 @@ import { RING_SYSTEMS, ringLabels } from '../data/rings';
 import { makePlumes, plumePeakIF } from './plumes';
 import { makeStarDisc } from './starDisc';
 import { limbDarkeningV, surfaceBrightnessRelSun, R_SUN_KM } from '../galaxy/stellarRadii';
-import { makeSun, makeGlare, SUN_L0, SUN_L_MEAN, SUN_LOOKS, sunMeterWeight, glareWeight, sunDiscScale, glareAmplitudes, glareExtentRad, type SunLook } from './sun';
+import { makeSun, makeGlare, SUN_L0, SUN_L_MEAN, SUN_LOOKS, sunMeterWeight, glareWeight, sunDiscScale, glareAmplitudes, glareExtentRad, resolvedGlare, resolvedGlareWeight, type SunLook } from './sun';
 import { makeCorona } from './corona';
 import { Stars3D, PC_KM, Star3DCatalog } from '../galaxy/stars3d';
 import { TerrainBody } from '../terrain/terrain';
@@ -704,9 +704,15 @@ export class Engine {
       // locally compressed disc gets a halo below its own limb brightness instead of a brighter blob around it.
       // amplitude from the Sun's physical display flux (scene exposure), capped for a resolved disc at 0.8× the disc's own
       // displayed centre so the halo never outshines the locally presented photosphere
-      const Eg = this.sunRpx > 3.5 ? LS : (this.sunPointExposure || LS);
-      const amp = glareAmplitudes(F * Eg);
-      if (this.sunRpx > 3.5) { const discDisp = SUN_L0 * LS * (this.views.get('sun')?.discWeight ?? 1) * (this.sunDiscScaleNow || 1); amp.halo = Math.min(amp.halo, 0.8 * discDisp); amp.veil = Math.min(amp.veil, 0.25 * discDisp); }   // cp2: wider veil cap (Mercury-distance Sun read flat in cp1)
+      // v3.8.1 cp2 SUN-381-06: point-like glare (physical display flux at the point exposure) handed over smoothly to the
+      // resolved-disc glare (a fixed fraction of the displayed disc radiance whose footprint grows with the disc), so the
+      // glare's integrated light keeps rising as the Sun is approached instead of collapsing at the resolution threshold.
+      const amp = glareAmplitudes(F * (this.sunPointExposure || LS));
+      const wR = resolvedGlareWeight(this.sunRpx);
+      if (wR > 0) {
+        const discDisp = SUN_L0 * LS * (this.views.get('sun')?.discWeight ?? 1) * (this.sunDiscScaleNow || 1), rg = resolvedGlare(discDisp, mode);
+        amp.halo = amp.halo * (1 - wR) + rg.halo * wR; amp.veil = amp.veil * (1 - wR) + rg.veil * wR;
+      }
       const on = front && st.get('glare') ? glareWeight(this.sunRpx, this.H) * P.glare : 0;
       const angR = Math.atan(R_SUN / dist), th1 = Math.max(angR * 2.2, this.pxAng * 2.5);
       const G = this.glare.U;

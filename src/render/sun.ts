@@ -206,6 +206,17 @@ export function glareAmplitudes(x: number) {
   const xs = Math.max(x, 0);
   return { halo: Math.min(4.0, 0.22 * Math.pow(xs, 0.3)), veil: Math.min(0.18, 0.015 * Math.pow(xs, 0.22)) };
 }
+/** v3.8.1 cp2 (SUN-381-06) glare of a RESOLVED disc. Scattered light from a disc of radiance L and solid angle Ω at angle θ is
+ *  L·Ω·P(θ); the glare profile is scaled in angle by th1 ∝ the disc's angular radius, so the amplitude at th1 is ∝ L — a
+ *  fixed fraction of the displayed disc radiance — while the glare FOOTPRINT grows with the disc (∝ angR²). v3.8.0–cp1
+ *  derived it from F·E with the disc-metered exposure, so the moment the Sun became resolved (≈ 3.5 px, between 1 AU and
+ *  Mercury at 50°) its glare collapsed and a Mercury-distance Sun read smaller and flatter than at Earth. */
+export function resolvedGlare(discDisplay: number, mode: 'scientific' | 'exploration' | 'cinematic') {
+  const k = mode === 'scientific' ? 0.35 : mode === 'cinematic' ? 0.8 : 0.6;
+  return { halo: k * discDisplay, veil: (mode === 'scientific' ? 0.05 : 0.12) * discDisplay };
+}
+/** Smooth hand-over between point-like and resolved glare (sun radius in device px). */
+export function resolvedGlareWeight(rpx: number) { const t = Math.max(0, Math.min(1, (rpx - 3.5) / 4.5)); return t * t * (3 - 2 * t); }
 /** Angular radius (rad) beyond which the glare profile is below `thr` display-linear (sizes the glare quad). */
 export function glareExtentRad(halo: number, veil: number, th1: number, th0: number, thr = 0.002) {
   const rH = th1 * Math.sqrt(Math.max(0, Math.pow(Math.max(halo / thr, 1), 2 / 3) - 1));

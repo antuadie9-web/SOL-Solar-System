@@ -98,3 +98,14 @@ test('STAR-381-R/D: measured radii carry sources and σ; the Sun has unit relati
   assert.ok(S > 1e-3 && S < 3e-3, `Proxima V surface brightness ${S}`);
   assert.ok(limbDarkeningV(3000) > limbDarkeningV(9900), 'cool dwarfs darken more strongly toward the limb (representative trend)');
 });
+import { resolvedGlare, resolvedGlareWeight } from '../../src/render/sun';
+test('SUN-381-06: resolved-Sun glare hands over continuously and its footprint (∝ amplitude × angular radius²) grows as the Sun is approached', () => {
+  assert.equal(resolvedGlareWeight(3.5), 0); assert.equal(resolvedGlareWeight(8), 1);
+  for (let r = 3.5; r < 8; r += 0.25) assert.ok(resolvedGlareWeight(r + 0.25) >= resolvedGlareWeight(r));
+  let prev = 0;
+  for (const au of [1.5, 1, 0.7, 0.39, 0.2, 0.1]) {           // disc display held at the local-HDR target (2.4)
+    const ang = 0.004652 / au, g = resolvedGlare(2.4, 'exploration'), energy = g.halo * ang * ang;
+    assert.ok(energy > prev, `${au} AU`); prev = energy;
+  }
+  assert.ok(resolvedGlare(2.4, 'scientific').halo < resolvedGlare(2.4, 'exploration').halo && resolvedGlare(2.4, 'exploration').halo < resolvedGlare(2.4, 'cinematic').halo);
+});
