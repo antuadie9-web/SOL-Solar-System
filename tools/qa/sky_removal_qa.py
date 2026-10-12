@@ -93,4 +93,4 @@ def crop(Y, l0, b0, w, h):
     c = L(Y[y0 - dy:y0 + dy, x0 - dx:x0 + dx]); c = np.clip(c / np.percentile(c, 99.7), 0, 1) ** 0.8
     return Image.fromarray((c * 255).astype(np.uint8)).resize((640, 360), Image.LANCZOS)
 S = Image.new('L', (1280, 720)); S.paste(crop(Y0, 205, -14, 24, 13.5), (0, 0)); S.paste(crop(Y1, 205, -14, 24, 13.5), (640, 0))
-S.paste(crop(Y0, 80, 1, 24, 13.5), (0, 360)); S.paste(crop(Y1, 80, 1, 24, 13.5), (640, 360)); S.save('/tmp/qa/sheets/sky-removal-crops.png')
+S.paste(crop(Y0, 80, 1, 24, 13.5), (0, 360)); S.paste(crop(Y1, 80, 1, 24, 13.5), (640, 360)); S.save('/workspace/projects/8d0bae14-e35b-4bd2-a140-a931eb700554/work/qa/sheets/sky-removal-crops.png')

@@ -14,8 +14,11 @@ for d in sys.argv[1:]:
         a = lin(np.asarray(Image.open(os.path.join(d, f['file'])).convert('RGB'), float) / 255) @ np.array([0.2126, 0.7152, 0.0722])
         dpr = f.get('dpr', 1); bgv = np.median(a); w = np.clip(a - 3 * bgv - 1e-4, 0, None)
         # restrict to the brightest connected region around the maximum (ignore unrelated stars)
-        y0, x0 = np.unravel_index(a.argmax(), a.shape); yy, xx = np.mgrid[0:a.shape[0], 0:a.shape[1]]
-        w = w * ((yy - y0) ** 2 + (xx - x0) ** 2 < (30 * dpr) ** 2)
+        # search only near the aim point (crop centre): UI panels or unrelated stars elsewhere in the crop are ignored
+        yy, xx = np.mgrid[0:a.shape[0], 0:a.shape[1]]; cc = a.shape[0] / 2
+        near = (yy - cc) ** 2 + (xx - cc) ** 2 < (40 * dpr) ** 2
+        y0, x0 = np.unravel_index(np.where(near, a, -1).argmax(), a.shape)
+        w = w * ((yy - y0) ** 2 + (xx - x0) ** 2 < (12 * dpr) ** 2)
         cx, cy = (w * xx).sum() / w.sum() / dpr, (w * yy).sum() / w.sum() / dpr
         rows.setdefault(f['D'], []).append((cx, cy))
     out = {}
