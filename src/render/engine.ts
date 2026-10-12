@@ -24,7 +24,7 @@ const RS_PROF = (e: any, id: string, def: any) => (def.profile ? e.ringProfiles[
 import { RING_SYSTEMS, ringLabels } from '../data/rings';
 import { makePlumes, plumePeakIF } from './plumes';
 import { makeStarDisc } from './starDisc';
-import { limbDarkeningV, surfaceBrightnessRelSun, R_SUN_KM } from '../galaxy/stellarRadii';
+import { limbDarkeningRGB, surfaceBrightnessRelSun, R_SUN_KM } from '../galaxy/stellarRadii';
 import { makeSun, makeGlare, SUN_L0, SUN_L_MEAN, SUN_LOOKS, sunMeterWeight, glareWeight, sunDiscScale, glareAmplitudes, glareExtentRad, resolvedGlare, resolvedGlareWeight, type SunLook } from './sun';
 import { makeCorona } from './corona';
 import { Stars3D, PC_KM, Star3DCatalog } from '../galaxy/stars3d';
@@ -652,7 +652,7 @@ export class Engine {
         const c = b.def.color as [number, number, number], hiC = Math.max(...c) / Math.max(0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2], 1e-6);
         // local HDR presentation on the brightest channel (target 1.3 display-linear) so a red photosphere keeps its limb darkening
         const Lmean = SUN_L_MEAN * S * Ex, ds = sunDiscScale(Lmean * hiC, xRes.rpx, mode, 1.3);
-        D.U.center.value.copy(xRes.relS); D.U.radius.value = b.radius; D.U.u.value = limbDarkeningV(T);
+        D.U.center.value.copy(xRes.relS); D.U.radius.value = b.radius; D.U.u.value.set(...limbDarkeningRGB(T));
         D.U.right.value.set(1, 0, 0).applyQuaternion(rig.quat); D.U.up.value.set(0, 1, 0).applyQuaternion(rig.quat);
         D.U.L.value.set(c[0], c[1], c[2]).multiplyScalar(Lmean * ds); D.U.weight.value = w; D.mesh.visible = w > 0.001;
         s3.U.hideIndex.value = +b.info.catIndex; s3.U.hideKeep.value = 1 - w;

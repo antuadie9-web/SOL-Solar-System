@@ -9,7 +9,7 @@ import * as THREE from 'three/webgpu';
 import { Fn, uniform, vec2, vec3, vec4, float, positionGeometry, cameraProjectionMatrix, cameraViewMatrix, varying, length, sqrt, max, Discard, If, mix, smoothstep } from 'three/tsl';
 export function makeStarDisc() {
   const U = { center: uniform(new THREE.Vector3()), radius: uniform(1e5), right: uniform(new THREE.Vector3(1, 0, 0)), up: uniform(new THREE.Vector3(0, 1, 0)),
-    L: uniform(new THREE.Vector3(1, 1, 1)), u: uniform(0.6), weight: uniform(0) };
+    L: uniform(new THREE.Vector3(1, 1, 1)), u: uniform(new THREE.Vector3(0.5, 0.6, 0.7)), weight: uniform(0) };
   const vUv = varying(vec2(0), 'sdUv');
   const m = new THREE.MeshBasicNodeMaterial({ transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
   m.vertexNode = Fn(() => {
@@ -21,7 +21,9 @@ export function makeStarDisc() {
     const r = length(vUv);
     If(r.greaterThan(1.0), () => { Discard(); });
     const mu = sqrt(max(float(1).sub(r.mul(r)), 0));
-    const I = float(1).sub(U.u.mul(float(1).sub(mu))).div(float(1).sub(U.u.div(3)));   // linear law, normalised to the mean
+    // per-channel linear law normalised to the disc mean (REV2-05: the limb is redder than the centre, as observed for
+    // cool dwarfs; v3.8.1-cp2 used one coefficient for all channels and read as a uniform disc)
+    const I = vec3(1).sub(U.u.mul(float(1).sub(mu))).div(vec3(1).sub(U.u.div(3)));
     const edge = smoothstep(1.0, 0.985, r);
     return vec4(U.L.mul(I).mul(edge).mul(U.weight), 1);
   })();

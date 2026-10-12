@@ -20,3 +20,10 @@ export const R_SUN_KM = 695700;
 export function limbDarkeningV(teff: number) { return Math.min(0.85, Math.max(0.35, 0.95 - teff / 14000)); }
 /** V-band mean surface brightness of a star relative to the Sun's: S = 10^(−0.4 (M_V − M_V☉)) / (R/R☉)², M_V☉ = 4.83. */
 export function surfaceBrightnessRelSun(MV: number, rSun: number) { return Math.pow(10, -0.4 * (MV - 4.83)) / (rSun * rSun); }
+/** v3.8.1 REV2-05: per-channel (R, G, B ≈ 650/550/450 nm) linear limb-darkening coefficients by Teff — REPRESENTATIVE
+ *  trend of the Claret (2000) / Claret & Bloemen (2011) tables: darkening grows toward the blue and toward cool stars
+ *  (the limb of a red dwarf is markedly redder than its centre). Not a per-star fit. */
+export function limbDarkeningRGB(teff: number): [number, number, number] {
+  const v = limbDarkeningV(teff);
+  return [Math.max(0.25, v - 0.12), v, Math.min(0.95, v + 0.1)];
+}
