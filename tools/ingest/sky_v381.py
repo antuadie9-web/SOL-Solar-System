@@ -27,7 +27,7 @@ Processing:
     (A generic outlier detector was tried first and rejected: at 2.6′/px the Gaia map is grainy everywhere and it masked
     68 % of all pixels, i.e. it degenerated into the median blur this release removes.)
  3. Luminance (linear, sRGB-decoded, Rec.709 weights) is log-encoded to 8 bits over [lnMin, lnMax] with a deterministic
-    triangular dither → milkyway_luma_8k.bin.gz (raw r8, gzip; decoded in the browser with DecompressionStream).
+    triangular dither → milkyway_luma_8k.r8gz (raw r8, gzip; decoded in the browser with DecompressionStream).
  4. Chroma: the cleaned colour image Box-downsampled to 2048×1024 sRGB JPEG (colour varies slowly; structure lives in the
     luminance) → milkyway_chroma_2k.jpg.
  5. JSON with the encoding range, the same band/pole luminance statistics as v3.5 (for the runtime calibration), the
@@ -43,7 +43,7 @@ from scipy import ndimage
 Image.MAX_IMAGE_PIXELS = None
 ROOT = os.path.join(os.path.dirname(__file__), '..', '..')
 SRC = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, 'tools/ingest/raw/Gaia_EDR3_flux_cartesian_16k.png')
-OUT_L = os.path.join(ROOT, 'public/assets/tex/milkyway_luma_8k.bin.gz')
+OUT_L = os.path.join(ROOT, 'public/assets/tex/milkyway_luma_8k.r8gz')
 OUT_C = os.path.join(ROOT, 'public/assets/tex/milkyway_chroma_2k.jpg')
 META = os.path.join(ROOT, 'public/assets/data/milkyway_v381.json')
 W, H = 8192, 4096
@@ -96,7 +96,7 @@ meta = {
   'evidence': 'OBSERVED (projected 2-D integrated-light map; display colour of Gaia BP/RP, not a calibrated V-band spectrum)',
   'projection': 'Galactic equirectangular, l=0 at centre, l increasing to the left; texture row 0 = b −90°',
   'method': 'Lanczos 16k→8192×4096; the 99,049 catalogue stars SOL draws (V ≤ 9.5) masked at their positions (r 1–3 px) and replaced by min(map, 7×7 median); no blur; dark structure untouched; luminance log-encoded r8 + triangular dither; chroma 2048×1024 sRGB',
-  'luma': {'file': 'tex/milkyway_luma_8k.bin.gz', 'width': W, 'height': H, 'format': 'r8 log-encoded, gzip', 'lnMin': lnMin, 'lnMax': lnMax, 'sha256': sha(OUT_L)},
+  'luma': {'file': 'tex/milkyway_luma_8k.r8gz', 'width': W, 'height': H, 'format': 'r8 log-encoded, gzip', 'lnMin': lnMin, 'lnMax': lnMax, 'sha256': sha(OUT_L)},
   'chroma': {'file': 'tex/milkyway_chroma_2k.jpg', 'width': 2048, 'height': 1024, 'sha256': sha(OUT_C)},
   'removedFluxFraction': removed, 'maskedPixelFraction': masked,
   'bandMedianY': float(np.median(band)), 'poleMedianY': float(np.median(pole)), 'p50Y': float(np.percentile(Yc, 50)), 'p99Y': float(np.percentile(Yc, 99)),

@@ -19,7 +19,7 @@ export function makeSky(tex: THREE.Texture, cal?: { bandMedianY: number }) {
   // map is used unchanged. Both paths share the same calibration, so the swap changes detail, not exposure.
   const U = { gain: uniform(1), Lband: uniform(radianceFromSB(SKY_CAL.bandMu)), Yband: uniform(cal?.bandMedianY ?? 0.229),
     Lfloor: uniform(radianceFromSB(SKY_CAL.floorMu)), Lpeak: uniform(radianceFromSB(SKY_CAL.peakMu)), gamma: uniform(SKY_CAL.contrastGamma), frame: uniform(0),
-    hi: uniform(0), lnMin: uniform(-9), lnMax: uniform(0), YbandHi: uniform(0.229), lumaW: uniform(8192), chromaSat: uniform(0.55) };
+    hi: uniform(0), lnMin: uniform(-9), lnMax: uniform(0), YbandHi: uniform(0.229), lumaW: uniform(8192), chromaSat: uniform(0.45) };
   // scene → ecliptic → equatorial → galactic
   const SCENE2ECL = [1, 0, 0, 0, 0, -1, 0, 1, 0]; // (x,y,z)_ecl = (xs, -zs, ys)
   const M = mulMM(EQ2GAL, mulMM(ECL2EQ, SCENE2ECL));
@@ -49,7 +49,7 @@ export function makeSky(tex: THREE.Texture, cal?: { bandMedianY: number }) {
     // v3.8.1 SKY-381-05: saturation also follows the band's own relative brightness — faint, dusty regions of the map are
     // the most strongly tinted in the stretched source and rendered as dim orange read as brown "mud"; integrated
     // starlight at low surface brightness is close to neutral to the eye. Bright band/bulge keeps its warm chroma.
-    const satHi = mix(float(0.22), U.chromaSat, clamp(log2(Y.div(U.Yband)).add(3).div(4), 0, 1));
+    const satHi = mix(float(0.15), U.chromaSat, clamp(log2(Y.div(U.Yband)).add(3).div(4), 0, 1));
     const chroma = mix(vec3(1, 1, 1), c.div(Ylo), mix(float(0.5), satHi, U.hi));
     // v3.8.1 SKY-381-03: the dither is fixed to the sky. v3.5–3.8.0 added the frame number (mod 64) to the hash, so the
     // whole Milky Way re-noised every frame — a ±1 % temporal boil visible as crawling texture during slow pans.

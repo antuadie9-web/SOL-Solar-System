@@ -18,7 +18,7 @@
  "projection": "Galactic equirectangular, l=0 at centre, l increasing to the left; texture row 0 = b \u221290\u00b0",
  "method": "Lanczos 16k\u21928192\u00d74096; the 99,049 catalogue stars SOL draws (V \u2264 9.5) masked at their positions (r 1\u20133 px) and replaced by min(map, 7\u00d77 median); no blur; dark structure untouched; luminance log-encoded r8 + triangular dither; chroma 2048\u00d71024 sRGB",
  "luma": {
-  "file": "tex/milkyway_luma_8k.bin.gz",
+  "file": "tex/milkyway_luma_8k.r8gz",
   "width": 8192,
   "height": 4096,
   "format": "r8 log-encoded, gzip",

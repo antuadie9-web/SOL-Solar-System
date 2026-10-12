@@ -2,7 +2,7 @@
  "_doc": "Per-asset provenance & licence rules (spec §5 asset/licence contract). The FIRST rule whose regex matches a path under public/ applies. tools/validate/assets.mjs expands these into asset-manifest.json with size and SHA-256; tests/assets/manifest.test.ts fails if any shipped file is unmatched. 'commercial' is our reading of the stated terms, not legal advice. Retrieval dates are those recorded in v3.2 (2026-10-08) unless stated.",
  "rules": [
   {
-   "match": "^assets/tex/milkyway_luma_8k\\.bin\\.gz$",
+   "match": "^assets/tex/milkyway_luma_8k\\.r8gz$",
    "source": "Derived (SOL v3.8.1, tools/ingest/sky_v381.py) from ESA/Gaia/DPAC \"The colour of the sky from Gaia's Early Data Release 3 – equirectangular projection\" (16000×8000 PNG, sha256 10a372d3…)",
    "url": "https://sci.esa.int/web/gaia/-/the-colour-of-the-sky-from-gaia-s-early-data-release-3-equirectangular-projection",
    "licence": "CC BY-SA 3.0 IGO (derivative, same licence)",

@@ -29,7 +29,9 @@ export interface PresentationParams {
   skyEV: number;
   /** star PSF highlight compression: display peaks above `starKnee` are mapped peak' = knee·(peak/knee)^starGamma. */
   starKnee: number; starGamma: number;
-  /** multiplier on the calibrated diffuse Milky Way radiance (1 = calibrated; presentation boost otherwise). */
+  /** multiplier on the calibrated diffuse Milky Way radiance (1 = calibrated; presentation boost otherwise).
+   *  v3.8.1 SKY-381-06: Exploration 0.8 → 1.4, Cinematic 1.05 → 1.6 (labelled presentation gain; with the unblurred EDR3 layer
+   *  the band's structure reads instead of a dim brown wash). Scientific stays 1 (calibrated). */
   milkyWay: number;
   /** night-side inspection fill, as a fraction of the local solar irradiance (0 = off). LABELLED enhancement. */
   inspect: number;
@@ -54,8 +56,8 @@ export const MODE_INFO: Record<ViewMode, { label: string; short: string; note: s
 };
 export const MODE_PARAMS: Record<ViewMode, PresentationParams> = {
   scientific: { skyCoupling: 1, skyEV: 0, starKnee: 1e9, starGamma: 1, milkyWay: 1, inspect: 0, nightCapEV: 40, airglow: 1, bloom: 1, glare: 1, contrast: 1, saturation: 1, vignette: 0, keyEV: 0, sunVeilEV: 0 },
-  exploration: { skyCoupling: 0.06, skyEV: 0, starKnee: 0.35, starGamma: 0.5, milkyWay: 0.8, inspect: 0.03, nightCapEV: 1.5, airglow: 0.12, bloom: 1, glare: 0.85, contrast: 1, saturation: 1, vignette: 0, keyEV: 0, sunVeilEV: 2.0 },
-  cinematic: { skyCoupling: 0.1, skyEV: 0.4, starKnee: 0.3, starGamma: 0.55, milkyWay: 1.05, inspect: 0.015, nightCapEV: 1.2, airglow: 0.15, bloom: 1.15, glare: 1.0, contrast: 1.08, saturation: 1.06, vignette: 0.16, keyEV: -0.15, sunVeilEV: 1.6 },
+  exploration: { skyCoupling: 0.06, skyEV: 0, starKnee: 0.35, starGamma: 0.5, milkyWay: 1.4, inspect: 0.03, nightCapEV: 1.5, airglow: 0.12, bloom: 1, glare: 0.85, contrast: 1, saturation: 1, vignette: 0, keyEV: 0, sunVeilEV: 2.0 },
+  cinematic: { skyCoupling: 0.1, skyEV: 0.4, starKnee: 0.3, starGamma: 0.55, milkyWay: 1.6, inspect: 0.015, nightCapEV: 1.2, airglow: 0.15, bloom: 1.15, glare: 1.0, contrast: 1.08, saturation: 1.06, vignette: 0.16, keyEV: -0.15, sunVeilEV: 1.6 },
 };
 /** Fields a mode may set — the test suite asserts the parameter set never grows into physics. */
 export const PRESENTATION_KEYS = Object.keys(MODE_PARAMS.scientific) as (keyof PresentationParams)[];

@@ -178,7 +178,7 @@ export class Engine {
   grade = { contrast: uniform(1), saturation: uniform(1), vignette: uniform(0) };
   pres: PresentationParams = { ...MODE_PARAMS.exploration }; skyExp = 1; veil = 0; sunVeil = 0; meter: any = null;
   /** v3.8 far-Sun diagnostics: exposure the unresolved Sun point is drawn with, and the display-referred glare level */
-  sunPointExposure = 0; glareDisplay = 0; sunDiscScaleNow = 1;
+  sunPointExposure = 0; glareDisplay = 0; sunDiscScaleNow = 1; coronaScale = 1;
   /** v3.8 performance counters: views prepared ahead of time vs built on the frame they first became visible */
   perf = { prepared: 0, lateViews: 0, preparedThisFrame: 0 };
   enhancement = { inspect: false, skyDecoupled: false, mode: 'exploration' as ViewMode, rings: null as null | { body: string; gain: number }, plumes: null as null | string, plumeGain: 1 };
@@ -675,8 +675,11 @@ export class Engine {
       // v3.8.1 SUN-381-01: angle-space glare (sun.ts makeGlare). Display flux x = F·E with the exposure the Sun is actually
       // drawn with (the resolved disc's local presentation scale included), so glare and disc stay consistent: a resolved,
       // locally compressed disc gets a halo below its own limb brightness instead of a brighter blob around it.
-      const Eg = this.sunRpx > 3.5 ? LS * (this.sunDiscScaleNow || 1) : (this.sunPointExposure || LS);
+      // amplitude from the Sun's physical display flux (scene exposure), capped for a resolved disc at 0.8× the disc's own
+      // displayed centre so the halo never outshines the locally presented photosphere
+      const Eg = this.sunRpx > 3.5 ? LS : (this.sunPointExposure || LS);
       const amp = glareAmplitudes(F * Eg);
+      if (this.sunRpx > 3.5) { const discDisp = SUN_L0 * LS * (this.views.get('sun')?.discWeight ?? 1) * (this.sunDiscScaleNow || 1); amp.halo = Math.min(amp.halo, 0.8 * discDisp); amp.veil = Math.min(amp.veil, 0.08 * discDisp); }
       const on = front && st.get('glare') ? glareWeight(this.sunRpx, this.H) * P.glare : 0;
       const angR = Math.atan(R_SUN / dist), th1 = Math.max(angR * 2.2, this.pxAng * 2.5);
       const G = this.glare.U;
@@ -689,7 +692,15 @@ export class Engine {
       this.glareFlux = F;
       // corona billboard (physical Baumbach brightness; structure simulated) facing the camera
       const C = this.corona.U;
-      C.center.value.copy(relS); C.radius.value = R_SUN; C.meanL.value = SUN_L_MEAN * LS; C.time.value = (sys.jd - 2451545) * 86400 % 1e7;
+      C.center.value.copy(relS); C.radius.value = R_SUN;
+      // v3.8.1 SUN-381-05: the PHYSICAL Baumbach corona is ≈10⁻⁶ of the disc — but with the scene exposed for faint objects
+      // (1–5 AU, nothing else metered) that is still 10²–10³ × display white out to ≈ 5 R☉, i.e. the flat white blob around
+      // the Sun the owner reported (isolated: iso-nocorona capture). Exploration/Cinematic present the uneclipsed corona
+      // with a local display scale so its brightest part (1.1 R☉) sits at ≈ 3× white and the r⁻²·⁵…r⁻¹⁷ falloff stays
+      // visible; the weight vanishes as the disc is eclipsed (sunVis → 0), so eclipse coronae keep the physical metering.
+      // Scientific: physical (no local scale).
+      { const peakDisp = 1.28e-6 * SUN_L_MEAN * LS, sc = mode === 'scientific' ? 1 : Math.min(1, 3 / Math.max(peakDisp, 1e-12));
+        this.coronaScale = Math.exp(Math.log(sc) * sunVis * sunVis); C.meanL.value = SUN_L_MEAN * LS * this.coronaScale; } C.time.value = (sys.jd - 2451545) * 86400 % 1e7;
       C.right.value.set(1, 0, 0).applyQuaternion(rig.quat); C.up.value.set(0, 1, 0).applyQuaternion(rig.quat);
       // projected solar north pole → position angle on screen
       const pz = sceneVec([sun.rot[2], sun.rot[5], sun.rot[8]]);

@@ -166,8 +166,10 @@ async function boot() {
     try {
       const meta = await loadJSON<any>('data/milkyway_v381.json');
       const [buf, chroma] = await Promise.all([loadArrayBuffer(meta.luma.file), loadTexture('milkyway_chroma_2k')]);
-      const ds = new Response(new Blob([buf]).stream().pipeThrough(new DecompressionStream('gzip')));
-      const px = new Uint8Array(await ds.arrayBuffer());
+      // gzip container with a neutral extension (.r8gz): servers that see ".gz" send Content-Encoding: gzip, which made the
+      // dev server's response unreadable ("Failed to fetch"). If a host still transport-decodes it, the bytes arrive raw.
+      const head = new Uint8Array(buf, 0, 2), gz = head[0] === 0x1f && head[1] === 0x8b;
+      const px = gz ? new Uint8Array(await new Response(new Blob([buf]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer()) : new Uint8Array(buf);
       if (px.length !== meta.luma.width * meta.luma.height) throw new Error(`sky luma size ${px.length}`);
       const t = new THREE.DataTexture(px, meta.luma.width, meta.luma.height, THREE.RedFormat, THREE.UnsignedByteType);
       t.wrapS = THREE.RepeatWrapping; t.wrapT = THREE.ClampToEdgeWrapping; t.magFilter = THREE.LinearFilter; t.minFilter = THREE.LinearMipmapLinearFilter;

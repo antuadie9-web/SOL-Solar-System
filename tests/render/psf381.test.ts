@@ -73,3 +73,20 @@ test('EXP-381-01: Exploration/Cinematic sky darkens by at most sunVeilEV under t
   // daylit air still re-couples completely (no stars through a blue sky)
   assert.ok(Math.abs(skyExposureV381(scene, MP.exploration, 1, 0) - scene) < 1e-9 * scene);
 });
+import { sunDiscScale, glareAmplitudes, glareExtentRad, SUN_LOOKS } from '../../src/render/sun';
+test('SUN-381-02: local disc presentation is identity in Scientific, continuous in disc size, and lands the centre at the target once resolved', () => {
+  assert.equal(sunDiscScale(1e6, 50, 'scientific'), 1);
+  assert.equal(sunDiscScale(1e6, 2, 'exploration'), 1, 'unresolved/tiny discs are not compressed (point regime)');
+  assert.ok(Math.abs(sunDiscScale(1e6, 20, 'exploration') * 1e6 - 2.4) < 1e-6);
+  let prev = 1; for (let r = 2; r < 20; r += 0.01) { const s = sunDiscScale(1e6, r, 'cinematic'); assert.ok(s <= prev + 1e-12); assert.ok(Math.abs(Math.log(s) - Math.log(prev)) < 0.05, `jump at ${r}`); prev = s; }
+});
+test('SUN-381-01: glare amplitudes are monotone, bounded and grow only logarithmically with brightness; extent shrinks with distance', () => {
+  let prev = { halo: 0, veil: 0 };
+  for (let lx = -6; lx <= 14; lx += 0.1) { const a = glareAmplitudes(Math.pow(10, lx)); assert.ok(a.halo >= prev.halo && a.veil >= prev.veil); assert.ok(a.halo <= 4 && a.veil <= 0.18); prev = a; }
+  const th1 = 0.01, ext = (dAU: number) => { const a = glareAmplitudes(Math.PI / (dAU * dAU) * 3e4); return glareExtentRad(a.halo, a.veil, th1, 0.0087); };
+  assert.ok(ext(1) >= ext(5) && ext(5) >= ext(30) && ext(30) >= ext(1000));
+});
+test('SUN-381-03: Scientific look is neutral; the default look is a gentle warm grade (no channel below 0.9), not an orange lamp', () => {
+  assert.deepEqual(SUN_LOOKS.scientific.tint, [1, 1, 1]);
+  assert.ok(Math.min(...SUN_LOOKS.natural.tint) >= 0.9);
+});
