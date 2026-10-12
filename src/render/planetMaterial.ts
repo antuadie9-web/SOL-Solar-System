@@ -193,7 +193,16 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
       const c0 = samp(maps.color).rgb;
       albedo = c0.mul(U.albedoScale);
       // unobserved map regions (pure black in the source mosaic): flag them so they are never shown as real terrain
-      if (def.noData) noData = smoothstep(def.noData.threshold * 1.6, def.noData.threshold, dot(c0, vec3(0.2126, 0.7152, 0.0722)));
+      if (def.noData) {
+        // v3.8.1 cp2 (AST-381-01c): the observed→unobserved boundary is a step from albedo ≈ 0.1 to 0; bilinear filtering
+        // passes through dark intermediate values that the threshold did not catch, which drew a thin black seam. The mask is
+        // now the max over the texel's four half-texel neighbours, so the reconstruction covers the interpolation zone.
+        const Y = (c: any) => dot(c, vec3(0.2126, 0.7152, 0.0722)), th = def.noData.threshold;
+        const tw = 1 / ((maps.color.image as any)?.width || 2048), tht = 1 / ((maps.color.image as any)?.height || 1024);
+        const m0 = smoothstep(th * 1.6, th, Y(c0));
+        const mk = (dx: number, dy: number) => smoothstep(th * 1.6, th, Y(texture(maps.color, uvA.add(vec2(dx * tw, dy * tht))).grad(gx, gy).rgb));
+        noData = max(max(m0, max(mk(0.6, 0), mk(-0.6, 0))), max(mk(0, 0.6), mk(0, -0.6)));
+      }
     }
     if (proc) {
       const sp = proc.spot ?? [0, 0, 0], pt = proc.tint ?? def.color;
