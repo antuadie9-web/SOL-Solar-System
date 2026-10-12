@@ -23,7 +23,7 @@ from PIL import Image
 from scipy import ndimage
 ROOT = os.path.join(os.path.dirname(__file__), '..', '..')
 W, H = 1024, 512
-FEATHER_DEG, SIGMA_DEG, RELAX_DEG = 4.0, 6.0, 35.0
+FEATHER_DEG, SIGMA_DEG, RELAX_DEG = 5.0, 3.5, 35.0   # REV2-02 iteration 2: finer regional guide (6° → 3.5°), wider feather
 BODIES = {'ariel': 0.0018 * 0 + 1.5 / 255, 'titania': 1.5 / 255, 'oberon': 1.5 / 255, 'triton': 3 / 255, 'pluto': 3 / 255, 'charon': 3 / 255}
 lin = lambda a: np.where(a <= 0.04045, a / 12.92, ((a + 0.055) / 1.055) ** 2.4)
 enc = lambda a: np.where(a <= 0.0031308, a * 12.92, 1.055 * np.power(np.clip(a, 0, None), 1 / 2.4) - 0.055)

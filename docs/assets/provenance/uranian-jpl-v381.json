@@ -6,8 +6,8 @@
    1440,
    720
   ],
-  "outSha256": "5f8fae0ad41896ea6031854917acc147d019a95e6fb7b766788cbe6dcd568d94",
-  "meanLinearY": 0.058304984402143364,
+  "outSha256": "91af7739e351e3a825c5a7dadee381cd8a716459ad4544426e61fac136ebbede",
+  "meanLinearY": 0.05830271596839794,
   "unobservedFraction": 0.617,
   "rimRemoved": "terminator rim (3 px + dark fall-off within 10 px) treated as unobserved"
  },
@@ -18,8 +18,8 @@
    1440,
    720
   ],
-  "outSha256": "f7a6582decbf14fc85ecf058ae2ae6c134bdf0f096c5d7ebd2ad925721b351c1",
-  "meanLinearY": 0.10684681704812908,
+  "outSha256": "09f0653ffcd4bbf703e72468ea211585aa4a6011ae4468a06dcf831968971469",
+  "meanLinearY": 0.106827708159383,
   "unobservedFraction": 0.63,
   "rimRemoved": "terminator rim (3 px + dark fall-off within 10 px) treated as unobserved"
  },
@@ -30,9 +30,9 @@
    1440,
    720
   ],
-  "outSha256": "f3f6452fab1427026e73f0ece65083112633f60dbbec54196dab0150b3719c99",
-  "meanLinearY": 0.08438468773495711,
-  "unobservedFraction": 0.618,
+  "outSha256": "82f32988487373b360160f78c6a87b051135cd1948f0aca33f6c05513994c8be",
+  "meanLinearY": 0.08429240488982893,
+  "unobservedFraction": 0.62,
   "rimRemoved": "terminator rim (3 px + dark fall-off within 10 px) treated as unobserved"
  }
 }

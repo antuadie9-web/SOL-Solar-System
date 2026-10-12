@@ -39,6 +39,11 @@ for name, (f, col) in BODIES.items():
     med = float(np.median(g[~nodata]))
     near = ndimage.binary_dilation(nodata, iterations=10)
     nodata = ndimage.binary_dilation(nodata, iterations=3) | (near & (g < 0.45 * med))
+    # REV2-02: also drop rim pixels darker than 0.65× their REGIONAL (≈2°) observed mean — the terminator fall-off varies
+    # along the edge, so a single global threshold left a dark line on parts of Titania and Oberon
+    obs = ~nodata; sig = 8.0
+    reg = ndimage.gaussian_filter(np.where(obs, g, 0), sig, mode=('reflect', 'wrap')) / np.maximum(ndimage.gaussian_filter(obs.astype(float), sig, mode=('reflect', 'wrap')), 1e-6)
+    nodata = nodata | (ndimage.binary_dilation(nodata, iterations=8) & (g < 0.65 * reg))
     c = np.array(col) / (0.2126 * col[0] + 0.7152 * col[1] + 0.0722 * col[2])     # luminance-normalised tint
     rgb = lin(g)[..., None] * c[None, None, :]
     rgb[nodata] = 0
