@@ -25,10 +25,10 @@ export class GalMap {
     this.el.innerHTML = `<header><h2>Galactic context</h2><span class="badge rec" title="Inferred structure from published fits — not an observed 3-D map">Model · schematic</span><button class="tb sm grow" aria-label="Enlarge Galactic context" aria-pressed="false" title="Enlarge (2×)">⤢</button><button class="tb sm close" aria-label="Close Galactic context">×</button></header>
       <canvas width="296" height="296" aria-hidden="true"></canvas><div class="gm-info num" aria-live="off"></div>
       <ul class="gm-legend" aria-label="Legend">
-        <li><i class="lg arm"></i>Spiral arm traced by maser parallaxes (Reid et al. 2019) — <b>measured</b> segment</li>
-        <li><i class="lg ext"></i>Same arm model extrapolated beyond the data — <b>inferred</b></li>
-        <li><i class="lg bar"></i>Bar &amp; exponential discs (Bland-Hawthorn &amp; Gerhard 2016) — <b>model fit</b></li>
-        <li><i class="lg cov"></i>Region with dense parallax coverage (≈ 5 kpc around the Sun)</li>
+        <li><i class="lg arm"></i><span>Spiral arm traced by maser parallaxes (Reid et al. 2019) — <b>measured</b></span></li>
+        <li><i class="lg ext"></i><span>Arm model extrapolated beyond the data — <b>inferred</b></span></li>
+        <li><i class="lg bar"></i><span>Bar &amp; exponential discs (Bland-Hawthorn &amp; Gerhard 2016) — <b>model fit</b></span></li>
+        <li><i class="lg cov"></i><span>Dense parallax coverage (≈ 5 kpc around the Sun)</span></li>
       </ul>
       <p class="note">Sun–centre distance ${MW.R0_kpc.value} kpc (GRAVITY 2019). The sky behind you is the <b>observed 2-D Gaia panorama</b>, not this model; a navigable 3-D Milky Way is planned for v3.9.</p>`;
     parent.appendChild(this.el);
@@ -71,7 +71,17 @@ export class GalMap {
     ctx.font = `${10 * u}px Inter, system-ui, sans-serif`; ctx.fillStyle = 'rgba(238,240,244,0.8)'; ctx.fillText('Sgr A* (centre)', X(0) + 5 * u, Y(0) - 4 * u);
     // arm names at their outer measured ends
     ctx.font = `${9 * u}px Inter, system-ui, sans-serif`; ctx.fillStyle = 'rgba(190,220,250,0.75)';
-    for (const a of ARMS) { const obs = armPolyline(a, 1, 0); if (!obs.length) continue; const [x, y] = obs[obs.length - 1]; ctx.fillText(a.name.replace(/ \(.*\)/, ''), X(x) + 3 * u, Y(y)); }
+    // labels placed at the outer measured end, skipped if they would overlap an already placed label (cp2 legibility review)
+    const placed: [number, number, number, number][] = [[X(0) - 4 * u, Y(0) - 16 * u, 90 * u, 14 * u]];
+    const free = (x: number, y: number, w: number, h: number) => !placed.some(([a, b, c, d]) => x < a + c && a < x + w && y < b + d && b < y + h);
+    for (const a of ARMS) {
+      const obs = armPolyline(a, 1, 0); if (!obs.length) continue; const name = a.name.replace(/ \(.*\)/, '');
+      const w = ctx.measureText(name).width + 4 * u, h = 11 * u;
+      for (const f of [1, 0.8, 0.6, 0.4]) {
+        const [x, y] = obs[Math.min(obs.length - 1, Math.floor((obs.length - 1) * f))], lx = X(x) + 3 * u, ly = Y(y) - 9 * u;
+        if (lx + w < W && free(lx, ly, w, h)) { ctx.fillText(name, lx, ly + 9 * u); placed.push([lx, ly, w, h]); break; }
+      }
+    }
     // 5 kpc scale bar
     const sbx = 8 * u, sby = W - 10 * u; ctx.strokeStyle = 'rgba(238,240,244,0.8)'; ctx.lineWidth = 1.5 * u; ctx.beginPath(); ctx.moveTo(sbx, sby); ctx.lineTo(sbx + 5 * s, sby); ctx.stroke();
     ctx.fillStyle = 'rgba(238,240,244,0.8)'; ctx.font = `${9 * u}px Inter, system-ui, sans-serif`; ctx.fillText('5 kpc', sbx, sby - 4 * u);
@@ -97,17 +107,21 @@ export class GalMap {
     const iw = Math.round(W * 0.36), ix = W - iw - 6 * u, iy = W - iw - 6 * u, ic = iw / 2, ps = ic / 6;
     ctx.fillStyle = 'rgba(3,4,7,0.82)'; ctx.fillRect(ix, iy, iw, iw); ctx.strokeStyle = 'rgba(255,255,255,0.22)'; ctx.strokeRect(ix + 0.5, iy + 0.5, iw - 1, iw - 1);
     const toInset = (g: [number, number, number]) => [ix + ic + (g[0] / PC) * ps, iy + ic - (g[1] / PC) * ps] as [number, number];
+    const insetPlaced: [number, number, number][] = [];
     for (const b of stars) {
       if (b.info?.dsoKind) continue; const g = eclToGal(b.pos as any); if (Math.hypot(g[0], g[1]) > 6 * PC) continue;
       const [px, py] = toInset(g); ctx.fillStyle = b === target ? '#ffd9a3' : 'rgba(200,215,240,0.8)'; ctx.fillRect(px - u, py - u, 2 * u, 2 * u);
-      if (b === target || /Proxima|Sirius|Barnard|Alpha Centauri A|Wolf 359|Procyon|Altair/.test(b.name)) { ctx.font = `${8 * u}px Inter, system-ui, sans-serif`; ctx.fillStyle = 'rgba(220,228,240,0.75)'; ctx.fillText(b.name.replace('Centauri', 'Cen'), px + 3 * u, py - 2 * u); }
+      if (b === target || /Proxima|Sirius|Barnard|Wolf 359|Procyon|Altair/.test(b.name)) {
+        ctx.font = `${8 * u}px Inter, system-ui, sans-serif`; const nm = b.name.replace('Centauri', 'Cen'), tw = ctx.measureText(nm).width, lx = Math.min(px + 3 * u, ix + iw - tw - 2 * u), ly = py - 9 * u;
+        if (!insetPlaced.some(([a, c, d]) => Math.abs(ly - c) < 9 * u && lx < a + d && a < lx + tw)) { ctx.fillStyle = 'rgba(220,228,240,0.8)'; ctx.fillText(nm, lx, py - 2 * u); insetPlaced.push([lx, ly, tw]); }
+      }
     }
     ctx.fillStyle = '#f2c27f'; ctx.fillRect(ix + ic - 1.5 * u, iy + ic - 1.5 * u, 3 * u, 3 * u);
     const gc = eclToGal(camKm), [cx, cy] = toInset(gc);
     ctx.strokeStyle = '#8fd9b0'; ctx.lineWidth = 1.5 * u; ctx.beginPath(); ctx.arc(Math.max(ix + 3 * u, Math.min(ix + iw - 3 * u, cx)), Math.max(iy + 3 * u, Math.min(iy + iw - 3 * u, cy)), 3.5 * u, 0, Math.PI * 2); ctx.stroke();
     ctx.fillStyle = 'rgba(238,240,244,0.7)'; ctx.font = `${9 * u}px Inter, system-ui, sans-serif`; ctx.fillText('local ±6 pc (measured stars) · camera ◯', ix + 4 * u, iy + 11 * u);
     const lbd = galacticLBD(camKm), R = Math.hypot(-MW.R0_kpc.value + gc[0] / PC / 1000, gc[1] / PC / 1000);
-    this.info.textContent = `camera  l ${lbd.l.toFixed(2)}°  b ${lbd.b.toFixed(2)}°  ${(lbd.d / PC).toFixed(4)} pc from the Sun\nGalactocentric R ${R.toFixed(4)} kpc · z ${((gc[2] / PC) + MW.zSun_pc.value).toFixed(2)} pc (model frame)`;
+    this.info.textContent = `Camera  l ${lbd.l.toFixed(2)}°  b ${lbd.b.toFixed(2)}°\n${(lbd.d / PC).toFixed(4)} pc from the Sun\nGalactocentric R ${R.toFixed(4)} kpc · z ${((gc[2] / PC) + MW.zSun_pc.value).toFixed(2)} pc (model frame)`;
     void azimuthToXY;
   }
 }
