@@ -46,6 +46,9 @@ export class CameraRig {
     this.desyncRepairs++; this.sm.seed(t ?? this.sm.target, want); return false;
   }
   freeVel: V3 = [0, 0, 0]; keys = new Set<string>();
+  /** v3.8.1 CAM-381-01 free-look target orientation; re-synchronised whenever someone sets `quat` directly (UI, harness). */
+  tQuat = new THREE.Quaternion(); private lastQ = new THREE.Quaternion(); private tQuatValid = false;
+  syncFreeTarget() { if (!this.tQuatValid || !this.quat.equals(this.lastQ)) { this.tQuat.copy(this.quat); this.tQuatValid = true; this.lastQ.copy(this.quat); } }
   lookYaw = 0; lookPitch = 0; fov = 50; tFov = 50; surfaceLock = false; lockRef: number[] | null = null;
   sensitivity = 1; inertia = 1;
   get flying() { return !!this.flight; }
@@ -192,6 +195,9 @@ export class CameraRig {
       const off = new THREE.Quaternion().setFromEuler(new THREE.Euler(this.lookPitch, this.lookYaw, this.roll, 'YXZ'));
       this.quat.copy(q).multiply(off);
     } else if (this.mode === 'free') {
+      if (this.tQuatValid && this.quat.equals(this.lastQ)) { const k = 1 - Math.exp(-dt * (this.reducedMotion ? 40 : 22) / Math.max(0.2, this.inertia)); this.quat.slerp(this.tQuat, k).normalize(); }
+      else this.tQuatValid = false;   // orientation was set externally: follow it, do not pull back toward a stale target
+      this.lastQ.copy(this.quat);
       const sp = this.freeSpeed();
       const fwd = new THREE.Vector3(0, 0, -1).applyQuaternion(this.quat), right = new THREE.Vector3(1, 0, 0).applyQuaternion(this.quat), up = new THREE.Vector3(0, 1, 0).applyQuaternion(this.quat);
       const mv = new THREE.Vector3();
@@ -213,9 +219,14 @@ export class CameraRig {
       this.tYaw -= dx * s; this.tPitch = Math.max(-1.55, Math.min(1.55, this.tPitch + dy * s));
       if (this.surfaceLock) this.captureLock();
     } else {
+      // v3.8.1 CAM-381-01: free-look drags accumulate into a TARGET orientation that the camera follows with a short,
+      // frame-rate-independent exponential approach (update()). v3.4–3.8.0 applied each mouse event straight to the camera,
+      // so the view (and every star) advanced in uneven steps whenever event delivery and frame pacing beat against each
+      // other — a judder visible on real hardware at 60–144 Hz that a software adapter never shows.
+      this.syncFreeTarget();
       const qy = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), -dx * s * 0.6);
       const qx = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), -dy * s * 0.6);
-      this.quat.multiply(qy).multiply(qx);
+      this.tQuat.multiply(qy).multiply(qx);
     }
   }
   look(dx: number, dy: number) { const s = 0.003 * this.sensitivity; this.lookYaw -= dx * s; this.lookPitch = Math.max(-1.4, Math.min(1.4, this.lookPitch - dy * s)); }

@@ -12,3 +12,11 @@ export const V381 = [...EXPSWEEP, ...SUNLADDER];
 // D (checkpoint 2) — the owner's problem distances in Scientific and Cinematic, plus 3,000 AU at both FOVs
 export const SUNMODES = [0.39, 1, 1.52].flatMap(a => ['scientific', 'cinematic'].map(m => [`sun-ladder-${pad(a)}AU-f50-${m.slice(0, 3)}`, 'sun', { mode: m, sunAt: { km: a * AU, fov: 50 } }]));
 V381.push(...SUNMODES);
+// G (checkpoint 2) — observed Cassini shape models (Saturnian small moons) and the rights-cleared Uranian maps
+const MB = (name, id, R, el = 12, az = 25) => [`moon381-${name}`, id, { bf: { r: R * 3.4, el, az, fov: 50 } }];
+export const MOONS381 = [MB('pan', 'sat618', 20.3), MB('atlas', 'sat615', 23.8), MB('prometheus', 'sat616', 71.4), MB('pandora', 'sat617', 56.2), MB('janus', 'sat610', 103.4),
+  MB('epimetheus', 'sat611', 73.1), MB('helene', 'sat612', 20.5), MB('telesto', 'sat613', 16.3), MB('calypso', 'sat614', 15.3), MB('daphnis', 'sat635', 5.6), ['moon381-hyperion', 'hyperion', { bf: { r: 170 * 3.4, el: 12, az: 25, fov: 50 } }],
+  ...['ariel', 'titania', 'oberon'].map(n => [`moon381-${n}-south`, n, { bf: { r: { ariel: 579, titania: 789, oberon: 761 }[n] * 3.2, el: -40, abs: true, az: 0, fov: 50 } }])];
+// B (checkpoint 2) — resolved photosphere of Proxima Centauri (measured radius 0.1542 R☉) at two distances
+export const XSTAR381 = [['xstar-proxima-40R', 'star:proxima-centauri', 40], ['xstar-proxima-8R', 'star:proxima-centauri', 8], ['xstar-proxima-8R-sci', 'star:proxima-centauri', { radii: 8, mode: 'scientific' }]];
+V381.push(...MOONS381, ...XSTAR381);
