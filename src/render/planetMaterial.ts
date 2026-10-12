@@ -157,7 +157,7 @@ fn familySurface(p: vec3<f32>, tint: vec3<f32>, spot: vec3<f32>, seed: f32, crat
   return vec4<f32>(max(c, vec3<f32>(0.0)), h);
 }`, [fbm, craters, vnoise]);
 
-export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { color?: THREE.Texture; normal?: THREE.Texture; night?: THREE.Texture; clouds?: THREE.Texture; ocean?: THREE.Texture; ring?: THREE.Texture }, profile?: BodyVisualProfile,
+export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { color?: THREE.Texture; normal?: THREE.Texture; night?: THREE.Texture; clouds?: THREE.Texture; ocean?: THREE.Texture; ring?: THREE.Texture; recon?: THREE.Texture }, profile?: BodyVisualProfile,
   /** v3.6: `terrainAttr` = geometry is patch-local (terrain tiles); shading reads the body-fixed `bodyPos` attribute.
    *  `U` = share the uniforms of the body's sphere material (one set of lighting state per body). */
   /** `atmo` (v3.6): transmittance LUT + ground skylight table of the body's atmosphere (render/atmoModel.ts) */
@@ -189,7 +189,7 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
     const gy = vec2(select(abs(dyA.x).lessThan(abs(dyB)), dyA.x, dyB), dyA.y);
     const samp = (t: THREE.Texture) => texture(t, uvA).grad(gx, gy);
     let albedo: any = tint.mul(U.albedoScale), n: any = ng, height: any = float(0);
-    let noData: any = float(0);
+    let noData: any = float(0), reconW: any = float(0), reconY: any = float(-1);
     if (maps.color) {
       const c0 = samp(maps.color).rgb;
       albedo = c0.mul(U.albedoScale);
@@ -204,6 +204,13 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
         const m0 = smoothstep(th * 1.6, th, Y(c0));
         const mk = (dx: number, dy: number) => smoothstep(th * 1.6, th, Y(texture(maps.color, uvA.add(vec2(tw.mul(dx), tht.mul(dy)))).grad(gx, gy).rgb));
         noData = max(max(m0, max(mk(0.6, 0), mk(-0.6, 0))), max(mk(0, 0.6), mk(0, -0.6)));
+        if (maps.recon) {
+          // v3.8.1 AST-381-03 (owner review REV2-02): guide field — R = smooth reconstruction weight (0 on every observed
+          // pixel), G = low-frequency observed albedo carried into the gap (tools/ingest/partial_recon.py)
+          const rc = texture(maps.recon, uvA).grad(gx, gy);
+          reconW = rc.r; reconY = pow(rc.g, float(2.2));
+          noData = max(noData, reconW);
+        }
       }
     }
     if (proc) {
@@ -211,7 +218,7 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
       const pa = familySurface({ p: (def.model ? positionLocal : dirLocal).mul(1.0), tint: vec3(pt[0], pt[1], pt[2]), spot: vec3(sp[0], sp[1], sp[2]), seed: float(proc.seed), craterAmt: float(proc.craters), fam: float(fam), fp: length(fwidth(dirLocal)), rkm: float(profile?.radiusKm ?? def.radius) });
       albedo = maps.color ? albedo : pa.rgb.mul(U.albedoScale);
       height = pa.w.mul(proc.rough * 0.04 + 0.01);
-      if (def.noData) height = height.mul(noData);     // procedural relief only where the map has no data
+      if (def.noData) height = height.mul(noData);     // procedural relief only where the map has no data (soft weight with a guide field)
       // screen-derivative bump, limited so that no normal tilts by more than ~35° from the geometric normal (v3.3: the
       // unbounded version produced black pixel speckles on crater rims at 2×2-quad derivative granularity)
       const nb = bumpNormal({ n: ng, dpx: dFdx(dirLocal), dpy: dFdy(dirLocal), dhx: dFdx(height), dhy: dFdy(height) });
@@ -221,8 +228,19 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
       // labelled reconstruction: procedural terrain at the body's mean albedo, with a faint 10° graticule so the
       // unobserved hemisphere is unmistakable (U.markUnknown → 0 hides the graticule, never the substitution)
       const lat = uvA.y.mul(180), lon = uvA.x.mul(360);
-      const grid = max(smoothstep(0.35, 0.0, abs(lat.mod(10).sub(5)).sub(4.65)), smoothstep(0.35, 0.0, abs(lon.mod(10).sub(5)).sub(4.65))).mul(U.markUnknown).mul(0.35);
-      const rec = proceduralAlbedo({ p: dirLocal, tint: vec3(def.color[0], def.color[1], def.color[2]), spot: vec3(0, 0, 0), seed: float(proc.seed), craterAmt: float(proc.craters) }).rgb.mul(U.recAlbedo).mul(1 / Math.max(0.05, 0.2126 * def.color[0] + 0.7152 * def.color[1] + 0.0722 * def.color[2]) / 0.78);
+      const tl = Math.max(0.05, 0.2126 * def.color[0] + 0.7152 * def.color[1] + 0.0722 * def.color[2]);
+      let grid: any = max(smoothstep(0.35, 0.0, abs(lat.mod(10).sub(5)).sub(4.65)), smoothstep(0.35, 0.0, abs(lon.mod(10).sub(5)).sub(4.65))).mul(U.markUnknown).mul(0.35);
+      const pr = proceduralAlbedo({ p: dirLocal, tint: vec3(def.color[0], def.color[1], def.color[2]), spot: vec3(0, 0, 0), seed: float(proc.seed), craterAmt: float(proc.craters) }).rgb.mul(1 / tl / 0.78);
+      let rec: any = pr.mul(U.recAlbedo);
+      if (maps.recon) {
+        // regional albedo continues from the observed side (guide G, calibrated exactly like observed pixels); procedural
+        // detail only modulates it, at the observed map's own small-scale relative contrast; the graticule label starts
+        // inside the gap so the boundary itself is not outlined (the label is never removed: U.markUnknown)
+        const k = def.noData!.detail ?? 0.4, chroma = vec3(def.color[0] / tl, def.color[1] / tl, def.color[2] / tl);
+        const pn = dot(pr, vec3(0.2126, 0.7152, 0.0722));
+        rec = chroma.mul(reconY.mul(U.albedoScale)).mul(float(1).add(pn.sub(1).mul(k)));
+        grid = grid.mul(smoothstep(0.5, 0.95, reconW));
+      }
       albedo = mix(albedo, mix(rec, vec3(0.55, 0.62, 0.75).mul(U.recAlbedo), grid), noData);
     }
     if (maps.normal) n = tangentNormal({ n: ng, t: samp(maps.normal).rgb, strength: float(kind === 'earth' ? 1.0 : 1.4) });

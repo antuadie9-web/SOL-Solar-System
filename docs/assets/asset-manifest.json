@@ -1,6 +1,6 @@
 {
  "generated": "2026-10-12",
- "count": 1528,
+ "count": 1534,
  "unmatched": [],
  "exactDuplicates": [],
  "nonCommercial": [],
@@ -20387,6 +20387,21 @@
    "retrieved": "2026-10-12"
   },
   {
+   "path": "assets/tex/ariel_recon.jpg",
+   "bytes": 41913,
+   "sha256": "f05e29ee4eb5b965398e8fad6545da52e295acf0c1f945d7a6e5ef04a7e5b76d",
+   "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: R = reconstruction weight (0 on observed pixels), G = low-frequency observed albedo carried into the unobserved region",
+   "url": "(derived)",
+   "licence": "inherits the source map's licence (USGS/NASA public domain; JPL Image Use Policy for the Uranian moons)",
+   "commercial": "yes",
+   "attribution": "as source map",
+   "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
+   "projection": "Equirectangular (same registration as the colour map)",
+   "coverage": "global",
+   "truth": "RECONSTRUCTION GUIDE (not observation)",
+   "retrieved": "2026-10-13"
+  },
+  {
    "path": "assets/tex/callisto.jpg",
    "bytes": 511132,
    "sha256": "9e7cda42b863d7a20738105fd8305354998af0c2b0ae0c9f991658fce8c9c941",
@@ -20463,6 +20478,21 @@
    "truth": "observed luminance; inferred colour",
    "retrieved": "2026-10-09",
    "provenance": "docs/assets/provenance/charon.json"
+  },
+  {
+   "path": "assets/tex/charon_recon.jpg",
+   "bytes": 85193,
+   "sha256": "6aaf65d207d1c5f5a859a481edb22bd151478987e51e59d2ce669e9565b5f8b3",
+   "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: R = reconstruction weight (0 on observed pixels), G = low-frequency observed albedo carried into the unobserved region",
+   "url": "(derived)",
+   "licence": "inherits the source map's licence (USGS/NASA public domain; JPL Image Use Policy for the Uranian moons)",
+   "commercial": "yes",
+   "attribution": "as source map",
+   "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
+   "projection": "Equirectangular (same registration as the colour map)",
+   "coverage": "global",
+   "truth": "RECONSTRUCTION GUIDE (not observation)",
+   "retrieved": "2026-10-13"
   },
   {
    "path": "assets/tex/dione.jpg",
@@ -21088,6 +21118,21 @@
    "retrieved": "2026-10-12"
   },
   {
+   "path": "assets/tex/oberon_recon.jpg",
+   "bytes": 65379,
+   "sha256": "91a3d496ea77cbef5ddaa254735fd956a0dddb5a19350684a9236d3ff758f70e",
+   "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: R = reconstruction weight (0 on observed pixels), G = low-frequency observed albedo carried into the unobserved region",
+   "url": "(derived)",
+   "licence": "inherits the source map's licence (USGS/NASA public domain; JPL Image Use Policy for the Uranian moons)",
+   "commercial": "yes",
+   "attribution": "as source map",
+   "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
+   "projection": "Equirectangular (same registration as the colour map)",
+   "coverage": "global",
+   "truth": "RECONSTRUCTION GUIDE (not observation)",
+   "retrieved": "2026-10-13"
+  },
+  {
    "path": "assets/tex/pluto.jpg",
    "bytes": 481865,
    "sha256": "35fbbc96cfc719cd60ff3ebfa28f821c408954ada23cc731fefd77dc2bd74ed6",
@@ -21118,6 +21163,21 @@
    "truth": "observed luminance; inferred colour",
    "retrieved": "2026-10-09",
    "provenance": "docs/assets/provenance/pluto.json"
+  },
+  {
+   "path": "assets/tex/pluto_recon.jpg",
+   "bytes": 71914,
+   "sha256": "f1d44d2638bf513dd737b68a6cb665479d2cc32639eb57d38012b455421ade9d",
+   "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: R = reconstruction weight (0 on observed pixels), G = low-frequency observed albedo carried into the unobserved region",
+   "url": "(derived)",
+   "licence": "inherits the source map's licence (USGS/NASA public domain; JPL Image Use Policy for the Uranian moons)",
+   "commercial": "yes",
+   "attribution": "as source map",
+   "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
+   "projection": "Equirectangular (same registration as the colour map)",
+   "coverage": "global",
+   "truth": "RECONSTRUCTION GUIDE (not observation)",
+   "retrieved": "2026-10-13"
   },
   {
    "path": "assets/tex/rhea.jpg",
@@ -21270,6 +21330,21 @@
    "retrieved": "2026-10-12"
   },
   {
+   "path": "assets/tex/titania_recon.jpg",
+   "bytes": 56684,
+   "sha256": "c5e2a5b9e3ba1a0f1939db1a3205167f01dc3e318f1d5f21fae5e05ec2f80b8e",
+   "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: R = reconstruction weight (0 on observed pixels), G = low-frequency observed albedo carried into the unobserved region",
+   "url": "(derived)",
+   "licence": "inherits the source map's licence (USGS/NASA public domain; JPL Image Use Policy for the Uranian moons)",
+   "commercial": "yes",
+   "attribution": "as source map",
+   "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
+   "projection": "Equirectangular (same registration as the colour map)",
+   "coverage": "global",
+   "truth": "RECONSTRUCTION GUIDE (not observation)",
+   "retrieved": "2026-10-13"
+  },
+  {
    "path": "assets/tex/triton.jpg",
    "bytes": 310056,
    "sha256": "ac41a99cc819e1fd65eee89b8e7f2be3aea06aeb094eb259478b74dd3c832d72",
@@ -21300,6 +21375,21 @@
    "truth": "observed luminance",
    "retrieved": "2026-10-09",
    "provenance": "docs/assets/provenance/triton.json"
+  },
+  {
+   "path": "assets/tex/triton_recon.jpg",
+   "bytes": 68216,
+   "sha256": "f81e655fb68f792b6866e70fbff4d5399cdb0b6383a992d7c1b6bf00e099cbed",
+   "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: R = reconstruction weight (0 on observed pixels), G = low-frequency observed albedo carried into the unobserved region",
+   "url": "(derived)",
+   "licence": "inherits the source map's licence (USGS/NASA public domain; JPL Image Use Policy for the Uranian moons)",
+   "commercial": "yes",
+   "attribution": "as source map",
+   "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
+   "projection": "Equirectangular (same registration as the colour map)",
+   "coverage": "global",
+   "truth": "RECONSTRUCTION GUIDE (not observation)",
+   "retrieved": "2026-10-13"
   },
   {
    "path": "assets/tex/uranus.jpg",

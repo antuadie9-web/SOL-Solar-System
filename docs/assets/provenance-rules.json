@@ -2,6 +2,19 @@
  "_doc": "Per-asset provenance & licence rules (spec §5 asset/licence contract). The FIRST rule whose regex matches a path under public/ applies. tools/validate/assets.mjs expands these into asset-manifest.json with size and SHA-256; tests/assets/manifest.test.ts fails if any shipped file is unmatched. 'commercial' is our reading of the stated terms, not legal advice. Retrieval dates are those recorded in v3.2 (2026-10-08) unless stated.",
  "rules": [
   {
+   "match": "^assets/tex/(ariel|titania|oberon|triton|pluto|charon)_recon\\.jpg$",
+   "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: R = reconstruction weight (0 on observed pixels), G = low-frequency observed albedo carried into the unobserved region",
+   "url": "(derived)",
+   "licence": "inherits the source map's licence (USGS/NASA public domain; JPL Image Use Policy for the Uranian moons)",
+   "commercial": "yes",
+   "attribution": "as source map",
+   "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
+   "projection": "Equirectangular (same registration as the colour map)",
+   "coverage": "global",
+   "truth": "RECONSTRUCTION GUIDE (not observation)",
+   "retrieved": "2026-10-13"
+  },
+  {
    "match": "^assets/tex/intro_sun_hmi\\.jpg$",
    "source": "NASA SDO/HMI Quick-Look Continuum 617.3 nm, 2026-09-21T15:11:15 TAI (latest_1024_HMII.jpg), processed by tools/ingest/intro_sun.py",
    "url": "https://sdo.gsfc.nasa.gov/assets/img/latest/latest_1024_HMII.jpg",

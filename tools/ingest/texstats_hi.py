@@ -18,7 +18,7 @@ import numpy as np
 Image.MAX_IMAGE_PIXELS = None
 ROOT = os.path.join(os.path.dirname(__file__), '..', '..')
 TEX = os.path.join(ROOT, 'public/assets/tex')
-SKIP = ('_n', '_night', '_clouds', '_ocean', '_hi', 'milkyway', 'saturn_ring')
+SKIP = ('_n', '_night', '_clouds', '_ocean', '_hi', '_recon', 'milkyway', 'saturn_ring', 'intro_sun')
 out = {}
 for p in sorted(glob.glob(os.path.join(TEX, '*.jpg'))):
     name = os.path.splitext(os.path.basename(p))[0]

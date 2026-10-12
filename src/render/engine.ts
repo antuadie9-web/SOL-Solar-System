@@ -254,6 +254,7 @@ export class Engine {
     const hi = !!d.texHi;
     if (d.tex) maps.color = TS.get(d.tex, { srgb: true, hiAvailable: hi, color: d.color, priority: true });
     if (d.normal) maps.normal = TS.get(d.normal, { srgb: false, hiAvailable: hi });
+    if (d.noData?.recon && d.tex) maps.recon = TS.get(`${d.tex}_recon`, { srgb: false });   // v3.8.1 AST-381-03 reconstruction guide
     if (d.night) maps.night = TS.get(d.night, { srgb: false, hiAvailable: hi });
     if (d.clouds) maps.clouds = TS.get(d.clouds, { srgb: false, hiAvailable: hi });
     if (d.ocean) maps.ocean = TS.get(d.ocean, { srgb: false });

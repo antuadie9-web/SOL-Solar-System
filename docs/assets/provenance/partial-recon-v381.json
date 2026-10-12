@@ -1,0 +1,50 @@
+{
+ "ariel": {
+  "observedMeanLinY": 0.15238,
+  "smallScaleRelContrast": 0.116,
+  "feather_deg": 4.0,
+  "sigma_deg": 6.0,
+  "relax_deg": 35.0,
+  "unobservedFraction_at_1024": 0.6197
+ },
+ "titania": {
+  "observedMeanLinY": 0.28945,
+  "smallScaleRelContrast": 0.1297,
+  "feather_deg": 4.0,
+  "sigma_deg": 6.0,
+  "relax_deg": 35.0,
+  "unobservedFraction_at_1024": 0.6333
+ },
+ "oberon": {
+  "observedMeanLinY": 0.2219,
+  "smallScaleRelContrast": 0.1206,
+  "feather_deg": 4.0,
+  "sigma_deg": 6.0,
+  "relax_deg": 35.0,
+  "unobservedFraction_at_1024": 0.6214
+ },
+ "triton": {
+  "observedMeanLinY": 0.32595,
+  "smallScaleRelContrast": 0.1053,
+  "feather_deg": 4.0,
+  "sigma_deg": 6.0,
+  "relax_deg": 35.0,
+  "unobservedFraction_at_1024": 0.3898
+ },
+ "pluto": {
+  "observedMeanLinY": 0.16571,
+  "smallScaleRelContrast": 0.2621,
+  "feather_deg": 4.0,
+  "sigma_deg": 6.0,
+  "relax_deg": 35.0,
+  "unobservedFraction_at_1024": 0.3259
+ },
+ "charon": {
+  "observedMeanLinY": 0.19924,
+  "smallScaleRelContrast": 0.2648,
+  "feather_deg": 4.0,
+  "sigma_deg": 6.0,
+  "relax_deg": 35.0,
+  "unobservedFraction_at_1024": 0.3449
+ }
+}
