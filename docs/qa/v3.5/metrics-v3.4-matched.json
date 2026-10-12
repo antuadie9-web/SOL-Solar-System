@@ -1,0 +1,166 @@
+[
+ {
+  "view": "earth-mw",
+  "disc_px": 38747,
+  "clip_pct": 0.261,
+  "disc_p50": 114.1,
+  "dark_detail": 22.39,
+  "bg_mean": 0.02,
+  "stars": 2
+ },
+ {
+  "view": "earth-night",
+  "disc_px": 17471,
+  "clip_pct": 4.402,
+  "disc_p50": 151.6,
+  "dark_detail": 23.5,
+  "bg_mean": 0.3,
+  "stars": 7
+ },
+ {
+  "view": "earth-orbit",
+  "disc_px": 196042,
+  "clip_pct": 0.0,
+  "disc_p50": 113.8,
+  "dark_detail": 14.83,
+  "bg_mean": 0.01,
+  "stars": 2
+ },
+ {
+  "view": "europa",
+  "disc_px": 197791,
+  "clip_pct": 32.471,
+  "disc_p50": 240.6,
+  "dark_detail": 58.68,
+  "bg_mean": 0.05,
+  "stars": 5
+ },
+ {
+  "view": "io",
+  "disc_px": 196175,
+  "clip_pct": 44.994,
+  "disc_p50": 240.2,
+  "dark_detail": 62.79,
+  "bg_mean": 0.0,
+  "stars": 3
+ },
+ {
+  "view": "jupiter-mw",
+  "disc_px": 6339,
+  "clip_pct": 11.5,
+  "disc_p50": 181.7,
+  "dark_detail": 36.38,
+  "bg_mean": 0.03,
+  "stars": 7
+ },
+ {
+  "view": "jupiter-night",
+  "disc_px": 40190,
+  "clip_pct": 9.353,
+  "disc_p50": 186.4,
+  "dark_detail": 41.98,
+  "bg_mean": 0.04,
+  "stars": 3
+ },
+ {
+  "view": "jupiter",
+  "disc_px": 148361,
+  "clip_pct": 15.477,
+  "disc_p50": 219.4,
+  "dark_detail": 49.85,
+  "bg_mean": 0.0,
+  "stars": 3
+ },
+ {
+  "view": "mars-crescent",
+  "disc_px": 62875,
+  "clip_pct": 28.159,
+  "disc_p50": 136.3,
+  "dark_detail": 23.59,
+  "bg_mean": 0.08,
+  "stars": 2
+ },
+ {
+  "view": "mars",
+  "disc_px": 192511,
+  "clip_pct": 29.219,
+  "disc_p50": 148.1,
+  "dark_detail": 30.7,
+  "bg_mean": 0.03,
+  "stars": 2
+ },
+ {
+  "view": "moon-night",
+  "disc_px": 10369,
+  "clip_pct": 0.0,
+  "disc_p50": 61.3,
+  "dark_detail": 14.12,
+  "bg_mean": 0.02,
+  "stars": 13
+ },
+ {
+  "view": "moon-side",
+  "disc_px": 108523,
+  "clip_pct": 0.006,
+  "disc_p50": 133.2,
+  "dark_detail": 28.1,
+  "bg_mean": 0.1,
+  "stars": 29
+ },
+ {
+  "view": "moon",
+  "disc_px": 227061,
+  "clip_pct": 0.007,
+  "disc_p50": 182.2,
+  "dark_detail": 52.37,
+  "bg_mean": 0.08,
+  "stars": 5
+ },
+ {
+  "view": "pluto",
+  "disc_px": 154599,
+  "clip_pct": 39.99,
+  "disc_p50": 228.6,
+  "dark_detail": 61.92,
+  "bg_mean": 1.23,
+  "stars": 0
+ },
+ {
+  "view": "saturn",
+  "disc_px": 38237,
+  "clip_pct": 6.486,
+  "disc_p50": 187.2,
+  "dark_detail": 37.95,
+  "bg_mean": 0.19,
+  "stars": 31
+ },
+ {
+  "view": "sun-0.05AU",
+  "disc_px": 21096,
+  "clip_pct": 0.0,
+  "disc_p50": 161.1,
+  "dark_detail": 39.65,
+  "bg_mean": 0.21,
+  "stars": 2,
+  "sun_spots": 0.0,
+  "sun_disc_R_px": 70.8
+ },
+ {
+  "view": "triton",
+  "disc_px": 196353,
+  "clip_pct": 47.289,
+  "disc_p50": 245.1,
+  "dark_detail": 64.43,
+  "bg_mean": 0.17,
+  "stars": 0
+ },
+ {
+  "view": "vesta",
+  "disc_px": 124212,
+  "clip_pct": 34.58,
+  "disc_p50": 243.8,
+  "dark_detail": 61.55,
+  "bg_mean": 0.0,
+  "stars": 10
+ }
+]

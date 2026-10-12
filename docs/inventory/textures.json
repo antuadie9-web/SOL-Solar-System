@@ -1,0 +1,902 @@
+{
+ "count": 64,
+ "estGpuMiBAll": 3605.5,
+ "textures": [
+  {
+   "file": "ariel.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 160850,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.431,
+   "meanRGB": [
+    56.5,
+    56.5,
+    56.5
+   ]
+  },
+  {
+   "file": "callisto.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 511132,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    125.0,
+    110.6,
+    87.5
+   ]
+  },
+  {
+   "file": "ceres.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 376490,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.053,
+   "meanRGB": [
+    92.9,
+    92.9,
+    92.9
+   ]
+  },
+  {
+   "file": "ceres_hi.jpg",
+   "w": 8192,
+   "h": 4096,
+   "mode": "RGB",
+   "bytes": 3432879,
+   "estGpuMiB_rgba8_mips": 170.7,
+   "nearBlackFraction": 0.053,
+   "meanRGB": [
+    92.8,
+    92.8,
+    92.8
+   ]
+  },
+  {
+   "file": "charon.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 187380,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    108.1,
+    104.2,
+    101.8
+   ]
+  },
+  {
+   "file": "charon_hi.jpg",
+   "w": 4096,
+   "h": 2048,
+   "mode": "RGB",
+   "bytes": 595524,
+   "estGpuMiB_rgba8_mips": 42.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    108.1,
+    104.2,
+    101.7
+   ]
+  },
+  {
+   "file": "dione.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 560923,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.008,
+   "meanRGB": [
+    120.8,
+    120.8,
+    120.8
+   ]
+  },
+  {
+   "file": "dione_hi.jpg",
+   "w": 8192,
+   "h": 4096,
+   "mode": "RGB",
+   "bytes": 5100698,
+   "estGpuMiB_rgba8_mips": 170.7,
+   "nearBlackFraction": 0.008,
+   "meanRGB": [
+    120.7,
+    120.7,
+    120.7
+   ]
+  },
+  {
+   "file": "earth.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 403519,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.174,
+   "meanRGB": [
+    51.4,
+    62.2,
+    76.8
+   ]
+  },
+  {
+   "file": "earth_clouds.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "L",
+   "bytes": 644459,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.212,
+   "meanRGB": [
+    75.7,
+    75.7,
+    75.7
+   ]
+  },
+  {
+   "file": "earth_clouds_hi.jpg",
+   "w": 8192,
+   "h": 4096,
+   "mode": "L",
+   "bytes": 7931521,
+   "estGpuMiB_rgba8_mips": 170.7,
+   "nearBlackFraction": 0.213,
+   "meanRGB": [
+    75.6,
+    75.6,
+    75.6
+   ]
+  },
+  {
+   "file": "earth_hi.jpg",
+   "w": 8192,
+   "h": 4096,
+   "mode": "RGB",
+   "bytes": 4776809,
+   "estGpuMiB_rgba8_mips": 170.7,
+   "nearBlackFraction": 0.175,
+   "meanRGB": [
+    51.3,
+    62.1,
+    76.7
+   ]
+  },
+  {
+   "file": "earth_n.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 104471,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    127.7,
+    127.1,
+    254.4
+   ]
+  },
+  {
+   "file": "earth_n_hi.jpg",
+   "w": 8192,
+   "h": 4096,
+   "mode": "RGB",
+   "bytes": 1293156,
+   "estGpuMiB_rgba8_mips": 170.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    127.7,
+    127.1,
+    254.4
+   ]
+  },
+  {
+   "file": "earth_night.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "L",
+   "bytes": 128348,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.746,
+   "meanRGB": [
+    10.5,
+    10.5,
+    10.5
+   ]
+  },
+  {
+   "file": "earth_night_hi.jpg",
+   "w": 8192,
+   "h": 4096,
+   "mode": "L",
+   "bytes": 1626845,
+   "estGpuMiB_rgba8_mips": 170.7,
+   "nearBlackFraction": 0.747,
+   "meanRGB": [
+    10.4,
+    10.4,
+    10.4
+   ]
+  },
+  {
+   "file": "earth_ocean.jpg",
+   "w": 4096,
+   "h": 2048,
+   "mode": "L",
+   "bytes": 309027,
+   "estGpuMiB_rgba8_mips": 42.7,
+   "nearBlackFraction": 0.298,
+   "meanRGB": [
+    170.6,
+    170.6,
+    170.6
+   ]
+  },
+  {
+   "file": "enceladus.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 475450,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    185.5,
+    186.4,
+    187.1
+   ]
+  },
+  {
+   "file": "enceladus_hi.jpg",
+   "w": 8192,
+   "h": 4096,
+   "mode": "RGB",
+   "bytes": 4861238,
+   "estGpuMiB_rgba8_mips": 170.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    185.4,
+    186.4,
+    187.0
+   ]
+  },
+  {
+   "file": "europa.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 365519,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    198.1,
+    191.0,
+    168.3
+   ]
+  },
+  {
+   "file": "europa_hi.jpg",
+   "w": 4096,
+   "h": 2048,
+   "mode": "RGB",
+   "bytes": 1235178,
+   "estGpuMiB_rgba8_mips": 42.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    198.0,
+    190.9,
+    168.2
+   ]
+  },
+  {
+   "file": "ganymede.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 412776,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    135.0,
+    122.2,
+    107.8
+   ]
+  },
+  {
+   "file": "ganymede_hi.jpg",
+   "w": 4096,
+   "h": 2048,
+   "mode": "RGB",
+   "bytes": 1099307,
+   "estGpuMiB_rgba8_mips": 42.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    134.9,
+    122.1,
+    107.7
+   ]
+  },
+  {
+   "file": "iapetus.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 423674,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    127.0,
+    121.7,
+    117.6
+   ]
+  },
+  {
+   "file": "iapetus_hi.jpg",
+   "w": 8192,
+   "h": 4096,
+   "mode": "RGB",
+   "bytes": 4008639,
+   "estGpuMiB_rgba8_mips": 170.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    126.8,
+    121.6,
+    117.5
+   ]
+  },
+  {
+   "file": "io.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 327412,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    156.0,
+    138.8,
+    86.7
+   ]
+  },
+  {
+   "file": "io_hi.jpg",
+   "w": 4096,
+   "h": 2048,
+   "mode": "RGB",
+   "bytes": 1020178,
+   "estGpuMiB_rgba8_mips": 42.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    155.9,
+    138.7,
+    86.6
+   ]
+  },
+  {
+   "file": "jupiter.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 317809,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    166.3,
+    160.3,
+    149.3
+   ]
+  },
+  {
+   "file": "jupiter_hi.jpg",
+   "w": 4096,
+   "h": 2048,
+   "mode": "RGB",
+   "bytes": 1071560,
+   "estGpuMiB_rgba8_mips": 42.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    166.2,
+    160.2,
+    149.2
+   ]
+  },
+  {
+   "file": "mars.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 391562,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    183.0,
+    98.4,
+    71.6
+   ]
+  },
+  {
+   "file": "mars_hi.jpg",
+   "w": 8192,
+   "h": 4096,
+   "mode": "RGB",
+   "bytes": 5887868,
+   "estGpuMiB_rgba8_mips": 170.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    182.9,
+    98.3,
+    71.5
+   ]
+  },
+  {
+   "file": "mars_n.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 240651,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    127.3,
+    127.0,
+    253.2
+   ]
+  },
+  {
+   "file": "mars_n_hi.jpg",
+   "w": 5760,
+   "h": 2880,
+   "mode": "RGB",
+   "bytes": 1983449,
+   "estGpuMiB_rgba8_mips": 84.4,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    127.1,
+    126.9,
+    253.0
+   ]
+  },
+  {
+   "file": "mercury.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 561049,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    132.5,
+    131.4,
+    131.5
+   ]
+  },
+  {
+   "file": "mercury_hi.jpg",
+   "w": 8192,
+   "h": 4096,
+   "mode": "RGB",
+   "bytes": 11992912,
+   "estGpuMiB_rgba8_mips": 170.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    132.4,
+    131.4,
+    131.4
+   ]
+  },
+  {
+   "file": "milkyway.jpg",
+   "w": 4096,
+   "h": 2048,
+   "mode": "RGB",
+   "bytes": 3502755,
+   "estGpuMiB_rgba8_mips": 42.7,
+   "nearBlackFraction": 0.221,
+   "meanRGB": [
+    44.5,
+    48.6,
+    51.6
+   ]
+  },
+  {
+   "file": "mimas.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 392892,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.001,
+   "meanRGB": [
+    118.2,
+    118.2,
+    118.2
+   ]
+  },
+  {
+   "file": "mimas_hi.jpg",
+   "w": 4096,
+   "h": 2048,
+   "mode": "RGB",
+   "bytes": 1162115,
+   "estGpuMiB_rgba8_mips": 42.7,
+   "nearBlackFraction": 0.001,
+   "meanRGB": [
+    118.1,
+    118.1,
+    118.1
+   ]
+  },
+  {
+   "file": "moon.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 420616,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    152.9,
+    150.8,
+    145.1
+   ]
+  },
+  {
+   "file": "moon_hi.jpg",
+   "w": 8192,
+   "h": 4096,
+   "mode": "RGB",
+   "bytes": 6287612,
+   "estGpuMiB_rgba8_mips": 170.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    152.8,
+    150.8,
+    145.0
+   ]
+  },
+  {
+   "file": "moon_n.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 692908,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    127.2,
+    127.1,
+    249.2
+   ]
+  },
+  {
+   "file": "moon_n_hi.jpg",
+   "w": 5760,
+   "h": 2880,
+   "mode": "RGB",
+   "bytes": 4333701,
+   "estGpuMiB_rgba8_mips": 84.4,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    127.0,
+    127.0,
+    249.7
+   ]
+  },
+  {
+   "file": "neptune.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 90972,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    54.2,
+    79.5,
+    168.0
+   ]
+  },
+  {
+   "file": "oberon.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 91997,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.576,
+   "meanRGB": [
+    52.1,
+    50.3,
+    48.1
+   ]
+  },
+  {
+   "file": "pluto.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 253308,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    165.7,
+    158.8,
+    156.4
+   ]
+  },
+  {
+   "file": "pluto_hi.jpg",
+   "w": 8192,
+   "h": 4096,
+   "mode": "RGB",
+   "bytes": 2493442,
+   "estGpuMiB_rgba8_mips": 170.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    165.7,
+    158.8,
+    156.5
+   ]
+  },
+  {
+   "file": "rhea.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 621455,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    160.9,
+    156.0,
+    155.7
+   ]
+  },
+  {
+   "file": "rhea_hi.jpg",
+   "w": 8192,
+   "h": 4096,
+   "mode": "RGB",
+   "bytes": 6318143,
+   "estGpuMiB_rgba8_mips": 170.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    160.7,
+    156.1,
+    155.6
+   ]
+  },
+  {
+   "file": "saturn.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 137082,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    207.6,
+    192.6,
+    162.5
+   ]
+  },
+  {
+   "file": "saturn_hi.jpg",
+   "w": 4096,
+   "h": 2048,
+   "mode": "RGB",
+   "bytes": 454406,
+   "estGpuMiB_rgba8_mips": 42.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    207.5,
+    192.5,
+    162.5
+   ]
+  },
+  {
+   "file": "saturn_ring.png",
+   "w": 4096,
+   "h": 1,
+   "mode": "RGBA",
+   "bytes": 6149,
+   "estGpuMiB_rgba8_mips": 0.0,
+   "nearBlackFraction": 0.064,
+   "meanRGB": [
+    78.0,
+    73.0,
+    77.8
+   ]
+  },
+  {
+   "file": "tethys.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 501359,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    174.7,
+    174.9,
+    170.3
+   ]
+  },
+  {
+   "file": "tethys_hi.jpg",
+   "w": 4096,
+   "h": 2048,
+   "mode": "RGB",
+   "bytes": 1460389,
+   "estGpuMiB_rgba8_mips": 42.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    174.7,
+    174.9,
+    170.1
+   ]
+  },
+  {
+   "file": "titan.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 186555,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.002,
+   "meanRGB": [
+    136.9,
+    136.9,
+    136.9
+   ]
+  },
+  {
+   "file": "titania.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 162553,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.499,
+   "meanRGB": [
+    62.6,
+    54.9,
+    50.3
+   ]
+  },
+  {
+   "file": "triton.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 204905,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    141.8,
+    140.4,
+    145.3
+   ]
+  },
+  {
+   "file": "triton_hi.jpg",
+   "w": 4096,
+   "h": 2048,
+   "mode": "RGB",
+   "bytes": 756641,
+   "estGpuMiB_rgba8_mips": 42.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    141.8,
+    140.3,
+    145.3
+   ]
+  },
+  {
+   "file": "uranus.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 36808,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    155.1,
+    202.8,
+    209.8
+   ]
+  },
+  {
+   "file": "venus.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 136445,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    228.7,
+    189.3,
+    127.7
+   ]
+  },
+  {
+   "file": "venus_hi.jpg",
+   "w": 4096,
+   "h": 2048,
+   "mode": "RGB",
+   "bytes": 513668,
+   "estGpuMiB_rgba8_mips": 42.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    228.6,
+    189.3,
+    127.6
+   ]
+  },
+  {
+   "file": "venus_surface.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 449464,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    196.6,
+    112.5,
+    39.6
+   ]
+  },
+  {
+   "file": "venus_surface_hi.jpg",
+   "w": 8192,
+   "h": 4096,
+   "mode": "RGB",
+   "bytes": 8006500,
+   "estGpuMiB_rgba8_mips": 170.7,
+   "nearBlackFraction": 0.0,
+   "meanRGB": [
+    196.4,
+    112.3,
+    39.6
+   ]
+  },
+  {
+   "file": "vesta.jpg",
+   "w": 2048,
+   "h": 1024,
+   "mode": "RGB",
+   "bytes": 387493,
+   "estGpuMiB_rgba8_mips": 10.7,
+   "nearBlackFraction": 0.097,
+   "meanRGB": [
+    71.5,
+    71.5,
+    71.5
+   ]
+  },
+  {
+   "file": "vesta_hi.jpg",
+   "w": 8192,
+   "h": 4096,
+   "mode": "RGB",
+   "bytes": 4135311,
+   "estGpuMiB_rgba8_mips": 170.7,
+   "nearBlackFraction": 0.098,
+   "meanRGB": [
+    71.4,
+    71.4,
+    71.4
+   ]
+  }
+ ]
+}

@@ -1,0 +1,65 @@
+{
+ "object_id": "vesta",
+ "source_url": "https://asc-pds-services.s3.us-west-2.amazonaws.com/mosaic/Vesta_Dawn_FC_HAMO_Mosaic_Global_74ppd.tif",
+ "label_url": "https://asc-pds-services.s3.us-west-2.amazonaws.com/mosaic/Vesta_Dawn_FC_HAMO_Mosaic_Global_74ppd.lbl",
+ "md5": "8980eeeb3d287644f5089fb7538001aa",
+ "retrieval_date": "2026-10-09",
+ "producer": "USGS Astrogeology Science Center",
+ "attribution": "NASA/JPL-Caltech/UCLA/MPS/DLR/IDA \u2014 Dawn Framing Camera HAMO (via USGS)",
+ "license": "U.S. public domain (USGS-produced product of NASA mission data); credit requested",
+ "commercial": "yes",
+ "original_wavelength": "visible (clear/broadband; colour products: mission colour filters merged by USGS)",
+ "projection": "SimpleCylindrical",
+ "label": {
+  "ProjectionName": "SimpleCylindrical",
+  "CenterLongitude": "0.0",
+  "LongitudeDirection": "PositiveEast",
+  "MinimumLongitude": "-180.0",
+  "MaximumLongitude": "180.0",
+  "LatitudeType": "Planetocentric",
+  "Samples": "26704",
+  "Lines": "13352",
+  "Bands": "1",
+  "PixelResolution": "59.9989610000000013",
+  "Scale": "74.1778000000000048"
+ },
+ "native_size": [
+  26704,
+  13352
+ ],
+ "transform": {
+  "direction": "positive-east",
+  "leftEdgeEastDeg": -180.0,
+  "columnShift": 0,
+  "shiftDeg": 0.0
+ },
+ "colour": "inferred \u2014 greyscale observed luminance \u00d7 tint ((0.86, 0.82, 0.76),) (documented in tools/ingest/usgs_mosaics.py)",
+ "observed_coverage_fraction": 1.0,
+ "georeference_check_vs_v3_3": {
+  "bestShiftDeg": -150.0,
+  "corrAtZero": -0.06,
+  "note": "positive = new map must move east to match v3.3"
+ },
+ "tiers": {
+  "hi": {
+   "file": "assets/tex/vesta_hi.jpg",
+   "size": [
+    8192,
+    4096
+   ],
+   "sha256": "5c6e085eba299c6692f3bb092525fe6d4440b2da0dfb89b405b250878cb32624",
+   "meanLinearLum": 0.09137027078564104
+  },
+  "base": {
+   "file": "assets/tex/vesta.jpg",
+   "size": [
+    2048,
+    1024
+   ],
+   "sha256": "8d380d0671c794d6cc481e95ddbe26d5922331a013e6c197c997b81ff9767604",
+   "meanLinearLum": 0.09063793377640336
+  }
+ },
+ "resampling": "BOX to 2\u00d7 then LANCZOS; sRGB 8-bit JPEG q92 4:4:4",
+ "WARNING": "georeference disagrees with the v3.3 map; inspect before shipping"
+}

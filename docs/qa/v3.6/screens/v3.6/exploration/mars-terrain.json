@@ -1,0 +1,86 @@
+{
+ "image": "mars-terrain.png",
+ "version": "3.6.0",
+ "object": "mars",
+ "view": "mars-terrain",
+ "request": {
+  "altKm": 40,
+  "look": 1.2
+ },
+ "camera": {
+  "posHelioEclKm": [
+   3949912.7203749833,
+   234396832.88800377,
+   4815990.202952853
+  ],
+  "quat": [
+   0.43645233188250504,
+   -0.3300837142014269,
+   0.17606274055291515,
+   0.8182640252402102
+  ],
+  "fovDeg": 50,
+  "mode": "orbit",
+  "distanceKm": 3436.189999990202,
+  "altitudeKm": 39.999999990202014
+ },
+ "simJdTT": 2461322.000800722,
+ "simUtc": "2026-10-08T11:59:59.998Z",
+ "viewingMode": "exploration",
+ "phaseAngleDeg": 44.81215506932397,
+ "quality": "high",
+ "toneMap": "neutral",
+ "exposureEV": 1.12,
+ "skyEV": 9.75,
+ "detailTier": 4,
+ "terrain": {
+  "maxLevel": 9,
+  "finestData": 6,
+  "patches": 335,
+  "provisional": 3
+ },
+ "rings": null,
+ "backend": "WebGPU (native)",
+ "adapter": {
+  "vendor": "google",
+  "architecture": "swiftshader",
+  "device": "",
+  "description": "",
+  "fallback": true,
+  "features": [
+   "depth32float-stencil8",
+   "rg11b10ufloat-renderable",
+   "bgra8unorm-storage",
+   "texture-compression-bc",
+   "core-features-and-limits",
+   "chromium-experimental-sampling-resource-table",
+   "chromium-experimental-timestamp-query-inside-passes",
+   "float32-filterable",
+   "indirect-first-instance",
+   "texture-compression-astc-sliced-3d",
+   "float32-blendable",
+   "subgroup-size-control",
+   "texture-compression-unaligned",
+   "texture-compression-astc",
+   "texture-compression-etc2",
+   "depth-clip-control",
+   "texture-compression-bc-sliced-3d",
+   "clip-distances",
+   "timestamp-query",
+   "texture-component-swizzle",
+   "subgroups"
+  ],
+  "limits": {
+   "maxTextureDimension2D": 8192,
+   "maxBufferSize": 1073741824,
+   "maxStorageBufferBindingSize": 1073741824,
+   "maxComputeWorkgroupStorageSize": 32768
+  },
+  "qaSoftware": true
+ },
+ "resolution": [
+  1280,
+  720
+ ],
+ "limitations": "Software WebGPU (SwiftShader) capture; not real-GPU look or performance evidence"
+}

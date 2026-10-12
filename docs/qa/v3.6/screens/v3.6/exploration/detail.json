@@ -1,0 +1,164 @@
+[
+ {
+  "view": "earth-limb",
+  "hf_energy": 3.103,
+  "mf_energy": 6.043,
+  "mean": 68.4
+ },
+ {
+  "view": "earth-orbit",
+  "hf_energy": 6.131,
+  "mf_energy": 7.294,
+  "mean": 22.2
+ },
+ {
+  "view": "earth-polar",
+  "hf_energy": 5.042,
+  "mf_energy": 6.623,
+  "mean": 19.3
+ },
+ {
+  "view": "earth-terminator",
+  "hf_energy": 4.155,
+  "mf_energy": 4.947,
+  "mean": 9.3
+ },
+ {
+  "view": "jupiter",
+  "hf_energy": 4.85,
+  "mf_energy": 6.383,
+  "mean": 32.2
+ },
+ {
+  "view": "mars-candor",
+  "hf_energy": 0.289,
+  "mf_energy": 1.28,
+  "mean": 58.8
+ },
+ {
+  "view": "mars-crescent",
+  "hf_energy": 2.56,
+  "mf_energy": 3.577,
+  "mean": 8.7
+ },
+ {
+  "view": "mars-gale-noatmo",
+  "hf_energy": 1.24,
+  "mf_energy": 3.138,
+  "mean": 34.2
+ },
+ {
+  "view": "mars-gale",
+  "hf_energy": 0.631,
+  "mf_energy": 2.005,
+  "mean": 37.3
+ },
+ {
+  "view": "mars-limb",
+  "hf_energy": 0.396,
+  "mf_energy": 1.026,
+  "mean": 81.0
+ },
+ {
+  "view": "mars-night",
+  "hf_energy": 3.086,
+  "mf_energy": 5.525,
+  "mean": 7.1
+ },
+ {
+  "view": "mars-olympus",
+  "hf_energy": 0.184,
+  "mf_energy": 0.748,
+  "mean": 75.4
+ },
+ {
+  "view": "mars-polar",
+  "hf_energy": 2.8,
+  "mf_energy": 3.48,
+  "mean": 14.6
+ },
+ {
+  "view": "mars-terrain",
+  "hf_energy": 0.327,
+  "mf_energy": 1.173,
+  "mean": 85.3
+ },
+ {
+  "view": "mars",
+  "hf_energy": 2.63,
+  "mf_energy": 3.09,
+  "mean": 19.6
+ },
+ {
+  "view": "moon-hadley",
+  "hf_energy": 1.962,
+  "mf_energy": 3.699,
+  "mean": 25.0
+ },
+ {
+  "view": "moon-terrain",
+  "hf_energy": 1.299,
+  "mf_energy": 4.235,
+  "mean": 141.7
+ },
+ {
+  "view": "moon-tycho",
+  "hf_energy": 11.735,
+  "mf_energy": 18.864,
+  "mean": 120.3
+ },
+ {
+  "view": "moon",
+  "hf_energy": 11.222,
+  "mf_energy": 8.358,
+  "mean": 44.3
+ },
+ {
+  "view": "ring-flythrough",
+  "hf_energy": 10.647,
+  "mf_energy": 14.124,
+  "mean": 42.4
+ },
+ {
+  "view": "saturn-backlit",
+  "hf_energy": 3.786,
+  "mf_energy": 3.742,
+  "mean": 5.9
+ },
+ {
+  "view": "sun-0.05AU",
+  "hf_energy": 1.493,
+  "mf_energy": 2.606,
+  "mean": 5.5
+ },
+ {
+  "view": "sun-close",
+  "hf_energy": 2.623,
+  "mf_energy": 3.898,
+  "mean": 169.4
+ },
+ {
+  "view": "sun-grazing",
+  "hf_energy": 1.446,
+  "mf_energy": 2.762,
+  "mean": 147.0
+ },
+ {
+  "view": "sun-limb",
+  "hf_energy": 5.137,
+  "mf_energy": 1.953,
+  "mean": 190.6
+ },
+ {
+  "view": "titan",
+  "hf_energy": 2.491,
+  "mf_energy": 3.366,
+  "mean": 41.7
+ },
+ {
+  "view": "venus",
+  "hf_energy": 2.487,
+  "mf_energy": 4.991,
+  "mean": 34.6
+ }
+]

@@ -1,0 +1,13 @@
+<!doctype html><canvas id="c" style="width:256px;height:256px"></canvas>
+<script type="module">
+import * as THREE from 'three/webgpu';
+import { pass } from 'three/tsl';
+const r = new THREE.WebGPURenderer({ canvas: document.getElementById('c'), outputBufferType: THREE.HalfFloatType });
+await r.init(); r.setSize(256, 256, false);
+const s = new THREE.Scene(); s.background = new THREE.Color(0.2, 0.4, 0.9);
+const cam = new THREE.PerspectiveCamera(50, 1, 0.1, 10); cam.position.z = 3;
+s.add(new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshBasicNodeMaterial({ color: 0xff8800 })));
+const usePipe = location.search.includes('pipe');
+let pipe; if (usePipe) { pipe = new THREE.RenderPipeline(r); pipe.outputNode = pass(s, cam, { samples: 4 }).getTextureNode('output'); }
+r.setAnimationLoop(() => { usePipe ? pipe.render() : r.render(s, cam); window.f = (window.f || 0) + 1; });
+</script>

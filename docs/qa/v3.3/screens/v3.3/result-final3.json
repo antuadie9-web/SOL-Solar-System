@@ -1,0 +1,674 @@
+{
+  "url": "http://localhost:4175/?qa-off=small,smallcompute&qa-software-gpu=1",
+  "software": true,
+  "ready": true,
+  "bootMs": 16925,
+  "viewport": [
+    1280,
+    720
+  ],
+  "state": {
+    "err": null,
+    "frames": 5,
+    "gpu": {
+      "vendor": "google",
+      "architecture": "swiftshader",
+      "device": "",
+      "description": "",
+      "fallback": true,
+      "features": [
+        "depth32float-stencil8",
+        "rg11b10ufloat-renderable",
+        "bgra8unorm-storage",
+        "texture-compression-bc",
+        "core-features-and-limits",
+        "chromium-experimental-sampling-resource-table",
+        "chromium-experimental-timestamp-query-inside-passes",
+        "float32-filterable",
+        "indirect-first-instance",
+        "texture-compression-astc-sliced-3d",
+        "float32-blendable",
+        "subgroup-size-control",
+        "texture-compression-unaligned",
+        "texture-compression-astc",
+        "texture-compression-etc2",
+        "depth-clip-control",
+        "texture-compression-bc-sliced-3d",
+        "clip-distances",
+        "timestamp-query",
+        "texture-component-swizzle",
+        "subgroups"
+      ],
+      "limits": {
+        "maxTextureDimension2D": 8192,
+        "maxBufferSize": 1073741824,
+        "maxStorageBufferBindingSize": 1073741824,
+        "maxComputeWorkgroupStorageSize": 32768
+      },
+      "qaSoftware": true
+    },
+    "loaderText": "\n      \n      \n        \n    \n    \n        SOL\n        The Solar System at true scale\n        \n        Ready100%\n        Enter\n        Saturn’s rings span 280,000 km yet are typically tens of metres thick.\n        v3.3 · native WebGPU · desktop Chrome\n      ",
+    "diag": {
+      "backend": "WebGPU (native)",
+      "adapter": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "device": "",
+        "description": "",
+        "fallback": true,
+        "features": [
+          "depth32float-stencil8",
+          "rg11b10ufloat-renderable",
+          "bgra8unorm-storage",
+          "texture-compression-bc",
+          "core-features-and-limits",
+          "chromium-experimental-sampling-resource-table",
+          "chromium-experimental-timestamp-query-inside-passes",
+          "float32-filterable",
+          "indirect-first-instance",
+          "texture-compression-astc-sliced-3d",
+          "float32-blendable",
+          "subgroup-size-control",
+          "texture-compression-unaligned",
+          "texture-compression-astc",
+          "texture-compression-etc2",
+          "depth-clip-control",
+          "texture-compression-bc-sliced-3d",
+          "clip-distances",
+          "timestamp-query",
+          "texture-component-swizzle",
+          "subgroups"
+        ],
+        "limits": {
+          "maxTextureDimension2D": 8192,
+          "maxBufferSize": 1073741824,
+          "maxStorageBufferBindingSize": 1073741824,
+          "maxComputeWorkgroupStorageSize": 32768
+        },
+        "qaSoftware": true
+      },
+      "deviceLost": null,
+      "frame": {
+        "n": 5,
+        "medianMs": 100,
+        "p95Ms": 100,
+        "p99Ms": 100,
+        "cpuMs": 11
+      },
+      "drawCalls": 23,
+      "views": 3,
+      "orbits": 0,
+      "textures": {
+        "entries": 7,
+        "placeholder": 0,
+        "base": 7,
+        "hi": 0,
+        "residentMiB": 106.7,
+        "budgetMiB": 1536,
+        "loading": []
+      },
+      "terrain": null,
+      "net": {
+        "requests": 29,
+        "bytes": 58925649,
+        "failures": 0,
+        "inFlight": 0,
+        "queued": 0
+      },
+      "exposureEV": 7.46
+    }
+  },
+  "scenario": {
+    "epochUtcMs": 1791460800000,
+    "shots": [
+      {
+        "name": "earth-orbit",
+        "file": "/workspace/work/sol/final3/earth-orbit.png",
+        "wallMs": 26355,
+        "id": "earth",
+        "distKm": 20410.03712,
+        "tier": "JPL Horizons sampled barycentre − moon offsets",
+        "terrain": null,
+        "diag": {
+          "backend": "WebGPU (native)",
+          "adapter": {
+            "vendor": "google",
+            "architecture": "swiftshader",
+            "device": "",
+            "description": "",
+            "fallback": true,
+            "features": [
+              "depth32float-stencil8",
+              "rg11b10ufloat-renderable",
+              "bgra8unorm-storage",
+              "texture-compression-bc",
+              "core-features-and-limits",
+              "chromium-experimental-sampling-resource-table",
+              "chromium-experimental-timestamp-query-inside-passes",
+              "float32-filterable",
+              "indirect-first-instance",
+              "texture-compression-astc-sliced-3d",
+              "float32-blendable",
+              "subgroup-size-control",
+              "texture-compression-unaligned",
+              "texture-compression-astc",
+              "texture-compression-etc2",
+              "depth-clip-control",
+              "texture-compression-bc-sliced-3d",
+              "clip-distances",
+              "timestamp-query",
+              "texture-component-swizzle",
+              "subgroups"
+            ],
+            "limits": {
+              "maxTextureDimension2D": 8192,
+              "maxBufferSize": 1073741824,
+              "maxStorageBufferBindingSize": 1073741824,
+              "maxComputeWorkgroupStorageSize": 32768
+            },
+            "qaSoftware": true
+          },
+          "deviceLost": null,
+          "frame": {
+            "n": 8,
+            "medianMs": 100,
+            "p95Ms": 100,
+            "p99Ms": 100,
+            "cpuMs": 3.4
+          },
+          "drawCalls": 21,
+          "views": 3,
+          "orbits": 0,
+          "textures": {
+            "entries": 7,
+            "placeholder": 0,
+            "base": 7,
+            "hi": 0,
+            "residentMiB": 106.7,
+            "budgetMiB": 1536,
+            "loading": []
+          },
+          "terrain": null,
+          "net": {
+            "requests": 29,
+            "bytes": 58925649,
+            "failures": 0,
+            "inFlight": 0,
+            "queued": 0
+          },
+          "exposureEV": 1.9
+        }
+      },
+      {
+        "name": "jupiter",
+        "file": "/workspace/work/sol/final3/jupiter.png",
+        "wallMs": 29634,
+        "id": "jupiter",
+        "distKm": 250222,
+        "tier": "JPL Horizons sampled barycentre − moon offsets",
+        "terrain": null,
+        "diag": {
+          "backend": "WebGPU (native)",
+          "adapter": {
+            "vendor": "google",
+            "architecture": "swiftshader",
+            "device": "",
+            "description": "",
+            "fallback": true,
+            "features": [
+              "depth32float-stencil8",
+              "rg11b10ufloat-renderable",
+              "bgra8unorm-storage",
+              "texture-compression-bc",
+              "core-features-and-limits",
+              "chromium-experimental-sampling-resource-table",
+              "chromium-experimental-timestamp-query-inside-passes",
+              "float32-filterable",
+              "indirect-first-instance",
+              "texture-compression-astc-sliced-3d",
+              "float32-blendable",
+              "subgroup-size-control",
+              "texture-compression-unaligned",
+              "texture-compression-astc",
+              "texture-compression-etc2",
+              "depth-clip-control",
+              "texture-compression-bc-sliced-3d",
+              "clip-distances",
+              "timestamp-query",
+              "texture-component-swizzle",
+              "subgroups"
+            ],
+            "limits": {
+              "maxTextureDimension2D": 8192,
+              "maxBufferSize": 1073741824,
+              "maxStorageBufferBindingSize": 1073741824,
+              "maxComputeWorkgroupStorageSize": 32768
+            },
+            "qaSoftware": true
+          },
+          "deviceLost": null,
+          "frame": {
+            "n": 17,
+            "medianMs": 100,
+            "p95Ms": 100,
+            "p99Ms": 100,
+            "cpuMs": 4.3
+          },
+          "drawCalls": 26,
+          "views": 7,
+          "orbits": 0,
+          "textures": {
+            "entries": 11,
+            "placeholder": 0,
+            "base": 11,
+            "hi": 0,
+            "residentMiB": 149.3,
+            "budgetMiB": 1536,
+            "loading": []
+          },
+          "terrain": null,
+          "net": {
+            "requests": 33,
+            "bytes": 60494778,
+            "failures": 0,
+            "inFlight": 0,
+            "queued": 0
+          },
+          "exposureEV": 6.64
+        }
+      },
+      {
+        "name": "saturn",
+        "file": "/workspace/work/sol/final3/saturn.png",
+        "wallMs": 28416,
+        "id": "saturn",
+        "distKm": 391742,
+        "tier": "JPL Horizons sampled barycentre − moon offsets",
+        "terrain": null,
+        "diag": {
+          "backend": "WebGPU (native)",
+          "adapter": {
+            "vendor": "google",
+            "architecture": "swiftshader",
+            "device": "",
+            "description": "",
+            "fallback": true,
+            "features": [
+              "depth32float-stencil8",
+              "rg11b10ufloat-renderable",
+              "bgra8unorm-storage",
+              "texture-compression-bc",
+              "core-features-and-limits",
+              "chromium-experimental-sampling-resource-table",
+              "chromium-experimental-timestamp-query-inside-passes",
+              "float32-filterable",
+              "indirect-first-instance",
+              "texture-compression-astc-sliced-3d",
+              "float32-blendable",
+              "subgroup-size-control",
+              "texture-compression-unaligned",
+              "texture-compression-astc",
+              "texture-compression-etc2",
+              "depth-clip-control",
+              "texture-compression-bc-sliced-3d",
+              "clip-distances",
+              "timestamp-query",
+              "texture-component-swizzle",
+              "subgroups"
+            ],
+            "limits": {
+              "maxTextureDimension2D": 8192,
+              "maxBufferSize": 1073741824,
+              "maxStorageBufferBindingSize": 1073741824,
+              "maxComputeWorkgroupStorageSize": 32768
+            },
+            "qaSoftware": true
+          },
+          "deviceLost": null,
+          "frame": {
+            "n": 26,
+            "medianMs": 100,
+            "p95Ms": 100,
+            "p99Ms": 100,
+            "cpuMs": 6
+          },
+          "drawCalls": 26,
+          "views": 11,
+          "orbits": 0,
+          "textures": {
+            "entries": 15,
+            "placeholder": 0,
+            "base": 15,
+            "hi": 0,
+            "residentMiB": 192,
+            "budgetMiB": 1536,
+            "loading": []
+          },
+          "terrain": null,
+          "net": {
+            "requests": 37,
+            "bytes": 62315597,
+            "failures": 0,
+            "inFlight": 0,
+            "queued": 0
+          },
+          "exposureEV": 8.32
+        }
+      },
+      {
+        "name": "ryugu",
+        "file": "/workspace/work/sol/final3/ryugu.png",
+        "wallMs": 23823,
+        "id": "ryugu",
+        "distKm": 2.008,
+        "tier": "osculating elements (SBDB, two-body)",
+        "terrain": null,
+        "diag": {
+          "backend": "WebGPU (native)",
+          "adapter": {
+            "vendor": "google",
+            "architecture": "swiftshader",
+            "device": "",
+            "description": "",
+            "fallback": true,
+            "features": [
+              "depth32float-stencil8",
+              "rg11b10ufloat-renderable",
+              "bgra8unorm-storage",
+              "texture-compression-bc",
+              "core-features-and-limits",
+              "chromium-experimental-sampling-resource-table",
+              "chromium-experimental-timestamp-query-inside-passes",
+              "float32-filterable",
+              "indirect-first-instance",
+              "texture-compression-astc-sliced-3d",
+              "float32-blendable",
+              "subgroup-size-control",
+              "texture-compression-unaligned",
+              "texture-compression-astc",
+              "texture-compression-etc2",
+              "depth-clip-control",
+              "texture-compression-bc-sliced-3d",
+              "clip-distances",
+              "timestamp-query",
+              "texture-component-swizzle",
+              "subgroups"
+            ],
+            "limits": {
+              "maxTextureDimension2D": 8192,
+              "maxBufferSize": 1073741824,
+              "maxStorageBufferBindingSize": 1073741824,
+              "maxComputeWorkgroupStorageSize": 32768
+            },
+            "qaSoftware": true
+          },
+          "deviceLost": null,
+          "frame": {
+            "n": 35,
+            "medianMs": 100,
+            "p95Ms": 100,
+            "p99Ms": 100,
+            "cpuMs": 4
+          },
+          "drawCalls": 20,
+          "views": 12,
+          "orbits": 0,
+          "textures": {
+            "entries": 15,
+            "placeholder": 0,
+            "base": 15,
+            "hi": 0,
+            "residentMiB": 192,
+            "budgetMiB": 1536,
+            "loading": []
+          },
+          "terrain": null,
+          "net": {
+            "requests": 37,
+            "bytes": 62315597,
+            "failures": 0,
+            "inFlight": 0,
+            "queued": 0
+          },
+          "exposureEV": 3.7
+        }
+      },
+      {
+        "name": "halley",
+        "file": "/workspace/work/sol/final3/halley.png",
+        "wallMs": 22081,
+        "id": "halley",
+        "distKm": 30,
+        "tier": "JPL Horizons sampled (interpolated)",
+        "terrain": null,
+        "diag": {
+          "backend": "WebGPU (native)",
+          "adapter": {
+            "vendor": "google",
+            "architecture": "swiftshader",
+            "device": "",
+            "description": "",
+            "fallback": true,
+            "features": [
+              "depth32float-stencil8",
+              "rg11b10ufloat-renderable",
+              "bgra8unorm-storage",
+              "texture-compression-bc",
+              "core-features-and-limits",
+              "chromium-experimental-sampling-resource-table",
+              "chromium-experimental-timestamp-query-inside-passes",
+              "float32-filterable",
+              "indirect-first-instance",
+              "texture-compression-astc-sliced-3d",
+              "float32-blendable",
+              "subgroup-size-control",
+              "texture-compression-unaligned",
+              "texture-compression-astc",
+              "texture-compression-etc2",
+              "depth-clip-control",
+              "texture-compression-bc-sliced-3d",
+              "clip-distances",
+              "timestamp-query",
+              "texture-component-swizzle",
+              "subgroups"
+            ],
+            "limits": {
+              "maxTextureDimension2D": 8192,
+              "maxBufferSize": 1073741824,
+              "maxStorageBufferBindingSize": 1073741824,
+              "maxComputeWorkgroupStorageSize": 32768
+            },
+            "qaSoftware": true
+          },
+          "deviceLost": null,
+          "frame": {
+            "n": 44,
+            "medianMs": 100,
+            "p95Ms": 100,
+            "p99Ms": 100,
+            "cpuMs": 4.2
+          },
+          "drawCalls": 20,
+          "views": 13,
+          "orbits": 0,
+          "textures": {
+            "entries": 15,
+            "placeholder": 0,
+            "base": 15,
+            "hi": 0,
+            "residentMiB": 192,
+            "budgetMiB": 1536,
+            "loading": []
+          },
+          "terrain": null,
+          "net": {
+            "requests": 37,
+            "bytes": 62315597,
+            "failures": 0,
+            "inFlight": 0,
+            "queued": 0
+          },
+          "exposureEV": 13
+        }
+      },
+      {
+        "name": "saturn-guides",
+        "file": "/workspace/work/sol/final3/saturn-guides.png",
+        "wallMs": 22921,
+        "id": "saturn",
+        "distKm": 3000000,
+        "tier": "JPL Horizons sampled barycentre − moon offsets",
+        "terrain": null,
+        "diag": {
+          "backend": "WebGPU (native)",
+          "adapter": {
+            "vendor": "google",
+            "architecture": "swiftshader",
+            "device": "",
+            "description": "",
+            "fallback": true,
+            "features": [
+              "depth32float-stencil8",
+              "rg11b10ufloat-renderable",
+              "bgra8unorm-storage",
+              "texture-compression-bc",
+              "core-features-and-limits",
+              "chromium-experimental-sampling-resource-table",
+              "chromium-experimental-timestamp-query-inside-passes",
+              "float32-filterable",
+              "indirect-first-instance",
+              "texture-compression-astc-sliced-3d",
+              "float32-blendable",
+              "subgroup-size-control",
+              "texture-compression-unaligned",
+              "texture-compression-astc",
+              "texture-compression-etc2",
+              "depth-clip-control",
+              "texture-compression-bc-sliced-3d",
+              "clip-distances",
+              "timestamp-query",
+              "texture-component-swizzle",
+              "subgroups"
+            ],
+            "limits": {
+              "maxTextureDimension2D": 8192,
+              "maxBufferSize": 1073741824,
+              "maxStorageBufferBindingSize": 1073741824,
+              "maxComputeWorkgroupStorageSize": 32768
+            },
+            "qaSoftware": true
+          },
+          "deviceLost": null,
+          "frame": {
+            "n": 53,
+            "medianMs": 100,
+            "p95Ms": 100,
+            "p99Ms": 100,
+            "cpuMs": 3.8
+          },
+          "drawCalls": 38,
+          "views": 14,
+          "orbits": 13,
+          "textures": {
+            "entries": 16,
+            "placeholder": 0,
+            "base": 16,
+            "hi": 0,
+            "residentMiB": 202.7,
+            "budgetMiB": 1536,
+            "loading": []
+          },
+          "terrain": null,
+          "net": {
+            "requests": 38,
+            "bytes": 62502152,
+            "failures": 0,
+            "inFlight": 0,
+            "queued": 0
+          },
+          "exposureEV": 9.28
+        }
+      },
+      {
+        "name": "neptune-guides",
+        "file": "/workspace/work/sol/final3/neptune-guides.png",
+        "wallMs": 24575,
+        "id": "neptune",
+        "distKm": 1200000,
+        "tier": "JPL Horizons sampled barycentre − moon offsets",
+        "terrain": null,
+        "diag": {
+          "backend": "WebGPU (native)",
+          "adapter": {
+            "vendor": "google",
+            "architecture": "swiftshader",
+            "device": "",
+            "description": "",
+            "fallback": true,
+            "features": [
+              "depth32float-stencil8",
+              "rg11b10ufloat-renderable",
+              "bgra8unorm-storage",
+              "texture-compression-bc",
+              "core-features-and-limits",
+              "chromium-experimental-sampling-resource-table",
+              "chromium-experimental-timestamp-query-inside-passes",
+              "float32-filterable",
+              "indirect-first-instance",
+              "texture-compression-astc-sliced-3d",
+              "float32-blendable",
+              "subgroup-size-control",
+              "texture-compression-unaligned",
+              "texture-compression-astc",
+              "texture-compression-etc2",
+              "depth-clip-control",
+              "texture-compression-bc-sliced-3d",
+              "clip-distances",
+              "timestamp-query",
+              "texture-component-swizzle",
+              "subgroups"
+            ],
+            "limits": {
+              "maxTextureDimension2D": 8192,
+              "maxBufferSize": 1073741824,
+              "maxStorageBufferBindingSize": 1073741824,
+              "maxComputeWorkgroupStorageSize": 32768
+            },
+            "qaSoftware": true
+          },
+          "deviceLost": null,
+          "frame": {
+            "n": 62,
+            "medianMs": 100,
+            "p95Ms": 100,
+            "p99Ms": 100,
+            "cpuMs": 1.8
+          },
+          "drawCalls": 40,
+          "views": 16,
+          "orbits": 15,
+          "textures": {
+            "entries": 18,
+            "placeholder": 0,
+            "base": 18,
+            "hi": 0,
+            "residentMiB": 224,
+            "budgetMiB": 1536,
+            "loading": []
+          },
+          "terrain": null,
+          "net": {
+            "requests": 40,
+            "bytes": 62798029,
+            "failures": 0,
+            "inFlight": 0,
+            "queued": 0
+          },
+          "exposureEV": 12.53
+        }
+      }
+    ]
+  },
+  "log": [],
+  "gpuErrors": []
+}

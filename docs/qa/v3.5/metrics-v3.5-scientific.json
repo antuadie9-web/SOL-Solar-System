@@ -1,0 +1,130 @@
+[
+ {
+  "view": "earth-mw",
+  "disc_px": 32212,
+  "clip_pct": 0.0,
+  "disc_p50": 58.4,
+  "dark_detail": 9.61,
+  "bg_mean": 0.06,
+  "stars": 5
+ },
+ {
+  "view": "earth-night",
+  "disc_px": 13280,
+  "clip_pct": 0.535,
+  "disc_p50": 90.5,
+  "dark_detail": 16.49,
+  "bg_mean": 0.01,
+  "stars": 9
+ },
+ {
+  "view": "earth-orbit",
+  "disc_px": 193438,
+  "clip_pct": 0.0,
+  "disc_p50": 72.5,
+  "dark_detail": 7.33,
+  "bg_mean": 0.02,
+  "stars": 2
+ },
+ {
+  "view": "eclipse-total",
+  "disc_px": 39183,
+  "clip_pct": 0.061,
+  "disc_p50": 47.9,
+  "dark_detail": 9.99,
+  "bg_mean": 0.68,
+  "stars": 2
+ },
+ {
+  "view": "europa",
+  "disc_px": 195289,
+  "clip_pct": 0.001,
+  "disc_p50": 161.3,
+  "dark_detail": 33.13,
+  "bg_mean": 0.05,
+  "stars": 1
+ },
+ {
+  "view": "io",
+  "disc_px": 194773,
+  "clip_pct": 0.0,
+  "disc_p50": 150.6,
+  "dark_detail": 34.48,
+  "bg_mean": 0.0,
+  "stars": 3
+ },
+ {
+  "view": "jupiter-mw",
+  "disc_px": 5164,
+  "clip_pct": 0.0,
+  "disc_p50": 87.1,
+  "dark_detail": 20.45,
+  "bg_mean": 0.0,
+  "stars": 11
+ },
+ {
+  "view": "jupiter",
+  "disc_px": 145687,
+  "clip_pct": 0.0,
+  "disc_p50": 155.3,
+  "dark_detail": 31.07,
+  "bg_mean": 0.02,
+  "stars": 2
+ },
+ {
+  "view": "moon-night",
+  "disc_px": 8702,
+  "clip_pct": 0.0,
+  "disc_p50": 51.4,
+  "dark_detail": 12.38,
+  "bg_mean": 0.03,
+  "stars": 17
+ },
+ {
+  "view": "moon",
+  "disc_px": 226730,
+  "clip_pct": 0.0,
+  "disc_p50": 169.1,
+  "dark_detail": 48.21,
+  "bg_mean": 0.08,
+  "stars": 3
+ },
+ {
+  "view": "saturn",
+  "disc_px": 36947,
+  "clip_pct": 0.0,
+  "disc_p50": 140.2,
+  "dark_detail": 26.94,
+  "bg_mean": 0.09,
+  "stars": 4
+ },
+ {
+  "view": "sun-0.05AU",
+  "disc_px": 21096,
+  "clip_pct": 0.0,
+  "disc_p50": 161.1,
+  "dark_detail": 39.65,
+  "bg_mean": 0.21,
+  "stars": 2,
+  "sun_spots": 0.0,
+  "sun_disc_R_px": 70.8
+ },
+ {
+  "view": "triton",
+  "disc_px": 194002,
+  "clip_pct": 0.0,
+  "disc_p50": 166.9,
+  "dark_detail": 35.73,
+  "bg_mean": 0.02,
+  "stars": 0
+ },
+ {
+  "view": "vesta",
+  "disc_px": 122665,
+  "clip_pct": 0.0,
+  "disc_p50": 159.8,
+  "dark_detail": 32.53,
+  "bg_mean": 0.0,
+  "stars": 5
+ }
+]

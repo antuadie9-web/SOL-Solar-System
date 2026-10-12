@@ -1,0 +1,83 @@
+{
+ "comets.json": {
+  "bytes": 58549,
+  "type": "list",
+  "entries": 610,
+  "loadedAtRuntime": false
+ },
+ "constellations.json": {
+  "bytes": 19501,
+  "type": "dict",
+  "entries": 2,
+  "loadedAtRuntime": true
+ },
+ "featured.json": {
+  "bytes": 21700,
+  "type": "dict",
+  "entries": 69,
+  "loadedAtRuntime": true
+ },
+ "satellites.json": {
+  "bytes": 89538,
+  "type": "list",
+  "entries": 460,
+  "loadedAtRuntime": true
+ },
+ "satellites_osc.json": {
+  "bytes": 86876,
+  "type": "dict",
+  "entries": 6,
+  "loadedAtRuntime": true
+ },
+ "smallbodies.bin": {
+  "bytes": 3780920,
+  "type": "float32 records",
+  "stride": 10,
+  "records": 94523,
+  "fields": [
+   "a AU",
+   "e",
+   "i deg",
+   "\u03a9 deg",
+   "\u03c9 deg",
+   "M deg",
+   "epoch (JD\u22122451545)",
+   "H",
+   "diameter km",
+   "class"
+  ],
+  "loadedAtRuntime": true
+ },
+ "smallbodies_names.json": {
+  "bytes": 820753,
+  "type": "list",
+  "entries": 25972,
+  "loadedAtRuntime": true
+ },
+ "starnames.json": {
+  "bytes": 7458,
+  "type": "list",
+  "entries": 159,
+  "loadedAtRuntime": false
+ },
+ "stars.bin": {
+  "bytes": 1980980,
+  "type": "float32 records",
+  "stride": 5,
+  "records": 99049,
+  "fields": [
+   "x",
+   "y",
+   "z (ICRS unit vector)",
+   "V mag",
+   "B\u2212V"
+  ],
+  "loadedAtRuntime": true
+ },
+ "texstats.json": {
+  "bytes": 881,
+  "type": "dict",
+  "entries": 29,
+  "loadedAtRuntime": true
+ }
+}

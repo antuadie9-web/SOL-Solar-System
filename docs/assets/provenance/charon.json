@@ -1,0 +1,69 @@
+{
+ "object_id": "charon",
+ "source_url": "https://asc-pds-services.s3.us-west-2.amazonaws.com/mosaic/Charon_NewHorizons_Global_Mosaic_300m_Jul2017_8bit.tif",
+ "label_url": "https://asc-pds-services.s3.us-west-2.amazonaws.com/mosaic/Charon_NewHorizons_Global_Mosaic_300m_Jul2017_8bit.lbl",
+ "checksum": "fe2e0831fe603d62925a40ddbd537ddf",
+ "retrieval_date": "2026-10-09",
+ "producer": "USGS Astrogeology Science Center",
+ "attribution": "NASA/JHUAPL/SwRI/LPI/USGS \u2014 New Horizons LORRI & MVIC",
+ "license": "U.S. public domain (USGS-produced product of NASA mission data); credit requested",
+ "commercial": "yes",
+ "original_wavelength": "visible (clear/broadband; colour products: mission colour filters merged by USGS)",
+ "projection": "SimpleCylindrical",
+ "label": {
+  "ProjectionName": "SimpleCylindrical",
+  "CenterLongitude": "0.0",
+  "LongitudeDirection": "PositiveEast",
+  "MinimumLongitude": "-180.0",
+  "MaximumLongitude": "180.0",
+  "LatitudeType": "Planetographic",
+  "Samples": "12693",
+  "Lines": "6347",
+  "Bands": "1",
+  "PixelResolution": "300.0",
+  "Scale": "35.2556510000000003"
+ },
+ "native_size": [
+  12693,
+  6347
+ ],
+ "transform": {
+  "direction": "positive-east",
+  "leftEdgeEastDeg": -180.0,
+  "columnShift": 0,
+  "shiftDeg": 0.0
+ },
+ "colour": "inferred \u2014 greyscale observed luminance \u00d7 ramp ((0.45, 0.3, 0.24), (0.86, 0.85, 0.84)) (documented in tools/ingest/usgs_mosaics.py)",
+ "observed_coverage_fraction": 0.74,
+ "georeference_check_vs_v3_3": {
+  "bestShiftDeg": 179.5,
+  "corrAtZero": -0.122,
+  "note": "positive = new map must move east to match v3.3"
+ },
+ "tiers": {
+  "hi": {
+   "file": "assets/tex/charon_hi.jpg",
+   "size": [
+    8192,
+    4096
+   ],
+   "sha256": "802b0055ff80fd18acc538011611b93cba1c7189e769c5a6648004be936a7e42",
+   "meanLinearLum": 0.17824044786733848
+  },
+  "base": {
+   "file": "assets/tex/charon.jpg",
+   "size": [
+    2048,
+    1024
+   ],
+   "sha256": "e496a874f6c552718620bf376e6b96c4531b3aeb39ea1d9eff9830de94e7af34",
+   "meanLinearLum": 0.17754637155477207
+  }
+ },
+ "white_balance_gains_linear": null,
+ "desaturation_keep": null,
+ "observed_floor_srgb": 0.0392156862745098,
+ "albedo_stretch": null,
+ "resampling": "BOX to 2\u00d7 then LANCZOS; sRGB 8-bit JPEG q92 4:4:4",
+ "WARNING": "georeference disagrees with the v3.3 map; inspect before shipping"
+}

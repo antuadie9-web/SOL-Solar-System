@@ -1,0 +1,78 @@
+{
+ "image": "earth-orbit.png",
+ "version": "3.6.0",
+ "object": "earth",
+ "view": "earth-orbit",
+ "request": 3.2,
+ "camera": {
+  "posHelioEclKm": [
+   144467439.4252956,
+   38335519.81280335,
+   1388.4883203537347
+  ],
+  "quat": [
+   -0.05644498861570183,
+   -0.8525029927636821,
+   -0.09415539599443706,
+   0.5110649391166151
+  ],
+  "fovDeg": 50,
+  "mode": "orbit",
+  "distanceKm": 20410.03712000109,
+  "altitudeKm": 14031.900520001089
+ },
+ "simJdTT": 2461322.000800722,
+ "simUtc": "2026-10-08T11:59:59.998Z",
+ "viewingMode": "exploration",
+ "phaseAngleDeg": 44.43396637288748,
+ "quality": "high",
+ "toneMap": "neutral",
+ "exposureEV": 0.44,
+ "skyEV": 20.25,
+ "detailTier": 5,
+ "terrain": null,
+ "rings": null,
+ "backend": "WebGPU (native)",
+ "adapter": {
+  "vendor": "google",
+  "architecture": "swiftshader",
+  "device": "",
+  "description": "",
+  "fallback": true,
+  "features": [
+   "depth32float-stencil8",
+   "rg11b10ufloat-renderable",
+   "bgra8unorm-storage",
+   "texture-compression-bc",
+   "core-features-and-limits",
+   "chromium-experimental-sampling-resource-table",
+   "chromium-experimental-timestamp-query-inside-passes",
+   "float32-filterable",
+   "indirect-first-instance",
+   "texture-compression-astc-sliced-3d",
+   "float32-blendable",
+   "subgroup-size-control",
+   "texture-compression-unaligned",
+   "texture-compression-astc",
+   "texture-compression-etc2",
+   "depth-clip-control",
+   "texture-compression-bc-sliced-3d",
+   "clip-distances",
+   "timestamp-query",
+   "texture-component-swizzle",
+   "subgroups"
+  ],
+  "limits": {
+   "maxTextureDimension2D": 8192,
+   "maxBufferSize": 1073741824,
+   "maxStorageBufferBindingSize": 1073741824,
+   "maxComputeWorkgroupStorageSize": 32768
+  },
+  "qaSoftware": true
+ },
+ "resolution": [
+  1280,
+  720
+ ],
+ "limitations": "Software WebGPU (SwiftShader) capture; not real-GPU look or performance evidence"
+}

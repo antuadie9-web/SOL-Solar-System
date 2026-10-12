@@ -1,0 +1,253 @@
+[
+ {
+  "view": "earth-limb",
+  "disc_px": 544639,
+  "clip_pct": 0.0,
+  "disc_p50": 64.2,
+  "dark_detail": 4.91,
+  "bg_mean": 3.22,
+  "stars": 523
+ },
+ {
+  "view": "earth-orbit",
+  "disc_px": 193938,
+  "clip_pct": 0.0,
+  "disc_p50": 86.1,
+  "dark_detail": 10.41,
+  "bg_mean": 1.83,
+  "stars": 561
+ },
+ {
+  "view": "earth-polar",
+  "disc_px": 118725,
+  "clip_pct": 0.003,
+  "disc_p50": 75.8,
+  "dark_detail": 11.22,
+  "bg_mean": 2.62,
+  "stars": 736
+ },
+ {
+  "view": "earth-terminator",
+  "disc_px": 81574,
+  "clip_pct": 0.007,
+  "disc_p50": 65.5,
+  "dark_detail": 10.2,
+  "bg_mean": 2.69,
+  "stars": 844
+ },
+ {
+  "view": "jupiter",
+  "disc_px": 147925,
+  "clip_pct": 0.009,
+  "disc_p50": 154.9,
+  "dark_detail": 32.38,
+  "bg_mean": 3.19,
+  "stars": 861
+ },
+ {
+  "view": "mars-candor",
+  "disc_px": 921600,
+  "clip_pct": 0.0,
+  "disc_p50": 60.7,
+  "dark_detail": 4.5,
+  "bg_mean": 0.0,
+  "stars": 0
+ },
+ {
+  "view": "mars-crescent",
+  "disc_px": 64183,
+  "clip_pct": 0.0,
+  "disc_p50": 73.0,
+  "dark_detail": 9.16,
+  "bg_mean": 2.58,
+  "stars": 473
+ },
+ {
+  "view": "mars-gale-noatmo",
+  "disc_px": 591375,
+  "clip_pct": 0.0,
+  "disc_p50": 32.7,
+  "dark_detail": 2.86,
+  "bg_mean": 0.93,
+  "stars": 0
+ },
+ {
+  "view": "mars-gale",
+  "disc_px": 913896,
+  "clip_pct": 0.0,
+  "disc_p50": 41.0,
+  "dark_detail": 3.49,
+  "bg_mean": 19.49,
+  "stars": 0
+ },
+ {
+  "view": "mars-limb",
+  "disc_px": 562065,
+  "clip_pct": 0.0,
+  "disc_p50": 78.8,
+  "dark_detail": 11.81,
+  "bg_mean": 3.2,
+  "stars": 386
+ },
+ {
+  "view": "mars-night",
+  "disc_px": 20539,
+  "clip_pct": 0.0,
+  "disc_p50": 109.1,
+  "dark_detail": 15.12,
+  "bg_mean": 4.0,
+  "stars": 542
+ },
+ {
+  "view": "mars-olympus",
+  "disc_px": 840396,
+  "clip_pct": 0.001,
+  "disc_p50": 78.1,
+  "dark_detail": 10.99,
+  "bg_mean": 7.76,
+  "stars": 28
+ },
+ {
+  "view": "mars-polar",
+  "disc_px": 113916,
+  "clip_pct": 0.001,
+  "disc_p50": 59.8,
+  "dark_detail": 7.67,
+  "bg_mean": 2.66,
+  "stars": 726
+ },
+ {
+  "view": "mars-terrain",
+  "disc_px": 878867,
+  "clip_pct": 0.0,
+  "disc_p50": 83.5,
+  "dark_detail": 21.35,
+  "bg_mean": 18.91,
+  "stars": 0
+ },
+ {
+  "view": "mars",
+  "disc_px": 193020,
+  "clip_pct": 0.007,
+  "disc_p50": 73.5,
+  "dark_detail": 11.65,
+  "bg_mean": 1.77,
+  "stars": 549
+ },
+ {
+  "view": "moon-hadley",
+  "disc_px": 230066,
+  "clip_pct": 0.0,
+  "disc_p50": 64.8,
+  "dark_detail": 9.99,
+  "bg_mean": 2.17,
+  "stars": 450
+ },
+ {
+  "view": "moon-terrain",
+  "disc_px": 645618,
+  "clip_pct": 0.0,
+  "disc_p50": 147.9,
+  "dark_detail": 27.14,
+  "bg_mean": 2.92,
+  "stars": 340
+ },
+ {
+  "view": "moon-tycho",
+  "disc_px": 538702,
+  "clip_pct": 0.0,
+  "disc_p50": 154.9,
+  "dark_detail": 40.21,
+  "bg_mean": 1.14,
+  "stars": 157
+ },
+ {
+  "view": "moon",
+  "disc_px": 227683,
+  "clip_pct": 0.0,
+  "disc_p50": 168.9,
+  "dark_detail": 48.47,
+  "bg_mean": 1.93,
+  "stars": 456
+ },
+ {
+  "view": "ring-flythrough",
+  "disc_px": 392090,
+  "clip_pct": 0.0,
+  "disc_p50": 117.4,
+  "dark_detail": 28.04,
+  "bg_mean": 2.96,
+  "stars": 477
+ },
+ {
+  "view": "saturn-backlit",
+  "disc_px": 37108,
+  "clip_pct": 0.059,
+  "disc_p50": 42.5,
+  "dark_detail": 7.62,
+  "bg_mean": 3.63,
+  "stars": 977
+ },
+ {
+  "view": "sun-0.05AU",
+  "disc_px": 22912,
+  "clip_pct": 0.0,
+  "disc_p50": 173.8,
+  "dark_detail": 20.87,
+  "bg_mean": 0.21,
+  "stars": 1,
+  "sun_spots": 0.0,
+  "sun_disc_R_px": 71.1
+ },
+ {
+  "view": "sun-close",
+  "disc_px": 889408,
+  "clip_pct": 0.0,
+  "disc_p50": 149.8,
+  "dark_detail": 29.98,
+  "bg_mean": 20.71,
+  "stars": 0,
+  "sun_spots": 0.17371,
+  "sun_disc_R_px": 456.6
+ },
+ {
+  "view": "sun-grazing",
+  "disc_px": 921600,
+  "clip_pct": 0.0,
+  "disc_p50": 120.8,
+  "dark_detail": 2.08,
+  "bg_mean": 0.0,
+  "stars": 0,
+  "sun_spots": 0.20696,
+  "sun_disc_R_px": 410.0
+ },
+ {
+  "view": "sun-limb",
+  "disc_px": 851851,
+  "clip_pct": 0.0,
+  "disc_p50": 179.9,
+  "dark_detail": 40.49,
+  "bg_mean": 16.38,
+  "stars": 7,
+  "sun_spots": 0.07174,
+  "sun_disc_R_px": 511.2
+ },
+ {
+  "view": "titan",
+  "disc_px": 271250,
+  "clip_pct": 0.008,
+  "disc_p50": 134.1,
+  "dark_detail": 26.94,
+  "bg_mean": 2.88,
+  "stars": 533
+ },
+ {
+  "view": "venus",
+  "disc_px": 193505,
+  "clip_pct": 0.0,
+  "disc_p50": 153.0,
+  "dark_detail": 29.12,
+  "bg_mean": 1.86,
+  "stars": 483
+ }
+]

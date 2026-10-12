@@ -1,0 +1,83 @@
+{
+ "image": "venus.png",
+ "version": "3.6.0",
+ "object": "venus",
+ "view": "venus",
+ "request": 3.2,
+ "camera": {
+  "posHelioEclKm": [
+   107968800.83658592,
+   10245270.778823381,
+   -6085646.140429408
+  ],
+  "quat": [
+   0.04850384769095481,
+   0.8916745852213089,
+   0.0984817348235983,
+   -0.4391641592112382
+  ],
+  "fovDeg": 50,
+  "mode": "orbit",
+  "distanceKm": 19365.760000002785,
+  "altitudeKm": 13313.960000002786
+ },
+ "simJdTT": 2461322.000800722,
+ "simUtc": "2026-10-08T11:59:59.998Z",
+ "viewingMode": "exploration",
+ "phaseAngleDeg": 43.51753425064559,
+ "quality": "high",
+ "toneMap": "neutral",
+ "exposureEV": -1.32,
+ "skyEV": 20.15,
+ "detailTier": 5,
+ "terrain": {
+  "maxLevel": 7,
+  "finestData": 4,
+  "patches": 233,
+  "provisional": 2
+ },
+ "rings": null,
+ "backend": "WebGPU (native)",
+ "adapter": {
+  "vendor": "google",
+  "architecture": "swiftshader",
+  "device": "",
+  "description": "",
+  "fallback": true,
+  "features": [
+   "depth32float-stencil8",
+   "rg11b10ufloat-renderable",
+   "bgra8unorm-storage",
+   "texture-compression-bc",
+   "core-features-and-limits",
+   "chromium-experimental-sampling-resource-table",
+   "chromium-experimental-timestamp-query-inside-passes",
+   "float32-filterable",
+   "indirect-first-instance",
+   "texture-compression-astc-sliced-3d",
+   "float32-blendable",
+   "subgroup-size-control",
+   "texture-compression-unaligned",
+   "texture-compression-astc",
+   "texture-compression-etc2",
+   "depth-clip-control",
+   "texture-compression-bc-sliced-3d",
+   "clip-distances",
+   "timestamp-query",
+   "texture-component-swizzle",
+   "subgroups"
+  ],
+  "limits": {
+   "maxTextureDimension2D": 8192,
+   "maxBufferSize": 1073741824,
+   "maxStorageBufferBindingSize": 1073741824,
+   "maxComputeWorkgroupStorageSize": 32768
+  },
+  "qaSoftware": true
+ },
+ "resolution": [
+  1280,
+  720
+ ],
+ "limitations": "Software WebGPU (SwiftShader) capture; not real-GPU look or performance evidence"
+}

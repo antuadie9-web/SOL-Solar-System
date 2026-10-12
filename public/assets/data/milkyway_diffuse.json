@@ -1,0 +1,14 @@
+{
+ "source": "assets/tex/milkyway.jpg (ESA/Gaia/DPAC Gaia DR2 all-sky map, CC BY-SA 3.0 IGO)",
+ "method": "5x5 median filter + 3x3 box blur (point-source residue removed; diffuse light kept)",
+ "size": [
+  4096,
+  2048
+ ],
+ "removedFluxFraction": 0.09551531760865173,
+ "bandMedianY": 0.22927049843593872,
+ "poleMedianY": 0.0014969343774661568,
+ "p50Y": 0.013796374203298715,
+ "p99Y": 0.5117248497398909,
+ "sha256": "ebec5be355e90e04236df0da398ff6534244f34876a9df881d95d356a8bd0d7c"
+}

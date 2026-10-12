@@ -1,0 +1,576 @@
+{
+ "generated": "2026-10-08T09:43:14.557Z",
+ "horizonsFetched": "2026-10-08T09:42:42.058Z",
+ "residuals": [
+  {
+   "group": "planets",
+   "id": "mercury",
+   "jd": 2433282.5,
+   "errKm": 20.394319664819584,
+   "angArcsec": 0.08355404209164793,
+   "radialRel": 7.799120106856668e-9,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "mercury",
+   "jd": 2451545,
+   "errKm": 31.990924915454986,
+   "angArcsec": 0.09463448304326906,
+   "radialRel": 2.0589264645746446e-9,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "mercury",
+   "jd": 2461321.5,
+   "errKm": 33.680051711206836,
+   "angArcsec": 0.10295363237461402,
+   "radialRel": 1.0511982129459648e-8,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "mercury",
+   "jd": 2478938.5,
+   "errKm": 32.722103221505385,
+   "angArcsec": 0.13333834333991276,
+   "radialRel": 5.7799129504204586e-8,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "venus",
+   "jd": 2433282.5,
+   "errKm": 52.233040006028936,
+   "angArcsec": 0.10002146825642394,
+   "radialRel": 5.167742646160386e-9,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "venus",
+   "jd": 2451545,
+   "errKm": 48.08321787670646,
+   "angArcsec": 0.09210504386571129,
+   "radialRel": 1.1662506296892174e-9,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "venus",
+   "jd": 2461321.5,
+   "errKm": 44.49101429622505,
+   "angArcsec": 0.08439775964124596,
+   "radialRel": 9.967177312436277e-10,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "venus",
+   "jd": 2478938.5,
+   "errKm": 44.15311953066036,
+   "angArcsec": 0.08462133025715503,
+   "radialRel": 5.05869411288194e-9,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "earth",
+   "jd": 2433282.5,
+   "errKm": 71.68641583966134,
+   "angArcsec": 0.10063351401876508,
+   "radialRel": 6.603979654029682e-9,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "earth",
+   "jd": 2451545,
+   "errKm": 59.862570988974355,
+   "angArcsec": 0.0839488322039299,
+   "radialRel": 3.511787925638203e-9,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "earth",
+   "jd": 2461321.5,
+   "errKm": 56.79761036297357,
+   "angArcsec": 0.07830105142461982,
+   "radialRel": 7.238726546922505e-9,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "earth",
+   "jd": 2478938.5,
+   "errKm": 53.87240331718472,
+   "angArcsec": 0.07566265166771177,
+   "radialRel": 3.9969928550364235e-9,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "mars",
+   "jd": 2433282.5,
+   "errKm": 128.1630949955362,
+   "angArcsec": 0.10616111402081967,
+   "radialRel": 9.652727808037206e-10,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "mars",
+   "jd": 2451545,
+   "errKm": 93.50986508488567,
+   "angArcsec": 0.0926164583677061,
+   "radialRel": 1.4127332898270683e-8,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "mars",
+   "jd": 2461321.5,
+   "errKm": 77.41705044590343,
+   "angArcsec": 0.0682446648103057,
+   "radialRel": 3.8972985559164765e-9,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "mars",
+   "jd": 2478938.5,
+   "errKm": 51.74684416734705,
+   "angArcsec": 0.051246905184739136,
+   "radialRel": 3.760780109503793e-9,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "jupiter",
+   "jd": 2433282.5,
+   "errKm": 706.5695767259199,
+   "angArcsec": 0.17784348905217878,
+   "radialRel": 3.5027868456377933e-7,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "jupiter",
+   "jd": 2451545,
+   "errKm": 969.1431222422015,
+   "angArcsec": 0.2689167431714833,
+   "radialRel": 5.098707495906606e-8,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "jupiter",
+   "jd": 2461321.5,
+   "errKm": 901.7376817332666,
+   "angArcsec": 0.2307646400216807,
+   "radialRel": 1.9291510715359902e-7,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "jupiter",
+   "jd": 2478938.5,
+   "errKm": 1526.0814084070007,
+   "angArcsec": 0.3901274366758146,
+   "radialRel": 5.891931845686116e-8,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "saturn",
+   "jd": 2433282.5,
+   "errKm": 1096.9930069933278,
+   "angArcsec": 0.14766009640630204,
+   "radialRel": 3.1994659354225824e-7,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "saturn",
+   "jd": 2451545,
+   "errKm": 808.2465387289425,
+   "angArcsec": 0.12077273278014383,
+   "radialRel": 5.611819156303298e-8,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "saturn",
+   "jd": 2461321.5,
+   "errKm": 1329.4256599867558,
+   "angArcsec": 0.19402576670732993,
+   "radialRel": 5.2193701308976064e-8,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "saturn",
+   "jd": 2478938.5,
+   "errKm": 2634.3533369927422,
+   "angArcsec": 0.35950436418022513,
+   "radialRel": 2.2832916810269942e-7,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "uranus",
+   "jd": 2433282.5,
+   "errKm": 662.0102624809076,
+   "angArcsec": 0.04077571445449879,
+   "radialRel": 1.2460289088642765e-7,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "uranus",
+   "jd": 2451545,
+   "errKm": 5749.398557502498,
+   "angArcsec": 0.3243615411453553,
+   "radialRel": 0.00000111723248917919,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "uranus",
+   "jd": 2461321.5,
+   "errKm": 17436.80781046613,
+   "angArcsec": 1.193034148077197,
+   "radialRel": 0.0000015795101816455647,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "uranus",
+   "jd": 2478938.5,
+   "errKm": 15180.16832963907,
+   "angArcsec": 1.0729982070566828,
+   "radialRel": 4.228843951785328e-7,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "neptune",
+   "jd": 2433282.5,
+   "errKm": 4280.382908842215,
+   "angArcsec": 0.17192856049000677,
+   "radialRel": 4.441015075320362e-7,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "neptune",
+   "jd": 2451545,
+   "errKm": 17741.319916115168,
+   "angArcsec": 0.744385260216748,
+   "radialRel": 0.0000015743039917952033,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "neptune",
+   "jd": 2461321.5,
+   "errKm": 33909.05448006002,
+   "angArcsec": 1.5060096647819288,
+   "radialRel": 0.0000020604274781984515,
+   "pass": true,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "planets",
+   "id": "neptune",
+   "jd": 2478938.5,
+   "errKm": 53090.687391536645,
+   "angArcsec": 2.441026520966376,
+   "radialRel": 4.823446107538492e-7,
+   "pass": false,
+   "tol": "ang<=2\" radial<=0.000005 "
+  },
+  {
+   "group": "moon",
+   "id": "moon",
+   "jd": 2433282.5,
+   "errKm": 41.95429779837558,
+   "angArcsec": 21.655793732657315,
+   "radialRel": 7.09669735913447e-9,
+   "pass": false,
+   "tol": "err<=2km "
+  },
+  {
+   "group": "moon",
+   "id": "moon",
+   "jd": 2451545,
+   "errKm": 0.0700048237257724,
+   "angArcsec": 0.03531280457505627,
+   "radialRel": 2.3944615728146185e-8,
+   "pass": true,
+   "tol": "err<=2km "
+  },
+  {
+   "group": "moon",
+   "id": "moon",
+   "jd": 2461321.5,
+   "errKm": 5.366023785273851,
+   "angArcsec": 2.9236532358944274,
+   "radialRel": 4.9142361142719655e-8,
+   "pass": false,
+   "tol": "err<=2km "
+  },
+  {
+   "group": "moon",
+   "id": "moon",
+   "jd": 2469807.5,
+   "errKm": 17.10582514617996,
+   "angArcsec": 9.317746039280308,
+   "radialRel": 1.4272269375752847e-8,
+   "pass": false,
+   "tol": "err<=2km "
+  },
+  {
+   "group": "galilean",
+   "id": "io",
+   "jd": 2461321.5,
+   "errKm": 448.34356998162116,
+   "angArcsec": 49.78091049869361,
+   "radialRel": 0.0010380971039588508,
+   "pass": true,
+   "tol": "err<=500km "
+  },
+  {
+   "group": "galilean",
+   "id": "io",
+   "jd": 2461322,
+   "errKm": 452.76720638208104,
+   "angArcsec": 47.169724580650495,
+   "radialRel": 0.0010447705725022509,
+   "pass": true,
+   "tol": "err<=500km "
+  },
+  {
+   "group": "galilean",
+   "id": "europa",
+   "jd": 2461321.5,
+   "errKm": 786.326183232137,
+   "angArcsec": 72.09152609446186,
+   "radialRel": 0.0011287749930170088,
+   "pass": false,
+   "tol": "err<=500km "
+  },
+  {
+   "group": "galilean",
+   "id": "europa",
+   "jd": 2461322,
+   "errKm": 522.494214965661,
+   "angArcsec": 36.57950156096024,
+   "radialRel": 0.0007599497315661789,
+   "pass": false,
+   "tol": "err<=500km "
+  },
+  {
+   "group": "galilean",
+   "id": "ganymede",
+   "jd": 2461321.5,
+   "errKm": 1276.6577981829166,
+   "angArcsec": 96.71999767214835,
+   "radialRel": 0.0010990614407024402,
+   "pass": false,
+   "tol": "err<=500km "
+  },
+  {
+   "group": "galilean",
+   "id": "ganymede",
+   "jd": 2461322,
+   "errKm": 1267.5203376030577,
+   "angArcsec": 81.86565164222493,
+   "radialRel": 0.0011168058929900198,
+   "pass": false,
+   "tol": "err<=500km "
+  },
+  {
+   "group": "galilean",
+   "id": "callisto",
+   "jd": 2461321.5,
+   "errKm": 2048.7641850520968,
+   "angArcsec": 60.97527969680842,
+   "radialRel": 0.0010552994859230897,
+   "pass": false,
+   "tol": "err<=500km "
+  },
+  {
+   "group": "galilean",
+   "id": "callisto",
+   "jd": 2461322,
+   "errKm": 2055.4917521524126,
+   "angArcsec": 62.213150926779775,
+   "radialRel": 0.001057269061138905,
+   "pass": false,
+   "tol": "err<=500km "
+  },
+  {
+   "group": "mean-element-moons",
+   "id": "phobos",
+   "jd": 2461321.5,
+   "errKm": 11561.965161151902,
+   "angArcsec": 275507.94561227626,
+   "radialRel": 0.020944778622528987,
+   "pass": false,
+   "tol": "err<=0.01a(94km) "
+  },
+  {
+   "group": "mean-element-moons",
+   "id": "deimos",
+   "jd": 2461321.5,
+   "errKm": 42677.64380021491,
+   "angArcsec": 471260.5370267392,
+   "radialRel": 0.00017544982903513443,
+   "pass": false,
+   "tol": "err<=0.01a(235km) "
+  },
+  {
+   "group": "mean-element-moons",
+   "id": "titan",
+   "jd": 2461321.5,
+   "errKm": 2414321.079125219,
+   "angArcsec": 575568.0390234797,
+   "radialRel": 0.04788300904367692,
+   "pass": false,
+   "tol": "err<=0.01a(12219km) "
+  },
+  {
+   "group": "mean-element-moons",
+   "id": "rhea",
+   "jd": 2461321.5,
+   "errKm": 1033997.1689056518,
+   "angArcsec": 567011.5009985612,
+   "radialRel": 0.0005047077432307445,
+   "pass": false,
+   "tol": "err<=0.01a(5271km) "
+  },
+  {
+   "group": "mean-element-moons",
+   "id": "triton",
+   "jd": 2461321.5,
+   "errKm": 227474.2729790248,
+   "angArcsec": 134619.26650126194,
+   "radialRel": 0.000009462550211800871,
+   "pass": false,
+   "tol": "err<=0.01a(3548km) "
+  },
+  {
+   "group": "mean-element-moons",
+   "id": "titania",
+   "jd": 2461321.5,
+   "errKm": 56913.94986390101,
+   "angArcsec": 26970.173273410914,
+   "radialRel": 0.0007196554612040278,
+   "pass": false,
+   "tol": "err<=0.01a(4359km) "
+  },
+  {
+   "group": "pluto-system",
+   "id": "pluto",
+   "jd": 2461321.5,
+   "errKm": 8619197.809337778,
+   "angArcsec": 309.9390142523231,
+   "radialRel": 0.0005981855569583237,
+   "pass": false,
+   "tol": "err<=100000km"
+  },
+  {
+   "group": "pluto-system",
+   "id": "charon",
+   "jd": 2461321.5,
+   "errKm": 13.262653466396674,
+   "angArcsec": 116.92536542777579,
+   "radialRel": 0.00036980395495053286,
+   "pass": true,
+   "tol": "err<=0.01a"
+  },
+  {
+   "group": "small-bodies",
+   "id": "ceres",
+   "jd": 2461321.5,
+   "errKm": 1180955.6404714978,
+   "angArcsec": 501.3616925240338,
+   "radialRel": 0.001684159109064696,
+   "pass": false,
+   "tol": "err<=20000km "
+  },
+  {
+   "group": "small-bodies",
+   "id": "vesta",
+   "jd": 2461321.5,
+   "errKm": 1882079.4399729492,
+   "angArcsec": 1046.1337238604665,
+   "radialRel": 0.0005885428354742677,
+   "pass": false,
+   "tol": "err<=20000km "
+  },
+  {
+   "group": "small-bodies",
+   "id": "pallas",
+   "jd": 2461321.5,
+   "errKm": 914196.9819978726,
+   "angArcsec": 448.7220053953374,
+   "radialRel": 0.0001304975422550402,
+   "pass": false,
+   "tol": "err<=20000km "
+  },
+  {
+   "group": "comets",
+   "id": "encke",
+   "jd": 2461321.5,
+   "errKm": 6574931.251915544,
+   "angArcsec": 2787.2895537700174,
+   "radialRel": 0.01615692672391936,
+   "pass": false,
+   "tol": "err<=2000000km "
+  },
+  {
+   "group": "comets",
+   "id": "halley",
+   "jd": 2461321.5,
+   "errKm": 42274782.42174995,
+   "angArcsec": 829.6507958238196,
+   "radialRel": 0.006988343929890984,
+   "pass": false,
+   "tol": "err<=2000000km "
+  }
+ ]
+}

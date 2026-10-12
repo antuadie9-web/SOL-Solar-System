@@ -1,0 +1,146 @@
+{
+  "url": "http://localhost:4655/?qa-off=small,smallcompute&qa-software-gpu=1",
+  "software": true,
+  "ready": true,
+  "bootMs": 16623,
+  "viewport": [
+    1280,
+    720
+  ],
+  "state": {
+    "err": null,
+    "frames": 5,
+    "gpu": {
+      "vendor": "google",
+      "architecture": "swiftshader",
+      "device": "",
+      "description": "",
+      "fallback": true,
+      "features": [
+        "depth32float-stencil8",
+        "rg11b10ufloat-renderable",
+        "bgra8unorm-storage",
+        "texture-compression-bc",
+        "core-features-and-limits",
+        "chromium-experimental-sampling-resource-table",
+        "chromium-experimental-timestamp-query-inside-passes",
+        "float32-filterable",
+        "indirect-first-instance",
+        "texture-compression-astc-sliced-3d",
+        "float32-blendable",
+        "subgroup-size-control",
+        "texture-compression-unaligned",
+        "texture-compression-astc",
+        "texture-compression-etc2",
+        "depth-clip-control",
+        "texture-compression-bc-sliced-3d",
+        "clip-distances",
+        "timestamp-query",
+        "texture-component-swizzle",
+        "subgroups"
+      ],
+      "limits": {
+        "maxTextureDimension2D": 8192,
+        "maxBufferSize": 1073741824,
+        "maxStorageBufferBindingSize": 1073741824,
+        "maxComputeWorkgroupStorageSize": 32768
+      },
+      "qaSoftware": true
+    },
+    "loaderText": "\n      \n      \n        \n    \n    \n        SOL\n        The Solar System at true scale\n        \n        Ready100%\n        Enter\n        Saturn’s rings span 280,000 km yet are typically tens of metres thick.\n        v3.4 · native WebGPU · desktop Chrome\n      ",
+    "diag": {
+      "backend": "WebGPU (native)",
+      "adapter": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "device": "",
+        "description": "",
+        "fallback": true,
+        "features": [
+          "depth32float-stencil8",
+          "rg11b10ufloat-renderable",
+          "bgra8unorm-storage",
+          "texture-compression-bc",
+          "core-features-and-limits",
+          "chromium-experimental-sampling-resource-table",
+          "chromium-experimental-timestamp-query-inside-passes",
+          "float32-filterable",
+          "indirect-first-instance",
+          "texture-compression-astc-sliced-3d",
+          "float32-blendable",
+          "subgroup-size-control",
+          "texture-compression-unaligned",
+          "texture-compression-astc",
+          "texture-compression-etc2",
+          "depth-clip-control",
+          "texture-compression-bc-sliced-3d",
+          "clip-distances",
+          "timestamp-query",
+          "texture-component-swizzle",
+          "subgroups"
+        ],
+        "limits": {
+          "maxTextureDimension2D": 8192,
+          "maxBufferSize": 1073741824,
+          "maxStorageBufferBindingSize": 1073741824,
+          "maxComputeWorkgroupStorageSize": 32768
+        },
+        "qaSoftware": true
+      },
+      "deviceLost": null,
+      "frame": {
+        "n": 5,
+        "medianMs": 100,
+        "p95Ms": 100,
+        "p99Ms": 100,
+        "cpuMs": 4
+      },
+      "drawCalls": 23,
+      "views": 3,
+      "orbits": 0,
+      "textures": {
+        "entries": 7,
+        "placeholder": 0,
+        "base": 7,
+        "hi": 0,
+        "residentMiB": 106.7,
+        "budgetMiB": 1536,
+        "loading": []
+      },
+      "terrain": null,
+      "net": {
+        "requests": 29,
+        "bytes": 46477324,
+        "failures": 0,
+        "inFlight": 0,
+        "queued": 0
+      },
+      "exposureEV": 7.3,
+      "detail": "D5 cinematic (71.9 px) — focused object, budget allows cinematic effects"
+    }
+  },
+  "scenario": {
+    "shots": [
+      "/workspace/work/qa34ui/ui-saturn-inspector.png",
+      "/workspace/work/qa34ui/ui-evidence-tab.png",
+      "/workspace/work/qa34ui/ui-guides-science.png",
+      "/workspace/work/qa34ui/ui-atlas.png",
+      "/workspace/work/qa34ui/ui-settings-sun.png",
+      "/workspace/work/qa34ui/ui-journeys.png",
+      "/workspace/work/qa34ui/ui-system-overview.png"
+    ],
+    "checks": {
+      "paletteOpen": true,
+      "selected": "saturn",
+      "guideMode": "science",
+      "settingsOpen": true,
+      "flightCancel": {
+        "was": true,
+        "after": false
+      },
+      "noPageErrors": true
+    }
+  },
+  "log": [],
+  "gpuErrors": []
+}

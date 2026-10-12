@@ -1,0 +1,78 @@
+{
+ "image": "mars.png",
+ "version": "3.6.0",
+ "object": "mars",
+ "view": "mars",
+ "request": 3.2,
+ "camera": {
+  "posHelioEclKm": [
+   3944880.3777047596,
+   234391610.4134257,
+   4817612.002147875
+  ],
+  "quat": [
+   -0.10180696938869181,
+   -0.3718423465296716,
+   -0.04106843457702523,
+   0.9217819666236644
+  ],
+  "fovDeg": 50,
+  "mode": "orbit",
+  "distanceKm": 10867.80799999083,
+  "altitudeKm": 7471.617999990829
+ },
+ "simJdTT": 2461322.000800722,
+ "simUtc": "2026-10-08T11:59:59.998Z",
+ "viewingMode": "exploration",
+ "phaseAngleDeg": 44.81215506920817,
+ "quality": "high",
+ "toneMap": "neutral",
+ "exposureEV": 1.12,
+ "skyEV": 20.29,
+ "detailTier": 5,
+ "terrain": null,
+ "rings": null,
+ "backend": "WebGPU (native)",
+ "adapter": {
+  "vendor": "google",
+  "architecture": "swiftshader",
+  "device": "",
+  "description": "",
+  "fallback": true,
+  "features": [
+   "depth32float-stencil8",
+   "rg11b10ufloat-renderable",
+   "bgra8unorm-storage",
+   "texture-compression-bc",
+   "core-features-and-limits",
+   "chromium-experimental-sampling-resource-table",
+   "chromium-experimental-timestamp-query-inside-passes",
+   "float32-filterable",
+   "indirect-first-instance",
+   "texture-compression-astc-sliced-3d",
+   "float32-blendable",
+   "subgroup-size-control",
+   "texture-compression-unaligned",
+   "texture-compression-astc",
+   "texture-compression-etc2",
+   "depth-clip-control",
+   "texture-compression-bc-sliced-3d",
+   "clip-distances",
+   "timestamp-query",
+   "texture-component-swizzle",
+   "subgroups"
+  ],
+  "limits": {
+   "maxTextureDimension2D": 8192,
+   "maxBufferSize": 1073741824,
+   "maxStorageBufferBindingSize": 1073741824,
+   "maxComputeWorkgroupStorageSize": 32768
+  },
+  "qaSoftware": true
+ },
+ "resolution": [
+  1280,
+  720
+ ],
+ "limitations": "Software WebGPU (SwiftShader) capture; not real-GPU look or performance evidence"
+}

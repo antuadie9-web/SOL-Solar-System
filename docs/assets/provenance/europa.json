@@ -1,0 +1,64 @@
+{
+ "object_id": "europa",
+ "source_url": "https://asc-pds-services.s3.us-west-2.amazonaws.com/mosaic/Europa_Voyager_GalileoSSI_global_mosaic_500m.tif",
+ "label_url": "https://asc-pds-services.s3.us-west-2.amazonaws.com/mosaic/Europa_Voyager_GalileoSSI_global_mosaic_500m.lbl",
+ "md5": "fc303afbf4e5c2e2f5384b9700b3c4ad",
+ "retrieval_date": "2026-10-09",
+ "producer": "USGS Astrogeology Science Center",
+ "attribution": "NASA/JPL/USGS \u2014 Voyager & Galileo SSI",
+ "license": "U.S. public domain (USGS-produced product of NASA mission data); credit requested",
+ "commercial": "yes",
+ "original_wavelength": "visible (clear/broadband; colour products: mission colour filters merged by USGS)",
+ "projection": "SimpleCylindrical",
+ "label": {
+  "ProjectionName": "SimpleCylindrical",
+  "CenterLongitude": "180",
+  "LongitudeDirection": "PositiveWest",
+  "MinimumLongitude": "0",
+  "MaximumLongitude": "360",
+  "LatitudeType": "Planetocentric",
+  "Samples": "19631",
+  "Lines": "9816",
+  "Bands": "1",
+  "PixelResolution": "499.974566579420014",
+  "Scale": "54.5300000000000011"
+ },
+ "native_size": [
+  19631,
+  9816
+ ],
+ "transform": {
+  "direction": "positive-west",
+  "leftEdgeEastDeg": -360.0,
+  "columnShift": 9816,
+  "shiftDeg": 180.0
+ },
+ "colour": "inferred \u2014 greyscale observed luminance \u00d7 tint ((0.86, 0.8, 0.7),) (documented in tools/ingest/usgs_mosaics.py)",
+ "observed_coverage_fraction": 0.9951,
+ "georeference_check_vs_v3_3": {
+  "bestShiftDeg": 0.0,
+  "corrAtZero": 0.582,
+  "note": "positive = new map must move east to match v3.3"
+ },
+ "tiers": {
+  "hi": {
+   "file": "assets/tex/europa_hi.jpg",
+   "size": [
+    8192,
+    4096
+   ],
+   "sha256": "cd17ef5fdc4d80d08bfaf1711fabebd9c36cda250ccf0a3db6e76823230c7f38",
+   "meanLinearLum": 0.29453267674663347
+  },
+  "base": {
+   "file": "assets/tex/europa.jpg",
+   "size": [
+    2048,
+    1024
+   ],
+   "sha256": "21c2ad3f03fbd361acab0f1068ee5abd111490ba836c3580bf1154ef1d9941c0",
+   "meanLinearLum": 0.2928074258926091
+  }
+ },
+ "resampling": "BOX to 2\u00d7 then LANCZOS; sRGB 8-bit JPEG q92 4:4:4"
+}

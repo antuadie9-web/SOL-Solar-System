@@ -1,0 +1,64 @@
+{
+ "object_id": "rhea",
+ "source_url": "https://asc-pds-services.s3.us-west-2.amazonaws.com/mosaic/Rhea_Cassini_Voyager_mosaic_global_417m.tif",
+ "label_url": "https://asc-pds-services.s3.us-west-2.amazonaws.com/mosaic/Rhea_Cassini_Voyager_mosaic_global_417m.lbl",
+ "md5": "beb4fcce091fc4c262b5ddd893997fb2",
+ "retrieval_date": "2026-10-09",
+ "producer": "USGS Astrogeology Science Center",
+ "attribution": "NASA/JPL-Caltech/Space Science Institute/USGS \u2014 Cassini ISS & Voyager",
+ "license": "U.S. public domain (USGS-produced product of NASA mission data); credit requested",
+ "commercial": "yes",
+ "original_wavelength": "visible (clear/broadband; colour products: mission colour filters merged by USGS)",
+ "projection": "SimpleCylindrical",
+ "label": {
+  "ProjectionName": "SimpleCylindrical",
+  "CenterLongitude": "180.0",
+  "LongitudeDirection": "PositiveWest",
+  "MinimumLongitude": "-180.0",
+  "MaximumLongitude": "180.0",
+  "LatitudeType": "Planetocentric",
+  "Samples": "11520",
+  "Lines": "5760",
+  "Bands": "1",
+  "PixelResolution": "416.751899999999978",
+  "Scale": "32.0"
+ },
+ "native_size": [
+  11520,
+  5760
+ ],
+ "transform": {
+  "direction": "positive-west",
+  "leftEdgeEastDeg": -180.0,
+  "columnShift": 0,
+  "shiftDeg": 0.0
+ },
+ "colour": "inferred \u2014 greyscale observed luminance \u00d7 tint ((0.9, 0.89, 0.86),) (documented in tools/ingest/usgs_mosaics.py)",
+ "observed_coverage_fraction": 1.0,
+ "georeference_check_vs_v3_3": {
+  "bestShiftDeg": 0.0,
+  "corrAtZero": 0.363,
+  "note": "positive = new map must move east to match v3.3"
+ },
+ "tiers": {
+  "hi": {
+   "file": "assets/tex/rhea_hi.jpg",
+   "size": [
+    8192,
+    4096
+   ],
+   "sha256": "fb590a8eea40c006420ecb760dd01beadb0700ffb5a650448a77264d56350635",
+   "meanLinearLum": 0.1603353999238684
+  },
+  "base": {
+   "file": "assets/tex/rhea.jpg",
+   "size": [
+    2048,
+    1024
+   ],
+   "sha256": "1722464009f025d5a91f5a91952e9b615f6abe94522328a5b5c676b4abfedf8b",
+   "meanLinearLum": 0.16022272512921998
+  }
+ },
+ "resampling": "BOX to 2\u00d7 then LANCZOS; sRGB 8-bit JPEG q92 4:4:4"
+}

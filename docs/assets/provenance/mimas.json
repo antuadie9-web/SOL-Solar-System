@@ -1,0 +1,57 @@
+{
+ "object_id": "mimas",
+ "source_url": "https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/p/i/a/1/PIA17214_unlabeled.png",
+ "label_url": "https://science.nasa.gov/resource/mimas-global-map-june-2017/",
+ "checksum": "f8ffa667b2c35ec890973ea3300a33d3ee506f596b53d3818cdfee56943e038b",
+ "retrieval_date": "2026-10-09",
+ "producer": "NASA/JPL",
+ "attribution": "NASA/JPL-Caltech/Space Science Institute (PIA17214)",
+ "license": "NASA/JPL image use policy: may be used for any purpose without prior permission; credit required",
+ "commercial": "yes",
+ "original_wavelength": "visible (clear/broadband; colour products: mission colour filters merged by USGS)",
+ "projection": "SimpleCylindrical",
+ "label": {
+  "ProjectionName": "SimpleCylindrical",
+  "CenterLongitude": "0",
+  "LongitudeDirection": "PositiveEast (display), verified via Herschel",
+  "MinimumLongitude": "-180",
+  "MaximumLongitude": "180"
+ },
+ "native_size": [
+  5760,
+  2880
+ ],
+ "transform": {
+  "columnShift": 0,
+  "note": "already canonical (verified by named feature)"
+ },
+ "colour": "inferred \u2014 greyscale observed luminance \u00d7 tint ((0.86, 0.86, 0.85),) (documented in tools/ingest/usgs_mosaics.py)",
+ "observed_coverage_fraction": 1.0,
+ "georeference_check_vs_v3_3": {
+  "bestShiftDeg": -0.5,
+  "corrAtZero": 0.196,
+  "note": "positive = new map must move east to match v3.3"
+ },
+ "tiers": {
+  "hi": {
+   "file": "assets/tex/mimas_hi.jpg",
+   "size": [
+    5760,
+    2880
+   ],
+   "sha256": "3d781890240929892cea1d656c58f34e355f6f295b57769dc3b3937876fcb780",
+   "meanLinearLum": 0.18352396900772788
+  },
+  "base": {
+   "file": "assets/tex/mimas.jpg",
+   "size": [
+    2048,
+    1024
+   ],
+   "sha256": "126961037ae7e81502f5561a0bf08b6b566d4653a59b7763da35622185c7a6ef",
+   "meanLinearLum": 0.18394985830681077
+  }
+ },
+ "albedo_stretch": null,
+ "resampling": "BOX to 2\u00d7 then LANCZOS; sRGB 8-bit JPEG q92 4:4:4"
+}

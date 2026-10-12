@@ -1,0 +1,182 @@
+{
+ "ariel": {
+  "truth": "observed (partial)",
+  "content": "Voyager 2 visible mosaics; unimaged northern hemispheres black (flagged noData → labelled reconstruction)",
+  "source": "Steve Albers global mosaics from Galileo / Voyager / Cassini / Dawn / New Horizons data",
+  "commercial": "NO — replace before any commercial or public redistribution (ISSUE AST-003)"
+ },
+ "callisto": {
+  "truth": "observed",
+  "content": "visible mosaic",
+  "source": "Björn Jónsson Callisto map (Voyager/Galileo)",
+  "commercial": "unclear — verify"
+ },
+ "ceres": {
+  "truth": "observed luminance; inferred colour",
+  "content": "visible mosaic; colour INFERRED (greyscale luminance × documented tint)",
+  "source": "USGS Astrogeology global mosaic — Ceres_Dawn_FC_DLR_global_20ppd_Oct2015.tif",
+  "commercial": "yes"
+ },
+ "charon": {
+  "truth": "observed luminance; inferred colour",
+  "content": "visible mosaic; colour INFERRED (greyscale luminance × documented tint)",
+  "source": "USGS Astrogeology global mosaic — Charon_NewHorizons_Global_Mosaic_300m_Jul2017_8bit.tif",
+  "commercial": "yes"
+ },
+ "dione": {
+  "truth": "observed luminance; inferred colour",
+  "content": "visible mosaic; colour INFERRED (greyscale luminance × documented tint)",
+  "source": "USGS Astrogeology global mosaic — Dione_Cassini_Voyager_mosaic_global_154m.tif",
+  "commercial": "yes"
+ },
+ "earth": {
+  "truth": "observed",
+  "content": "true-colour composite",
+  "source": "NASA Visible Earth — Blue Marble Next Generation",
+  "commercial": "yes"
+ },
+ "enceladus": {
+  "truth": "observed luminance; inferred colour",
+  "content": "visible mosaic; colour INFERRED (greyscale luminance × documented tint)",
+  "source": "USGS Astrogeology global mosaic — Enceladus_Cassini_mosaic_global_110m.tif",
+  "commercial": "yes"
+ },
+ "europa": {
+  "truth": "observed luminance; inferred colour",
+  "content": "visible mosaic; colour INFERRED (greyscale luminance × documented tint)",
+  "source": "USGS Astrogeology global mosaic — Europa_Voyager_GalileoSSI_global_mosaic_500m.tif",
+  "commercial": "yes"
+ },
+ "ganymede": {
+  "truth": "observed luminance",
+  "content": "visible mosaic; colour observed (mission colour mosaic)",
+  "source": "USGS Astrogeology global mosaic — Ganymede_Voyager_GalileoSSI_Global_ClrMosaic_1435m.tif",
+  "commercial": "yes"
+ },
+ "iapetus": {
+  "truth": "observed luminance; inferred colour; low-frequency albedo re-stretched (documented)",
+  "content": "visible mosaic; colour INFERRED (greyscale luminance × documented tint)",
+  "source": "USGS Astrogeology global mosaic — Iapetus_Cassini_Voyager_mosaic_global_783m.tif",
+  "commercial": "yes"
+ },
+ "io": {
+  "truth": "observed luminance",
+  "content": "visible mosaic; colour observed (mission colour mosaic)",
+  "source": "USGS Astrogeology global mosaic — Io_GalileoSSI-Voyager_Global_Mosaic_ClrMerge_1km.tif",
+  "commercial": "yes"
+ },
+ "jupiter": {
+  "truth": "observed + artistically completed (giants: representative)",
+  "content": "processed colour maps; gas-giant maps are single representative epochs; Uranus/Neptune maps are largely featureless/artistic; Venus surface is a radar-derived visualisation",
+  "source": "Solar System Scope textures (INOVE), based on NASA mission data",
+  "commercial": "yes (with attribution)"
+ },
+ "mars": {
+  "truth": "observed + artistically completed (giants: representative)",
+  "content": "processed colour maps; gas-giant maps are single representative epochs; Uranus/Neptune maps are largely featureless/artistic; Venus surface is a radar-derived visualisation",
+  "source": "Solar System Scope textures (INOVE), based on NASA mission data",
+  "commercial": "yes (with attribution)"
+ },
+ "mercury": {
+  "truth": "observed + artistically completed (giants: representative)",
+  "content": "processed colour maps; gas-giant maps are single representative epochs; Uranus/Neptune maps are largely featureless/artistic; Venus surface is a radar-derived visualisation",
+  "source": "Solar System Scope textures (INOVE), based on NASA mission data",
+  "commercial": "yes (with attribution)"
+ },
+ "mimas": {
+  "truth": "observed luminance; inferred colour",
+  "content": "Cassini ISS clear-filter mosaic; colour INFERRED (tint)",
+  "source": "NASA/JPL-Caltech/SSI PIA17214 Mimas Global Map (June 2017)",
+  "commercial": "yes (credit required; no NASA endorsement implied)"
+ },
+ "moon": {
+  "truth": "observed",
+  "content": "visible colour mosaic / LOLA-derived normal",
+  "source": "NASA SVS CGI Moon Kit (LRO LROC WAC colour, LOLA elevation)",
+  "commercial": "yes"
+ },
+ "neptune": {
+  "truth": "observed + artistically completed (giants: representative)",
+  "content": "processed colour maps; gas-giant maps are single representative epochs; Uranus/Neptune maps are largely featureless/artistic; Venus surface is a radar-derived visualisation",
+  "source": "Solar System Scope textures (INOVE), based on NASA mission data",
+  "commercial": "yes (with attribution)"
+ },
+ "oberon": {
+  "truth": "observed (partial)",
+  "content": "Voyager 2 visible mosaics; unimaged northern hemispheres black (flagged noData → labelled reconstruction)",
+  "source": "Steve Albers global mosaics from Galileo / Voyager / Cassini / Dawn / New Horizons data",
+  "commercial": "NO — replace before any commercial or public redistribution (ISSUE AST-003)"
+ },
+ "pluto": {
+  "truth": "observed luminance; inferred colour",
+  "content": "visible mosaic; colour INFERRED (greyscale luminance × documented tint)",
+  "source": "USGS Astrogeology global mosaic — Pluto_NewHorizons_Global_Mosaic_300m_Jul2017_8bit.tif",
+  "commercial": "yes"
+ },
+ "rhea": {
+  "truth": "observed luminance; inferred colour",
+  "content": "visible mosaic; colour INFERRED (greyscale luminance × documented tint)",
+  "source": "USGS Astrogeology global mosaic — Rhea_Cassini_Voyager_mosaic_global_417m.tif",
+  "commercial": "yes"
+ },
+ "saturn": {
+  "truth": "observed + artistically completed (giants: representative)",
+  "content": "processed colour maps; gas-giant maps are single representative epochs; Uranus/Neptune maps are largely featureless/artistic; Venus surface is a radar-derived visualisation",
+  "source": "Solar System Scope textures (INOVE), based on NASA mission data",
+  "commercial": "yes (with attribution)"
+ },
+ "saturn_ring": {
+  "truth": "observed + artistically completed (giants: representative)",
+  "content": "processed colour maps; gas-giant maps are single representative epochs; Uranus/Neptune maps are largely featureless/artistic; Venus surface is a radar-derived visualisation",
+  "source": "Solar System Scope textures (INOVE), based on NASA mission data",
+  "commercial": "yes (with attribution)"
+ },
+ "tethys": {
+  "truth": "observed luminance; inferred colour",
+  "content": "visible mosaic; colour INFERRED (greyscale luminance × documented tint)",
+  "source": "USGS Astrogeology global mosaic — Tethys_Cassini_mosaic_global_293m.tif",
+  "commercial": "yes"
+ },
+ "titan": {
+  "truth": "observed (near-IR)",
+  "content": "938 nm near-IR surface mosaic (not visible colour; Titan’s visible appearance is haze)",
+  "source": "USGS Astrogeology Titan Cassini ISS global mosaic",
+  "commercial": "yes"
+ },
+ "titania": {
+  "truth": "observed (partial)",
+  "content": "Voyager 2 visible mosaics; unimaged northern hemispheres black (flagged noData → labelled reconstruction)",
+  "source": "Steve Albers global mosaics from Galileo / Voyager / Cassini / Dawn / New Horizons data",
+  "commercial": "NO — replace before any commercial or public redistribution (ISSUE AST-003)"
+ },
+ "triton": {
+  "truth": "observed luminance",
+  "content": "visible mosaic; colour observed (mission colour mosaic)",
+  "source": "USGS Astrogeology global mosaic — Triton_Voyager2_ClrMosaic_GlobalFill_600m.tif",
+  "commercial": "yes"
+ },
+ "uranus": {
+  "truth": "observed + artistically completed (giants: representative)",
+  "content": "processed colour maps; gas-giant maps are single representative epochs; Uranus/Neptune maps are largely featureless/artistic; Venus surface is a radar-derived visualisation",
+  "source": "Solar System Scope textures (INOVE), based on NASA mission data",
+  "commercial": "yes (with attribution)"
+ },
+ "venus": {
+  "truth": "observed + artistically completed (giants: representative)",
+  "content": "processed colour maps; gas-giant maps are single representative epochs; Uranus/Neptune maps are largely featureless/artistic; Venus surface is a radar-derived visualisation",
+  "source": "Solar System Scope textures (INOVE), based on NASA mission data",
+  "commercial": "yes (with attribution)"
+ },
+ "venus_surface": {
+  "truth": "observed + artistically completed (giants: representative)",
+  "content": "processed colour maps; gas-giant maps are single representative epochs; Uranus/Neptune maps are largely featureless/artistic; Venus surface is a radar-derived visualisation",
+  "source": "Solar System Scope textures (INOVE), based on NASA mission data",
+  "commercial": "yes (with attribution)"
+ },
+ "vesta": {
+  "truth": "observed luminance; inferred colour",
+  "content": "visible mosaic; colour INFERRED (greyscale luminance × documented tint)",
+  "source": "USGS Astrogeology global mosaic — Vesta_Dawn_FC_HAMO_Mosaic_Global_74ppd.tif",
+  "commercial": "yes"
+ }
+}

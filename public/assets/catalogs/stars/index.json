@@ -1,0 +1,1742 @@
+{
+ "schema": "sol-catalog/2",
+ "catalog": "stars3d",
+ "release": "GCNS (Gaia EDR3/DR3) + Hipparcos-2 · built 2026-10-08T11:01:38.022Z",
+ "frame": "ecliptic-j2000-heliocentric",
+ "unit": "pc",
+ "rowFormat": "SOL stars3d v1: Float32 x10 [x,y,z pc; vx,vy,vz pc/yr; M; Teff; flags; σd/d], J2000 ecliptic, epoch J2016.0",
+ "rowFloats": 10,
+ "count": 335865,
+ "cell": 50,
+ "shards": [
+  {
+   "id": "c50:-1:-1:-1",
+   "file": "shards/c50_-1_-1_-1.bin",
+   "bytes": 381280,
+   "sha256": "90c9e5393f151177e6c33737d6890f37a1c355e21e4fe1f356bc2d979d9a954b",
+   "count": 9532,
+   "firstRow": 0,
+   "bounds": {
+    "min": [
+     -49.997,
+     -49.994,
+     -49.988
+    ],
+    "max": [
+     -0.004,
+     -0.011,
+     -0.004
+    ]
+   }
+  },
+  {
+   "id": "c50:-1:-1:+0",
+   "file": "shards/c50_-1_-1_p0.bin",
+   "bytes": 376440,
+   "sha256": "c4e9a5043d99994ac637d5ed039f92b8c7dd268f1050954d0f5e389a876d6a54",
+   "count": 9411,
+   "firstRow": 9532,
+   "bounds": {
+    "min": [
+     -49.998,
+     -49.996,
+     0.001
+    ],
+    "max": [
+     -0.008,
+     -0.017,
+     49.997
+    ]
+   }
+  },
+  {
+   "id": "c50:-1:+0:-1",
+   "file": "shards/c50_-1_p0_-1.bin",
+   "bytes": 359320,
+   "sha256": "7c8936ea4b937f9cbbd2389e0d6eecd09901af30796c057cee6c2713a4fe9c26",
+   "count": 8983,
+   "firstRow": 18943,
+   "bounds": {
+    "min": [
+     -49.999,
+     0.009,
+     -49.998
+    ],
+    "max": [
+     -0.001,
+     49.999,
+     -0.002
+    ]
+   }
+  },
+  {
+   "id": "c50:-1:+0:+0",
+   "file": "shards/c50_-1_p0_p0.bin",
+   "bytes": 360920,
+   "sha256": "4cdeeb40e88d7275c59c4f0d2d49ef097c637658e8104186000e6f6def722588",
+   "count": 9023,
+   "firstRow": 27926,
+   "bounds": {
+    "min": [
+     -49.995,
+     0.001,
+     0.003
+    ],
+    "max": [
+     -0.009,
+     49.972,
+     49.997
+    ]
+   }
+  },
+  {
+   "id": "c50:+0:-1:-1",
+   "file": "shards/c50_p0_-1_-1.bin",
+   "bytes": 384320,
+   "sha256": "386a6fd319196a9f8dee58ab9a67ebd59c5e0fb5beb8dad88af652f9a384caab",
+   "count": 9608,
+   "firstRow": 36949,
+   "bounds": {
+    "min": [
+     0.017,
+     -49.994,
+     -49.999
+    ],
+    "max": [
+     49.997,
+     -0.005,
+     -0.004
+    ]
+   }
+  },
+  {
+   "id": "c50:+0:-1:+0",
+   "file": "shards/c50_p0_-1_p0.bin",
+   "bytes": 378440,
+   "sha256": "c9967f610b9334d6bd1db6ed36be53f84903467b59b20b8eec798fc83fe5f753",
+   "count": 9461,
+   "firstRow": 46557,
+   "bounds": {
+    "min": [
+     0.001,
+     -50,
+     0.003
+    ],
+    "max": [
+     49.999,
+     -0.029,
+     49.993
+    ]
+   }
+  },
+  {
+   "id": "c50:+0:+0:-1",
+   "file": "shards/c50_p0_p0_-1.bin",
+   "bytes": 376400,
+   "sha256": "b23f35779361a604b1552229e1a16cd7f78bb243634e3bb0b533189d665770f2",
+   "count": 9410,
+   "firstRow": 56018,
+   "bounds": {
+    "min": [
+     0.005,
+     0.009,
+     -49.994
+    ],
+    "max": [
+     49.995,
+     49.986,
+     -0.004
+    ]
+   }
+  },
+  {
+   "id": "c50:+0:+0:+0",
+   "file": "shards/c50_p0_p0_p0.bin",
+   "bytes": 383840,
+   "sha256": "e01a96ca7001295b8bae06c1fe7019360db09ddbde3a6d31c1cdcdcb3f637aa1",
+   "count": 9596,
+   "firstRow": 65428,
+   "bounds": {
+    "min": [
+     0.002,
+     0,
+     0.007
+    ],
+    "max": [
+     49.994,
+     49.997,
+     49.997
+    ]
+   }
+  },
+  {
+   "id": "c50:-1:-1:-2",
+   "file": "shards/c50_-1_-1_-2.bin",
+   "bytes": 326040,
+   "sha256": "5b948032414588d78312bb38b783dbf0b46018e70fe1ffee7df6390773743e68",
+   "count": 8151,
+   "firstRow": 75024,
+   "bounds": {
+    "min": [
+     -49.999,
+     -49.996,
+     -99.986
+    ],
+    "max": [
+     -0.006,
+     -0.003,
+     -50.002
+    ]
+   }
+  },
+  {
+   "id": "c50:-1:-1:+1",
+   "file": "shards/c50_-1_-1_p1.bin",
+   "bytes": 306880,
+   "sha256": "2be90cf5f87abfda91162d94ba0f041b3cea6402e039738d7d8df9fbf7db1b2b",
+   "count": 7672,
+   "firstRow": 83175,
+   "bounds": {
+    "min": [
+     -49.997,
+     -49.983,
+     50.007
+    ],
+    "max": [
+     -0.008,
+     -0.017,
+     99.999
+    ]
+   }
+  },
+  {
+   "id": "c50:-1:-2:-1",
+   "file": "shards/c50_-1_-2_-1.bin",
+   "bytes": 333320,
+   "sha256": "bd9a5a76d621b8f12648ea22b40e2cc81c6ef89144ac876fd6c853a8af93b74e",
+   "count": 8333,
+   "firstRow": 90847,
+   "bounds": {
+    "min": [
+     -49.991,
+     -99.963,
+     -49.994
+    ],
+    "max": [
+     -0.001,
+     -50.009,
+     -0.012
+    ]
+   }
+  },
+  {
+   "id": "c50:-1:-2:+0",
+   "file": "shards/c50_-1_-2_p0.bin",
+   "bytes": 326840,
+   "sha256": "6383bcaf0cef441be4921feec5cb1efb8f5ffb7ece389183e921e0d1c7f9fc05",
+   "count": 8171,
+   "firstRow": 99180,
+   "bounds": {
+    "min": [
+     -49.999,
+     -99.969,
+     0.011
+    ],
+    "max": [
+     -0.003,
+     -50.003,
+     49.99
+    ]
+   }
+  },
+  {
+   "id": "c50:-1:+0:-2",
+   "file": "shards/c50_-1_p0_-2.bin",
+   "bytes": 312360,
+   "sha256": "6f475097be848cc32a1d68baa15ebf00e48039168c15a30d5a356d84c035f9a1",
+   "count": 7809,
+   "firstRow": 107351,
+   "bounds": {
+    "min": [
+     -49.999,
+     0.004,
+     -99.999
+    ],
+    "max": [
+     -0.004,
+     50,
+     -50.011
+    ]
+   }
+  },
+  {
+   "id": "c50:-1:+0:+1",
+   "file": "shards/c50_-1_p0_p1.bin",
+   "bytes": 295840,
+   "sha256": "f618847f15117c04cb11a911264beec2e5d1e8fa16ece016e5c64d17a774c967",
+   "count": 7396,
+   "firstRow": 115160,
+   "bounds": {
+    "min": [
+     -49.982,
+     0.009,
+     50.016
+    ],
+    "max": [
+     -0.005,
+     49.994,
+     99.996
+    ]
+   }
+  },
+  {
+   "id": "c50:-1:+1:-1",
+   "file": "shards/c50_-1_p1_-1.bin",
+   "bytes": 305720,
+   "sha256": "9c02b958a5088494a4110e7b94306bc3fe315f1551a345f9b824a78b3756545c",
+   "count": 7643,
+   "firstRow": 122556,
+   "bounds": {
+    "min": [
+     -49.971,
+     50.009,
+     -49.999
+    ],
+    "max": [
+     -0.003,
+     99.964,
+     -0.01
+    ]
+   }
+  },
+  {
+   "id": "c50:-1:+1:+0",
+   "file": "shards/c50_-1_p1_p0.bin",
+   "bytes": 296120,
+   "sha256": "d7a4836aa73ad427ca0a99ec8094e52e4f09e1cb610766ad422c80514df545e4",
+   "count": 7403,
+   "firstRow": 130199,
+   "bounds": {
+    "min": [
+     -49.973,
+     50.03,
+     0.008
+    ],
+    "max": [
+     -0.001,
+     99.921,
+     49.999
+    ]
+   }
+  },
+  {
+   "id": "c50:-2:-1:-1",
+   "file": "shards/c50_-2_-1_-1.bin",
+   "bytes": 310560,
+   "sha256": "4b7ae7084f292f91bcd086824aa1be78764275163ec6c6c563d544f6c72beedc",
+   "count": 7764,
+   "firstRow": 137602,
+   "bounds": {
+    "min": [
+     -99.978,
+     -49.996,
+     -49.991
+    ],
+    "max": [
+     -50.009,
+     -0.003,
+     -0.009
+    ]
+   }
+  },
+  {
+   "id": "c50:-2:-1:+0",
+   "file": "shards/c50_-2_-1_p0.bin",
+   "bytes": 289520,
+   "sha256": "b879f76dc1d058dc1f6bdc28e33cba0a4056048f2447074bc9b67159f9927458",
+   "count": 7238,
+   "firstRow": 145366,
+   "bounds": {
+    "min": [
+     -99.991,
+     -49.98,
+     0.002
+    ],
+    "max": [
+     -50.007,
+     -0.008,
+     49.999
+    ]
+   }
+  },
+  {
+   "id": "c50:-2:+0:-1",
+   "file": "shards/c50_-2_p0_-1.bin",
+   "bytes": 296000,
+   "sha256": "da9c91217620d44925759296bb0fb8674f41f1a30c37deccdbd890aa063defe5",
+   "count": 7400,
+   "firstRow": 152604,
+   "bounds": {
+    "min": [
+     -99.993,
+     0.007,
+     -49.993
+    ],
+    "max": [
+     -50.014,
+     49.984,
+     -0.003
+    ]
+   }
+  },
+  {
+   "id": "c50:-2:+0:+0",
+   "file": "shards/c50_-2_p0_p0.bin",
+   "bytes": 288400,
+   "sha256": "b7e15814d0882099814225a902cdc10bd48bdcd3cf81bd6ff9b26f89488a53fc",
+   "count": 7210,
+   "firstRow": 160004,
+   "bounds": {
+    "min": [
+     -99.901,
+     0.014,
+     0.005
+    ],
+    "max": [
+     -50.002,
+     49.996,
+     49.995
+    ]
+   }
+  },
+  {
+   "id": "c50:+0:-1:-2",
+   "file": "shards/c50_p0_-1_-2.bin",
+   "bytes": 303880,
+   "sha256": "f62fd0c2d0d74f202d5497a94910fb656ec933dc8da8a9dae067dd1432502a52",
+   "count": 7597,
+   "firstRow": 167214,
+   "bounds": {
+    "min": [
+     0.016,
+     -49.969,
+     -99.853
+    ],
+    "max": [
+     49.996,
+     -0.003,
+     -50.005
+    ]
+   }
+  },
+  {
+   "id": "c50:+0:-1:+1",
+   "file": "shards/c50_p0_-1_p1.bin",
+   "bytes": 324640,
+   "sha256": "058d909d6ba138b5883f8fd206e7467b5a672496962a62fd00ab0eac922b3a2c",
+   "count": 8116,
+   "firstRow": 174811,
+   "bounds": {
+    "min": [
+     0.005,
+     -49.995,
+     50.005
+    ],
+    "max": [
+     49.982,
+     -0.005,
+     99.958
+    ]
+   }
+  },
+  {
+   "id": "c50:+0:-2:-1",
+   "file": "shards/c50_p0_-2_-1.bin",
+   "bytes": 329520,
+   "sha256": "98b73bda4652f2a30f1179a581f4af202ab219b6e3fc91d8e298d626d9309753",
+   "count": 8238,
+   "firstRow": 182927,
+   "bounds": {
+    "min": [
+     0.008,
+     -99.99,
+     -49.99
+    ],
+    "max": [
+     49.986,
+     -50.002,
+     -0.001
+    ]
+   }
+  },
+  {
+   "id": "c50:+0:-2:+0",
+   "file": "shards/c50_p0_-2_p0.bin",
+   "bytes": 324160,
+   "sha256": "0abb002a92a38fb3bcb95a87f0f4ae3d988b35caac7b4c79add6779015b71695",
+   "count": 8104,
+   "firstRow": 191165,
+   "bounds": {
+    "min": [
+     0.017,
+     -99.971,
+     0.001
+    ],
+    "max": [
+     49.987,
+     -50,
+     49.999
+    ]
+   }
+  },
+  {
+   "id": "c50:+0:+0:-2",
+   "file": "shards/c50_p0_p0_-2.bin",
+   "bytes": 295240,
+   "sha256": "09b5998a816f056464207db03013a29fc76f7e3af25c47fe685448c500e17255",
+   "count": 7381,
+   "firstRow": 199269,
+   "bounds": {
+    "min": [
+     0.004,
+     0,
+     -99.962
+    ],
+    "max": [
+     49.995,
+     49.999,
+     -50.007
+    ]
+   }
+  },
+  {
+   "id": "c50:+0:+0:+1",
+   "file": "shards/c50_p0_p0_p1.bin",
+   "bytes": 315960,
+   "sha256": "48fbc7965bfd0942cf26e22e20cdcc521fc0d9af7e67bfa62ecefc0301ecfd86",
+   "count": 7899,
+   "firstRow": 206650,
+   "bounds": {
+    "min": [
+     0.001,
+     0.002,
+     50.001
+    ],
+    "max": [
+     49.996,
+     49.995,
+     99.954
+    ]
+   }
+  },
+  {
+   "id": "c50:+0:+1:-1",
+   "file": "shards/c50_p0_p1_-1.bin",
+   "bytes": 317600,
+   "sha256": "020eb9b0f1be11bf92e975ee7161ca60c442536365c63add90e2a6d3d3bf48ec",
+   "count": 7940,
+   "firstRow": 214549,
+   "bounds": {
+    "min": [
+     0.003,
+     50.005,
+     -49.997
+    ],
+    "max": [
+     49.999,
+     99.966,
+     -0.004
+    ]
+   }
+  },
+  {
+   "id": "c50:+0:+1:+0",
+   "file": "shards/c50_p0_p1_p0.bin",
+   "bytes": 311640,
+   "sha256": "84f7d4053571ce1fec6cb5d0f7407f16f470668d17f85dda1e8402bfdc4fceaa",
+   "count": 7791,
+   "firstRow": 222489,
+   "bounds": {
+    "min": [
+     0.011,
+     50.002,
+     0.004
+    ],
+    "max": [
+     49.987,
+     99.999,
+     49.984
+    ]
+   }
+  },
+  {
+   "id": "c50:+1:-1:-1",
+   "file": "shards/c50_p1_-1_-1.bin",
+   "bytes": 295880,
+   "sha256": "024a91aeb793120be8794af8a008d76b7bcdf0d2c1f0d8ae047d0a45fbdd98d5",
+   "count": 7397,
+   "firstRow": 230280,
+   "bounds": {
+    "min": [
+     50.003,
+     -49.992,
+     -49.982
+    ],
+    "max": [
+     99.986,
+     -0.011,
+     -0.003
+    ]
+   }
+  },
+  {
+   "id": "c50:+1:-1:+0",
+   "file": "shards/c50_p1_-1_p0.bin",
+   "bytes": 307840,
+   "sha256": "59ab6ca7b4e44dc6c53b284e9884d572b8472ae8f3e2f6aa7674f06f717a9180",
+   "count": 7696,
+   "firstRow": 237677,
+   "bounds": {
+    "min": [
+     50.002,
+     -50,
+     0.009
+    ],
+    "max": [
+     99.965,
+     -0.009,
+     49.996
+    ]
+   }
+  },
+  {
+   "id": "c50:+1:+0:-1",
+   "file": "shards/c50_p1_p0_-1.bin",
+   "bytes": 289880,
+   "sha256": "d8eab7a423d48c5f8f7e95e02478b0c163df99837d606a352f3c5bf6ea047724",
+   "count": 7247,
+   "firstRow": 245373,
+   "bounds": {
+    "min": [
+     50.002,
+     0,
+     -49.96
+    ],
+    "max": [
+     100,
+     49.995,
+     -0.001
+    ]
+   }
+  },
+  {
+   "id": "c50:+1:+0:+0",
+   "file": "shards/c50_p1_p0_p0.bin",
+   "bytes": 295320,
+   "sha256": "dcb9b87d6e08a56b6e7e55a285904529a40c4e7fd6f1b688ef99a95e60256e3c",
+   "count": 7383,
+   "firstRow": 252620,
+   "bounds": {
+    "min": [
+     50.008,
+     0.002,
+     0.019
+    ],
+    "max": [
+     99.996,
+     49.977,
+     49.985
+    ]
+   }
+  },
+  {
+   "id": "c50:-1:-2:-2",
+   "file": "shards/c50_-1_-2_-2.bin",
+   "bytes": 117440,
+   "sha256": "a61c299c71d898e552b4a93eadf5ff781226445922882ce5e29506906d28e425",
+   "count": 2936,
+   "firstRow": 260003,
+   "bounds": {
+    "min": [
+     -49.947,
+     -99.587,
+     -99.981
+    ],
+    "max": [
+     -0.027,
+     -50.003,
+     -50.004
+    ]
+   }
+  },
+  {
+   "id": "c50:-1:-2:+1",
+   "file": "shards/c50_-1_-2_p1.bin",
+   "bytes": 107600,
+   "sha256": "207b97d20af32b116accf708f509cc80a1e81c9d6307d32714e4469feaf67b6f",
+   "count": 2690,
+   "firstRow": 262939,
+   "bounds": {
+    "min": [
+     -49.994,
+     -99.921,
+     50.013
+    ],
+    "max": [
+     -0.007,
+     -50.003,
+     99.547
+    ]
+   }
+  },
+  {
+   "id": "c50:-1:+1:-2",
+   "file": "shards/c50_-1_p1_-2.bin",
+   "bytes": 108480,
+   "sha256": "e49fc3f8665cd4c0248117237dc8f5087494d2778b9d33be37c915822469465c",
+   "count": 2712,
+   "firstRow": 265629,
+   "bounds": {
+    "min": [
+     -49.999,
+     50.011,
+     -99.606
+    ],
+    "max": [
+     -0.014,
+     99.862,
+     -50.017
+    ]
+   }
+  },
+  {
+   "id": "c50:-1:+1:+1",
+   "file": "shards/c50_-1_p1_p1.bin",
+   "bytes": 102400,
+   "sha256": "ef3a97245086dbb4a76707559936f32535b9f3f5d7674fe710972bb5f85cc7c2",
+   "count": 2560,
+   "firstRow": 268341,
+   "bounds": {
+    "min": [
+     -49.984,
+     50.007,
+     50
+    ],
+    "max": [
+     -0.031,
+     99.229,
+     98.866
+    ]
+   }
+  },
+  {
+   "id": "c50:-2:-1:-2",
+   "file": "shards/c50_-2_-1_-2.bin",
+   "bytes": 122320,
+   "sha256": "c01914dde0bb8986c31bf5cfa21fc827a01163eb476fd6b03ec15e7cfe4142e0",
+   "count": 3058,
+   "firstRow": 270901,
+   "bounds": {
+    "min": [
+     -99.973,
+     -49.973,
+     -98.659
+    ],
+    "max": [
+     -50.009,
+     -0.003,
+     -50.004
+    ]
+   }
+  },
+  {
+   "id": "c50:-2:-1:+1",
+   "file": "shards/c50_-2_-1_p1.bin",
+   "bytes": 98360,
+   "sha256": "3b5ecc02be4501928a233be890012a07892ff504bb498d3dfb68b5c20792a54b",
+   "count": 2459,
+   "firstRow": 273959,
+   "bounds": {
+    "min": [
+     -99.253,
+     -49.987,
+     50.002
+    ],
+    "max": [
+     -50.003,
+     -0.002,
+     99.527
+    ]
+   }
+  },
+  {
+   "id": "c50:-2:-2:-1",
+   "file": "shards/c50_-2_-2_-1.bin",
+   "bytes": 119560,
+   "sha256": "1dd483a2c670fbe735d9fde788c3ce282055607b51c46cef643978abd1d67c2f",
+   "count": 2989,
+   "firstRow": 276418,
+   "bounds": {
+    "min": [
+     -99.885,
+     -99.726,
+     -49.971
+    ],
+    "max": [
+     -50.002,
+     -50.007,
+     -0.001
+    ]
+   }
+  },
+  {
+   "id": "c50:-2:-2:+0",
+   "file": "shards/c50_-2_-2_p0.bin",
+   "bytes": 110480,
+   "sha256": "8bb11d00766572e66a4d0e63be97e9c7db36dbb11ddd50ebf050aad365ce01d6",
+   "count": 2762,
+   "firstRow": 279407,
+   "bounds": {
+    "min": [
+     -99.654,
+     -99.957,
+     0.009
+    ],
+    "max": [
+     -50.001,
+     -50.007,
+     49.975
+    ]
+   }
+  },
+  {
+   "id": "c50:-2:+0:-2",
+   "file": "shards/c50_-2_p0_-2.bin",
+   "bytes": 105200,
+   "sha256": "b10d95d5dbf7831e1208d162f84c537ef8f4f258eaf6b475fb0fa281d567f18d",
+   "count": 2630,
+   "firstRow": 282169,
+   "bounds": {
+    "min": [
+     -99.962,
+     0.005,
+     -99.808
+    ],
+    "max": [
+     -50.009,
+     49.957,
+     -50.008
+    ]
+   }
+  },
+  {
+   "id": "c50:-2:+0:+1",
+   "file": "shards/c50_-2_p0_p1.bin",
+   "bytes": 98920,
+   "sha256": "aed48ef9d59bfb5a2f1930d8b08ec8b7c1a4fe50ba5edcc8c9faededf5372674",
+   "count": 2473,
+   "firstRow": 284799,
+   "bounds": {
+    "min": [
+     -99.907,
+     0.013,
+     50.003
+    ],
+    "max": [
+     -50.004,
+     49.994,
+     98.906
+    ]
+   }
+  },
+  {
+   "id": "c50:-2:+1:-1",
+   "file": "shards/c50_-2_p1_-1.bin",
+   "bytes": 101160,
+   "sha256": "8a6903835c8ad6c037dec30b6e5e788ba082dd9f6a4605ea9c0399a08fc15147",
+   "count": 2529,
+   "firstRow": 287272,
+   "bounds": {
+    "min": [
+     -99.39,
+     50.002,
+     -49.991
+    ],
+    "max": [
+     -50.004,
+     99.663,
+     -0.007
+    ]
+   }
+  },
+  {
+   "id": "c50:-2:+1:+0",
+   "file": "shards/c50_-2_p1_p0.bin",
+   "bytes": 96560,
+   "sha256": "11b3cb498f7b873e9e6a4ecb8a33256e1cf349156bbcfc23ddeeae8510699387",
+   "count": 2414,
+   "firstRow": 289801,
+   "bounds": {
+    "min": [
+     -99.361,
+     50.006,
+     0.002
+    ],
+    "max": [
+     -50.008,
+     99.9,
+     49.983
+    ]
+   }
+  },
+  {
+   "id": "c50:+0:-2:-2",
+   "file": "shards/c50_p0_-2_-2.bin",
+   "bytes": 110280,
+   "sha256": "f9c7827b057448312238226748e4ffb6053e598922983bb936a33ba3f3caf9d7",
+   "count": 2757,
+   "firstRow": 292215,
+   "bounds": {
+    "min": [
+     0.008,
+     -99.556,
+     -99.763
+    ],
+    "max": [
+     49.997,
+     -50.001,
+     -50.005
+    ]
+   }
+  },
+  {
+   "id": "c50:+0:-2:+1",
+   "file": "shards/c50_p0_-2_p1.bin",
+   "bytes": 113720,
+   "sha256": "0ec44fbad8b7ccb4e17a8b52147d1f1a31a021c309ac73687dd853d87737a02d",
+   "count": 2843,
+   "firstRow": 294972,
+   "bounds": {
+    "min": [
+     0.004,
+     -99.464,
+     50.002
+    ],
+    "max": [
+     49.994,
+     -50.004,
+     99.826
+    ]
+   }
+  },
+  {
+   "id": "c50:+0:+1:-2",
+   "file": "shards/c50_p0_p1_-2.bin",
+   "bytes": 107560,
+   "sha256": "e08b7161511535483eb463ea8ad1afa14436ecc01cc4d19b9168cfa9a7c9d1b0",
+   "count": 2689,
+   "firstRow": 297815,
+   "bounds": {
+    "min": [
+     0.024,
+     50.004,
+     -97.871
+    ],
+    "max": [
+     49.955,
+     99.713,
+     -50.019
+    ]
+   }
+  },
+  {
+   "id": "c50:+0:+1:+1",
+   "file": "shards/c50_p0_p1_p1.bin",
+   "bytes": 108360,
+   "sha256": "ff98cd14137603fd9a47fa01957b4198046d4a90a3bb6e043f51614be6c16cd8",
+   "count": 2709,
+   "firstRow": 300504,
+   "bounds": {
+    "min": [
+     0.012,
+     50.014,
+     50.012
+    ],
+    "max": [
+     49.999,
+     99.965,
+     99.965
+    ]
+   }
+  },
+  {
+   "id": "c50:+1:-1:-2",
+   "file": "shards/c50_p1_-1_-2.bin",
+   "bytes": 102680,
+   "sha256": "4600f3194af6a858d18d786d4ab0f57db0460d10770e760f4a465280f9864d08",
+   "count": 2567,
+   "firstRow": 303213,
+   "bounds": {
+    "min": [
+     50.006,
+     -49.988,
+     -99.808
+    ],
+    "max": [
+     99.516,
+     -0.005,
+     -50.005
+    ]
+   }
+  },
+  {
+   "id": "c50:+1:-1:+1",
+   "file": "shards/c50_p1_-1_p1.bin",
+   "bytes": 116800,
+   "sha256": "ac1d619b3758a963d22eed246d9ff46214ecaa919bd7c23844f4980edd27abd7",
+   "count": 2920,
+   "firstRow": 305780,
+   "bounds": {
+    "min": [
+     50.009,
+     -49.973,
+     50.007
+    ],
+    "max": [
+     99.267,
+     -0.006,
+     99.965
+    ]
+   }
+  },
+  {
+   "id": "c50:+1:-2:-1",
+   "file": "shards/c50_p1_-2_-1.bin",
+   "bytes": 109160,
+   "sha256": "0a17ed50d4a2af843ff2673a52e5e01f8cf9e4d3f5f421220e5517d350f50a80",
+   "count": 2729,
+   "firstRow": 308700,
+   "bounds": {
+    "min": [
+     50.003,
+     -99.041,
+     -49.967
+    ],
+    "max": [
+     99.927,
+     -50.004,
+     -0.032
+    ]
+   }
+  },
+  {
+   "id": "c50:+1:-2:+0",
+   "file": "shards/c50_p1_-2_p0.bin",
+   "bytes": 114680,
+   "sha256": "728dbdb093ba5245c4338bbd1fec7bd3fa8f764168707e17a4ce6c3cf0c4fcaf",
+   "count": 2867,
+   "firstRow": 311429,
+   "bounds": {
+    "min": [
+     50.003,
+     -99.648,
+     0.01
+    ],
+    "max": [
+     99.895,
+     -50.014,
+     50
+    ]
+   }
+  },
+  {
+   "id": "c50:+1:+0:-2",
+   "file": "shards/c50_p1_p0_-2.bin",
+   "bytes": 100040,
+   "sha256": "4d77419f9994d95e206cb777ab371c286e7b151c2f27706d58ff8778fd680df6",
+   "count": 2501,
+   "firstRow": 314296,
+   "bounds": {
+    "min": [
+     50.02,
+     0.035,
+     -98.957
+    ],
+    "max": [
+     99.111,
+     49.998,
+     -50.003
+    ]
+   }
+  },
+  {
+   "id": "c50:+1:+0:+1",
+   "file": "shards/c50_p1_p0_p1.bin",
+   "bytes": 111600,
+   "sha256": "f8fc175e406a2075d42793268b198f175c44e39a41599f3593f02179c3a52192",
+   "count": 2790,
+   "firstRow": 316797,
+   "bounds": {
+    "min": [
+     50,
+     0.002,
+     50.002
+    ],
+    "max": [
+     99.724,
+     49.939,
+     99.942
+    ]
+   }
+  },
+  {
+   "id": "c50:+1:+1:-1",
+   "file": "shards/c50_p1_p1_-1.bin",
+   "bytes": 103520,
+   "sha256": "3f6e9dec48195c575d4e6a4d07a38bc50bda604004903c367258b2948a5619f5",
+   "count": 2588,
+   "firstRow": 319587,
+   "bounds": {
+    "min": [
+     50.002,
+     50.019,
+     -49.968
+    ],
+    "max": [
+     99.905,
+     99.818,
+     -0.015
+    ]
+   }
+  },
+  {
+   "id": "c50:+1:+1:+0",
+   "file": "shards/c50_p1_p1_p0.bin",
+   "bytes": 108800,
+   "sha256": "54d58e34faf01e2137a44ef5631ad36ea28957d918c4f9a29c0b5e0aa0082bd4",
+   "count": 2720,
+   "firstRow": 322175,
+   "bounds": {
+    "min": [
+     50.003,
+     50,
+     0.003
+    ],
+    "max": [
+     99.396,
+     99.529,
+     49.988
+    ]
+   }
+  },
+  {
+   "id": "c50:-1:-3:-1",
+   "file": "shards/c50_-1_-3_-1.bin",
+   "bytes": 15960,
+   "sha256": "c046d66de39eb8baaab585fb27c23caaa0707e22235977115b56d956dfec3cbb",
+   "count": 399,
+   "firstRow": 324895,
+   "bounds": {
+    "min": [
+     -49.717,
+     -144.001,
+     -49.372
+    ],
+    "max": [
+     -0.013,
+     -100.037,
+     -0.058
+    ]
+   }
+  },
+  {
+   "id": "c50:-1:-3:+0",
+   "file": "shards/c50_-1_-3_p0.bin",
+   "bytes": 12600,
+   "sha256": "7fca0fc12c1d0f811b16610370892f3a5b16ee80a8668aff3c3d7f39d58461a2",
+   "count": 315,
+   "firstRow": 325294,
+   "bounds": {
+    "min": [
+     -49.354,
+     -143.129,
+     0.185
+    ],
+    "max": [
+     -0.016,
+     -100.013,
+     49.337
+    ]
+   }
+  },
+  {
+   "id": "c50:-1:+2:-1",
+   "file": "shards/c50_-1_p2_-1.bin",
+   "bytes": 8280,
+   "sha256": "4c9e7316b0a902ca0a2e7d70cf44f594c3b9bcaa5425c63e78357778f3c9aecc",
+   "count": 207,
+   "firstRow": 325609,
+   "bounds": {
+    "min": [
+     -49.626,
+     100.037,
+     -48.515
+    ],
+    "max": [
+     -0.285,
+     147.305,
+     -0.182
+    ]
+   }
+  },
+  {
+   "id": "c50:-1:+2:+0",
+   "file": "shards/c50_-1_p2_p0.bin",
+   "bytes": 8560,
+   "sha256": "dac6b6f102d39bca50a6f5578bc85f83f187ac0f121c2af78d6872f1671a5ed8",
+   "count": 214,
+   "firstRow": 325816,
+   "bounds": {
+    "min": [
+     -48.037,
+     100.013,
+     0.047
+    ],
+    "max": [
+     -0.103,
+     149.815,
+     49.305
+    ]
+   }
+  },
+  {
+   "id": "c50:-2:-2:-2",
+   "file": "shards/c50_-2_-2_-2.bin",
+   "bytes": 19120,
+   "sha256": "d464f9e879c83d8220f938b35bcf480d479c806a1d5ec2b9da4388a845b1652f",
+   "count": 478,
+   "firstRow": 326030,
+   "bounds": {
+    "min": [
+     -96.415,
+     -99.543,
+     -98.205
+    ],
+    "max": [
+     -50.042,
+     -50.025,
+     -50.002
+    ]
+   }
+  },
+  {
+   "id": "c50:-2:-2:+1",
+   "file": "shards/c50_-2_-2_p1.bin",
+   "bytes": 12400,
+   "sha256": "22ebdc2e0dfd26bcc72cb691ed39fd328f593483e15f1fbcfe2ee74e64d5e0a6",
+   "count": 310,
+   "firstRow": 326508,
+   "bounds": {
+    "min": [
+     -92.149,
+     -98.61,
+     50.012
+    ],
+    "max": [
+     -50.054,
+     -50.059,
+     99.693
+    ]
+   }
+  },
+  {
+   "id": "c50:-2:+1:-2",
+   "file": "shards/c50_-2_p1_-2.bin",
+   "bytes": 13680,
+   "sha256": "1cab69fdbbec4cbfa2342dbbe242fb55a22c782742bf13915a3c2e60fd1fd809",
+   "count": 342,
+   "firstRow": 326818,
+   "bounds": {
+    "min": [
+     -99.703,
+     50.05,
+     -98.476
+    ],
+    "max": [
+     -50.053,
+     88.787,
+     -50.013
+    ]
+   }
+  },
+  {
+   "id": "c50:-2:+1:+1",
+   "file": "shards/c50_-2_p1_p1.bin",
+   "bytes": 11720,
+   "sha256": "f3ec6022c34854f01574d278b4bb5432c02a86365f033ebdda27f8f67fc81485",
+   "count": 293,
+   "firstRow": 327160,
+   "bounds": {
+    "min": [
+     -87.785,
+     50.015,
+     50.016
+    ],
+    "max": [
+     -50.001,
+     97.002,
+     97.536
+    ]
+   }
+  },
+  {
+   "id": "c50:-3:-1:+0",
+   "file": "shards/c50_-3_-1_p0.bin",
+   "bytes": 8720,
+   "sha256": "a6d182467923b87a76d37e8aa541f4f0a025d3e827e30494f6bfa29c113956a7",
+   "count": 218,
+   "firstRow": 327453,
+   "bounds": {
+    "min": [
+     -148.867,
+     -49.009,
+     0.23
+    ],
+    "max": [
+     -100.007,
+     -0.077,
+     49.611
+    ]
+   }
+  },
+  {
+   "id": "c50:-3:+0:+0",
+   "file": "shards/c50_-3_p0_p0.bin",
+   "bytes": 9320,
+   "sha256": "c534ecda95a839231b642c0717957cc2350a71a168bcf0b087d6be9310b753a8",
+   "count": 233,
+   "firstRow": 327671,
+   "bounds": {
+    "min": [
+     -146.096,
+     0.02,
+     0.193
+    ],
+    "max": [
+     -100.046,
+     49.523,
+     49.938
+    ]
+   }
+  },
+  {
+   "id": "c50:+0:-3:-1",
+   "file": "shards/c50_p0_-3_-1.bin",
+   "bytes": 9920,
+   "sha256": "c0f30af1c4a1f1a91cff3e5d7859fcec71b8fabcf3ffd4429e7647ef72d76f0e",
+   "count": 248,
+   "firstRow": 327904,
+   "bounds": {
+    "min": [
+     0.311,
+     -149.267,
+     -49.136
+    ],
+    "max": [
+     49.782,
+     -100.018,
+     -0.137
+    ]
+   }
+  },
+  {
+   "id": "c50:+0:-3:+0",
+   "file": "shards/c50_p0_-3_p0.bin",
+   "bytes": 9400,
+   "sha256": "02ee1542b3fba474b9700684e2d2a696b733d9e8e0909119e8b6687bebe5c4f0",
+   "count": 235,
+   "firstRow": 328152,
+   "bounds": {
+    "min": [
+     0.074,
+     -149.959,
+     0.069
+    ],
+    "max": [
+     49.101,
+     -100.022,
+     49.448
+    ]
+   }
+  },
+  {
+   "id": "c50:+0:+2:-1",
+   "file": "shards/c50_p0_p2_-1.bin",
+   "bytes": 10360,
+   "sha256": "2c030c9b22b7e5ef2631ffb255fc3391c81c43c3ce5233e4d4f5bed869d4827c",
+   "count": 259,
+   "firstRow": 328387,
+   "bounds": {
+    "min": [
+     0.032,
+     100.022,
+     -49.494
+    ],
+    "max": [
+     49.353,
+     146.703,
+     -0.05
+    ]
+   }
+  },
+  {
+   "id": "c50:+0:+2:+0",
+   "file": "shards/c50_p0_p2_p0.bin",
+   "bytes": 9960,
+   "sha256": "a950ccfc39cb19682044cc331766471bfc13262800126fa792aa541e3e9546d3",
+   "count": 249,
+   "firstRow": 328646,
+   "bounds": {
+    "min": [
+     0.23,
+     100.02,
+     0.125
+    ],
+    "max": [
+     49.922,
+     144.748,
+     49.672
+    ]
+   }
+  },
+  {
+   "id": "c50:+1:-2:-2",
+   "file": "shards/c50_p1_-2_-2.bin",
+   "bytes": 13240,
+   "sha256": "d6f1f4822e6f5f59c406bde6797c1c710cce4aacb30f114405a245bc032b1465",
+   "count": 331,
+   "firstRow": 328895,
+   "bounds": {
+    "min": [
+     50.021,
+     -96.75,
+     -97.133
+    ],
+    "max": [
+     97.646,
+     -50.059,
+     -50.016
+    ]
+   }
+  },
+  {
+   "id": "c50:+1:-2:+1",
+   "file": "shards/c50_p1_-2_p1.bin",
+   "bytes": 16800,
+   "sha256": "f992e4745f0bc085c0253cea542d9c36f0a0674e4a418adf93ba8d95c917eb58",
+   "count": 420,
+   "firstRow": 329226,
+   "bounds": {
+    "min": [
+     50.108,
+     -99.21,
+     50.005
+    ],
+    "max": [
+     99.066,
+     -50.073,
+     98.708
+    ]
+   }
+  },
+  {
+   "id": "c50:+1:+1:-2",
+   "file": "shards/c50_p1_p1_-2.bin",
+   "bytes": 13400,
+   "sha256": "1b9d4508427e118615e38921210c091f0c300bc4ecd13bcab3c8c87fa295ecbe",
+   "count": 335,
+   "firstRow": 329646,
+   "bounds": {
+    "min": [
+     50.022,
+     50.02,
+     -97.976
+    ],
+    "max": [
+     96.029,
+     98.082,
+     -50.022
+    ]
+   }
+  },
+  {
+   "id": "c50:+1:+1:+1",
+   "file": "shards/c50_p1_p1_p1.bin",
+   "bytes": 15360,
+   "sha256": "6d13bb4caa13830843eaa01b63478c1d5f311cd9018610e2529e5989297ba84e",
+   "count": 384,
+   "firstRow": 329981,
+   "bounds": {
+    "min": [
+     50.01,
+     50.02,
+     50.049
+    ],
+    "max": [
+     94.676,
+     92.997,
+     95.901
+    ]
+   }
+  },
+  {
+   "id": "c50:+2:-1:-1",
+   "file": "shards/c50_p2_-1_-1.bin",
+   "bytes": 9240,
+   "sha256": "47e243603809f6e604b428b2a3c464db20d599b8fe5c7cb23154bf7d59e40ed0",
+   "count": 231,
+   "firstRow": 330365,
+   "bounds": {
+    "min": [
+     100.008,
+     -49.997,
+     -49.211
+    ],
+    "max": [
+     145.697,
+     -0.05,
+     -0.051
+    ]
+   }
+  },
+  {
+   "id": "c50:+2:-1:+0",
+   "file": "shards/c50_p2_-1_p0.bin",
+   "bytes": 8760,
+   "sha256": "5bc71313ccbdaaa9c7ff61fb07a2badf5b0be45cf3c1fb06dcfd150b30fcab0d",
+   "count": 219,
+   "firstRow": 330596,
+   "bounds": {
+    "min": [
+     100.087,
+     -48.37,
+     0.006
+    ],
+    "max": [
+     131.884,
+     -0.323,
+     49.948
+    ]
+   }
+  },
+  {
+   "id": "c50:+2:+0:+0",
+   "file": "shards/c50_p2_p0_p0.bin",
+   "bytes": 9240,
+   "sha256": "6ce2218664f9f5ea6994665ad1d6a7bf823ce860dce17951c558aa177b36f34d",
+   "count": 231,
+   "firstRow": 330815,
+   "bounds": {
+    "min": [
+     100.003,
+     0.515,
+     0.164
+    ],
+    "max": [
+     148.891,
+     49.547,
+     48.086
+    ]
+   }
+  },
+  {
+   "id": "outer:+++",
+   "file": "shards/outer_ppp.bin",
+   "bytes": 23360,
+   "sha256": "3aa783babf924c458687e61abb4fbbcf438e722bcf88c02a56e4f15c133fe743",
+   "count": 584,
+   "firstRow": 331046,
+   "bounds": {
+    "min": [
+     0.045,
+     0.086,
+     0.046
+    ],
+    "max": [
+     431.122,
+     475.717,
+     824.119
+    ]
+   }
+  },
+  {
+   "id": "outer:++-",
+   "file": "shards/outer_pp-.bin",
+   "bytes": 24200,
+   "sha256": "6228d2ffbed5ffa864de3f10f461200b98e9511f38290f56cd6372202457d049",
+   "count": 605,
+   "firstRow": 331630,
+   "bounds": {
+    "min": [
+     0.21,
+     0.149,
+     -446.816
+    ],
+    "max": [
+     328.23,
+     618.865,
+     -0.104
+    ]
+   }
+  },
+  {
+   "id": "outer:+-+",
+   "file": "shards/outer_p-p.bin",
+   "bytes": 24880,
+   "sha256": "dcee7f0e66bd3655eaa88a95471794455e5084c0f81f70a0038b19b9ce8f1049",
+   "count": 622,
+   "firstRow": 332235,
+   "bounds": {
+    "min": [
+     0.002,
+     -615.247,
+     0.166
+    ],
+    "max": [
+     518.898,
+     -0.019,
+     692.498
+    ]
+   }
+  },
+  {
+   "id": "outer:+--",
+   "file": "shards/outer_p--.bin",
+   "bytes": 15760,
+   "sha256": "aea56a1d7d540e58f562c9986d632072b54dddeee8db8121962a882a8ea51932",
+   "count": 394,
+   "firstRow": 332857,
+   "bounds": {
+    "min": [
+     0.651,
+     -498.595,
+     -330.494
+    ],
+    "max": [
+     630.15,
+     -0.431,
+     -0.221
+    ]
+   }
+  },
+  {
+   "id": "outer:-++",
+   "file": "shards/outer_-pp.bin",
+   "bytes": 15240,
+   "sha256": "1f0d99898c004cddc021e5ac7ec505bdc2ccb8da18164f04d72781cbbc7e6d84",
+   "count": 381,
+   "firstRow": 333251,
+   "bounds": {
+    "min": [
+     -328.45,
+     0.448,
+     0.137
+    ],
+    "max": [
+     -0.205,
+     442.499,
+     367.013
+    ]
+   }
+  },
+  {
+   "id": "outer:-+-",
+   "file": "shards/outer_-p-.bin",
+   "bytes": 38800,
+   "sha256": "ac233ad4b0829b12ba008dac0f0c15573b0a5cc433a0ee9e1e2ea2b14659387d",
+   "count": 970,
+   "firstRow": 333632,
+   "bounds": {
+    "min": [
+     -508.824,
+     0.133,
+     -1115.381
+    ],
+    "max": [
+     -0.749,
+     564.844,
+     -0.023
+    ]
+   }
+  },
+  {
+   "id": "outer:--+",
+   "file": "shards/outer_--p.bin",
+   "bytes": 15320,
+   "sha256": "19794cb3293361434949783a8eb5ebdde5a3c6c7577e4ea10e3454c1a76a51e8",
+   "count": 383,
+   "firstRow": 334602,
+   "bounds": {
+    "min": [
+     -298.578,
+     -380.269,
+     0.281
+    ],
+    "max": [
+     -0.034,
+     -0.062,
+     489.098
+    ]
+   }
+  },
+  {
+   "id": "outer:---",
+   "file": "shards/outer_---.bin",
+   "bytes": 35200,
+   "sha256": "7307b252695041629036dbd3045a2b25c1f3d07858d17887a943fbcdb67850da",
+   "count": 880,
+   "firstRow": 334985,
+   "bounds": {
+    "min": [
+     -376.513,
+     -747.987,
+     -725.964
+    ],
+    "max": [
+     -0.235,
+     -0.066,
+     -0.106
+    ]
+   }
+  }
+ ],
+ "coverage": {
+  "sourceRows": 335865,
+  "positionKnown": 335865,
+  "distanceKnown": 335865,
+  "navigable3d": 335865,
+  "gcnsWithin100pc": 331291,
+  "hipparcosFill": 4574,
+  "excludedWithReason": "see manifest.json cuts (v1 build)"
+ },
+ "provenance": {
+  "v1": "manifest.json",
+  "sources": [
+   "Gaia Catalogue of Nearby Stars — Gaia Collaboration, Smart et al. 2021, A&A 649, A6 (VizieR J/A+A/649/A6) via https://tapvizier.cds.unistra.fr; Gaia data CC BY-SA 3.0 IGO",
+   "Hipparcos new reduction, van Leeuwen 2007 (VizieR I/311/hip2) via https://tapvizier.cds.unistra.fr"
+  ],
+  "cuts": {
+   "gcns": "GCNSprob > 0.38 (catalogue definition)",
+   "B": "G < 9 AND 0.1 < parallax <= 10 AND parallax_over_error > 5",
+   "hip": "Hp < 6.5, Plx/e_Plx > 5, no Gaia match within 90″ and 1.2 mag"
+  },
+  "truth": "positions OBSERVED (astrometry); distances DERIVED (GCNS Bayesian posterior medians; Hipparcos 1/parallax); Teff DERIVED; completeness: Gaia DR3 incompleteness at G<3 and in crowded fields",
+  "v1sha256": "a526685b067eab633dd70d3e9b62bf369ed733b081cf5bd3d04d0252605b5a6d"
+ },
+ "refinements": [
+  {
+   "v3.8": "2534 rows within 20 pc: distance = 1/parallax from Gaia DR3 (ϖ/σϖ > 10); flag bit 4 (16); tools/ingest/gaia_nearby_refine.py",
+   "source": "Gaia DR3 (Gaia Collaboration, Vallenari et al. 2023, A&A 674, A1), Gaia Archive TAP 2026-10-10"
+  }
+ ]
+}

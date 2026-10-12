@@ -1,0 +1,3306 @@
+{
+"507": {
+"H": 10.0,
+"dList": 79.9,
+"name": "Elara",
+"rJPL": 40.0,
+"rJPLapprox": false,
+"src": "JPL Horizons radius"
+},
+"508": {
+"H": 10.33,
+"dList": 57.8,
+"name": "Pasiphae",
+"rJPL": 18.0,
+"rJPLapprox": false,
+"src": "JPL Horizons radius"
+},
+"509": {
+"H": 11.6,
+"dList": 35.0,
+"name": "Sinope",
+"rJPL": 14.0,
+"rJPLapprox": false,
+"src": "JPL Horizons radius"
+},
+"510": {
+"H": 11.7,
+"dList": 42.2,
+"name": "Lysithea",
+"rJPL": 12.0,
+"rJPLapprox": false,
+"src": "JPL Horizons radius"
+},
+"511": {
+"H": 11.3,
+"dList": 46.7,
+"name": "Carme",
+"rJPL": 15.0,
+"rJPLapprox": false,
+"src": "JPL Horizons radius"
+},
+"512": {
+"H": 12.2,
+"dList": 29.1,
+"name": "Ananke",
+"rJPL": 10.0,
+"rJPLapprox": false,
+"src": "JPL Horizons radius"
+},
+"513": {
+"H": 13.5,
+"dList": 21.5,
+"name": "Leda",
+"rJPL": 5.0,
+"rJPLapprox": false,
+"src": "JPL Horizons radius"
+},
+"517": {
+"H": 14.2,
+"dList": 9.6,
+"name": "Callirrhoe",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: JPL V(1,0)"
+},
+"518": {
+"H": 14.4,
+"dList": 9.0,
+"name": "Themisto",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: JPL V(1,0)"
+},
+"519": {
+"H": 15.0,
+"dList": 2.0,
+"name": "Magaclite",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: JPL V(1,0)"
+},
+"520": {
+"H": 15.4,
+"dList": 5.0,
+"name": "Taygete",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: JPL V(1,0)"
+},
+"521": {
+"H": 15.7,
+"dList": 4.0,
+"name": "Chaldene",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: JPL V(1,0)"
+},
+"522": {
+"H": 15.2,
+"dList": 4.0,
+"name": "Harpalyke",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: JPL V(1,0)"
+},
+"523": {
+"H": 15.3,
+"dList": 6.9,
+"name": "Kalyke",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: JPL V(1,0)"
+},
+"524": {
+"H": 14.5,
+"dList": 5.0,
+"name": "Iocaste",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: JPL V(1,0)"
+},
+"525": {
+"H": 16.0,
+"dList": 3.0,
+"name": "Erinome",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: JPL V(1,0)"
+},
+"526": {
+"H": 15.9,
+"dList": 4.0,
+"name": "Isonoe",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: JPL V(1,0)"
+},
+"527": {
+"H": 15.0,
+"dList": 7.0,
+"name": "Praxidike",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: JPL V(1,0)"
+},
+"528": {
+"H": 15.4,
+"dList": 4.0,
+"name": "Autonoe",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: JPL V(1,0)"
+},
+"529": {
+"H": 15.7,
+"dList": 4.0,
+"name": "Thyone",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: JPL V(1,0)"
+},
+"530": {
+"H": 15.5,
+"dList": 4.0,
+"name": "Hermippe",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: JPL V(1,0)"
+},
+"531": {
+"H": 16.1,
+"dList": 3.0,
+"name": "Aitne",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: JPL V(1,0)"
+},
+"532": {
+"H": 16.1,
+"dList": 3.0,
+"name": "Eurydome",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: JPL V(1,0)"
+},
+"533": {
+"H": 16.2,
+"dList": 3.0,
+"name": "Euanthe",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: JPL V(1,0)"
+},
+"534": {
+"H": 16.3,
+"dList": 2.0,
+"name": "Euporie",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"535": {
+"H": 16.6,
+"dList": 2.0,
+"name": "Orthosie",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"536": {
+"H": 16.4,
+"dList": 2.0,
+"name": "Sponde",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: JPL V(1,0)"
+},
+"537": {
+"H": 16.4,
+"dList": 2.0,
+"name": "Kale",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: JPL V(1,0)"
+},
+"538": {
+"H": 16.8,
+"dList": 2.0,
+"name": "Pasithee",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"539": {
+"H": 15.6,
+"dList": 3.0,
+"name": "Hegemone",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"540": {
+"H": 16.3,
+"dList": 2.0,
+"name": "Mneme",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"541": {
+"H": 15.5,
+"dList": 4.0,
+"name": "Aoede",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"542": {
+"H": 16.3,
+"dList": 2.0,
+"name": "Thelxinoe",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"543": {
+"H": 16.2,
+"dList": 3.0,
+"name": "Arche",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"544": {
+"H": 16.2,
+"dList": 3.8,
+"name": "Kallichore",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"545": {
+"H": 15.9,
+"dList": 4.0,
+"name": "Helike",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"546": {
+"H": 16.2,
+"dList": 3.0,
+"name": "Carpo",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"547": {
+"H": 15.9,
+"dList": 4.0,
+"name": "Eukelade",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"548": {
+"H": 16.3,
+"dList": 2.0,
+"name": "Cyllene",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"549": {
+"H": 16.6,
+"dList": 2.0,
+"name": "Kore",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"550": {
+"H": 16.5,
+"dList": 2.0,
+"name": "Herse",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"551": {
+"H": 16.1,
+"dList": 2.0,
+"name": "S2010_J_1",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"552": {
+"H": 16.5,
+"dList": 2.0,
+"name": "S2010_J_2",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"553": {
+"H": 16.2,
+"dList": 4.0,
+"name": "Dia",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"554": {
+"H": 16.5,
+"dList": 2.0,
+"name": "S2016_J_1",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"555": {
+"H": 16.4,
+"dList": 2.0,
+"name": "S2003_J_18",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55501": {
+"H": 16.3,
+"dList": 2.0,
+"name": "S2003_J_2",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55502": {
+"H": 17.2,
+"dList": 1.0,
+"name": "S2003_J_4",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55503": {
+"H": 16.0,
+"dList": 3.0,
+"name": "S2003_J_9",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55504": {
+"H": 16.4,
+"dList": 2.0,
+"name": "S2003_J_10",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55505": {
+"H": 16.3,
+"dList": 2.0,
+"name": "S2003_J_12",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55506": {
+"H": 16.5,
+"dList": 2.0,
+"name": "S2003_J_16",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55507": {
+"H": 16.8,
+"dList": 2.0,
+"name": "S2003_J_23",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55508": {
+"H": 17.2,
+"dList": 1.0,
+"name": "S2003_J_24",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55509": {
+"H": 11.2,
+"dList": 42.2,
+"name": "S2011_J_3",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55510": {
+"H": 16.0,
+"dList": 3.0,
+"name": "S2018_J_2",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55511": {
+"H": 17.1,
+"dList": 2.0,
+"name": "S2018_J_3",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55512": {
+"H": 16.3,
+"dList": 2.0,
+"name": "S2021_J_1",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55513": {
+"H": 16.3,
+"dList": 2.0,
+"name": "S2021_J_2",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55514": {
+"H": 16.5,
+"dList": 2.0,
+"name": "S2021_J_3",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55515": {
+"H": 16.6,
+"dList": 2.0,
+"name": "S2021_J_4",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55516": {
+"H": 15.3,
+"dList": 6.9,
+"name": "S2021_J_5",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55517": {
+"H": 17.0,
+"dList": 1.0,
+"name": "S2021_J_6",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55518": {
+"H": 16.6,
+"dList": 2.0,
+"name": "S2016_J_3",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55519": {
+"H": 15.9,
+"dList": 4.0,
+"name": "S2016_J_4",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55520": {
+"H": 16.7,
+"dList": 2.0,
+"name": "S2018_J_4",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55521": {
+"H": 16.7,
+"dList": 2.0,
+"name": "S2022_J_1",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55522": {
+"H": 16.8,
+"dList": 2.0,
+"name": "S2022_J_2",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55523": {
+"H": 16.6,
+"dList": 2.0,
+"name": "S2022_J_3",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55525": {
+"H": 17.3,
+"dList": 1.0,
+"name": "S2017_J_10",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55526": {
+"H": 17.3,
+"dList": 1.0,
+"name": "S2017_J_11",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55527": {
+"H": 16.9,
+"dList": 3.0,
+"name": "S2011_J_4",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55528": {
+"H": 10.7,
+"dList": 46.7,
+"name": "S2018_J_5",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55529": {
+"H": 15.6,
+"dList": 3.0,
+"name": "S2024_J_1",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55530": {
+"H": 17.3,
+"dList": 1.0,
+"name": "S2011_J_5",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55531": {
+"H": 16.8,
+"dList": 2.0,
+"name": "S2010_J_3",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55532": {
+"H": 16.7,
+"dList": 2.0,
+"name": "S2010_J_4",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55533": {
+"H": 16.9,
+"dList": 2.0,
+"name": "S2010_J_5",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55534": {
+"H": 16.5,
+"dList": 2.0,
+"name": "S2010_J_6",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55535": {
+"H": 15.6,
+"dList": 5.0,
+"name": "S2011_J_6",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55536": {
+"H": 10.7,
+"dList": 46.7,
+"name": "S2017_J_12",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55537": {
+"H": 16.7,
+"dList": 2.0,
+"name": "S2017_J_13",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55538": {
+"H": 15.3,
+"dList": 6.9,
+"name": "S2017_J_14",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55539": {
+"H": 16.1,
+"dList": 2.0,
+"name": "S2017_J_15",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55540": {
+"H": 17.3,
+"dList": 1.0,
+"name": "S2017_J_16",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55541": {
+"H": 9.6,
+"dList": 79.9,
+"name": "S2017_J_17",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55542": {
+"H": 17.2,
+"dList": 1.0,
+"name": "S2017_J_18",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55543": {
+"H": 17.1,
+"dList": 2.0,
+"name": "S2021_J_7",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"55544": {
+"H": 16.3,
+"dList": 2.0,
+"name": "S2021_J_8",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"556": {
+"H": 17.2,
+"dList": 1.0,
+"name": "S2011_J_2",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"557": {
+"H": 15.8,
+"dList": 4.0,
+"name": "Eirene",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"558": {
+"H": 16.6,
+"dList": 2.0,
+"name": "Philophrosyn",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"559": {
+"H": 15.1,
+"dList": 6.0,
+"name": "S2017_J_1",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"560": {
+"H": 16.5,
+"dList": 2.0,
+"name": "Eupheme",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"561": {
+"H": 16.2,
+"dList": 3.8,
+"name": "S2003_J_19",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"562": {
+"H": 17.0,
+"dList": 1.0,
+"name": "Valetudo",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"563": {
+"H": 17.1,
+"dList": 1.0,
+"name": "S2017_J_2",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"564": {
+"H": 16.3,
+"dList": 2.0,
+"name": "S2017_J_3",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"565": {
+"H": 16.3,
+"dList": 3.0,
+"name": "Pandia",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"566": {
+"H": 17.5,
+"dList": 1.0,
+"name": "S2017_J_5",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"567": {
+"H": 17.3,
+"dList": 1.0,
+"name": "S2017_J_6",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"568": {
+"H": 16.3,
+"dList": 2.0,
+"name": "S2017_J_7",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"569": {
+"H": 16.7,
+"dList": 2.0,
+"name": "S2017_J_8",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"570": {
+"H": 16.1,
+"dList": 3.0,
+"name": "S2017_J_9",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"571": {
+"H": 16.0,
+"dList": 3.0,
+"name": "Ersa",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"572": {
+"H": 17.1,
+"dList": 1.0,
+"name": "S2011_J_1",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"613": {
+"H": 8.9,
+"dList": 24.8,
+"name": "Telesto",
+"rJPL": 16.3,
+"rJPLapprox": false,
+"src": "JPL Horizons radius"
+},
+"614": {
+"H": 9.1,
+"dList": 21.4,
+"name": "Calypso",
+"rJPL": 15.3,
+"rJPLapprox": false,
+"src": "JPL Horizons radius"
+},
+"619": {
+"H": 12.2,
+"dList": 19.0,
+"name": "Ymir",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"620": {
+"H": 12.2,
+"dList": 25.0,
+"name": "Paaliaq",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: JPL V(1,0)"
+},
+"621": {
+"H": 13.2,
+"dList": 15.0,
+"name": "Tarvos",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: JPL V(1,0)"
+},
+"622": {
+"H": 13.6,
+"dList": 13.0,
+"name": "Ijiraq",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: JPL V(1,0)"
+},
+"623": {
+"H": 14.5,
+"dList": 7.0,
+"name": "Suttungr",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"624": {
+"H": 13.1,
+"dList": 17.0,
+"name": "Kiviuq",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: JPL V(1,0)"
+},
+"625": {
+"H": 14.5,
+"dList": 7.0,
+"name": "Mundilfari",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"626": {
+"H": 11.2,
+"dList": 28.6,
+"name": "Albiorix",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"627": {
+"H": 14.3,
+"dList": 8.0,
+"name": "Skathi",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"628": {
+"H": 14.0,
+"dList": 10.0,
+"name": "Erriapus",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: JPL V(1,0)"
+},
+"629": {
+"H": 10.6,
+"dList": 39.3,
+"name": "Siarnaq",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"630": {
+"H": 14.3,
+"dList": 8.0,
+"name": "Thrymr",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"631": {
+"H": 14.5,
+"dList": 7.0,
+"name": "Narvi",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"632": {
+"H": 13.9,
+"dList": 2.9,
+"name": "Methone",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"633": {
+"H": 13.2,
+"dList": 4.44,
+"name": "Pallene",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"634": {
+"H": 13.0,
+"dList": 2.6,
+"name": "Polydeuces",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"635": {
+"H": 11.3,
+"dList": 7.6,
+"name": "Daphnis",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"636": {
+"H": 15.5,
+"dList": 6.0,
+"name": "Aegir",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"637": {
+"H": 15.0,
+"dList": 6.0,
+"name": "Bebhionn",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"638": {
+"H": 15.2,
+"dList": 5.0,
+"name": "Bergelmir",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"639": {
+"H": 14.6,
+"dList": 7.0,
+"name": "Bestla",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"640": {
+"H": 15.8,
+"dList": 5.0,
+"name": "Farbauti",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"641": {
+"H": 15.8,
+"dList": 4.0,
+"name": "Fenrir",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"642": {
+"H": 14.7,
+"dList": 6.0,
+"name": "Fornjot",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"643": {
+"H": 15.4,
+"dList": 5.0,
+"name": "Hati",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"644": {
+"H": 14.3,
+"dList": 8.0,
+"name": "Hyrrokkin",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"645": {
+"H": 14.5,
+"dList": 6.0,
+"name": "Kari",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"646": {
+"H": 15.4,
+"dList": 5.0,
+"name": "Loge",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"647": {
+"H": 15.4,
+"dList": 5.0,
+"name": "Skoll",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"648": {
+"H": 15.7,
+"dList": 6.0,
+"name": "Surtur",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"649": {
+"H": null,
+"dList": 1.8,
+"name": "Anthe",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"650": {
+"H": 15.6,
+"dList": 6.0,
+"name": "Jarnsaxa",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65067": {
+"H": 16.8,
+"dList": 3.0,
+"name": "S2004_S_31",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65070": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2004_S_24",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65077": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2004_S_28",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65079": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2004_S_21",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65081": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2004_S_36",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65082": {
+"H": 16.2,
+"dList": 4.0,
+"name": "S2004_S_37",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65084": {
+"H": 16.6,
+"dList": 3.0,
+"name": "S2004_S_39",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65085": {
+"H": 16.6,
+"dList": 3.0,
+"name": "S2004_S_7",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65086": {
+"H": 16.0,
+"dList": 4.0,
+"name": "S2004_S_12",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65087": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2004_S_13",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65088": {
+"H": 15.7,
+"dList": 5.0,
+"name": "S2004_S_17",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65089": {
+"H": 16.3,
+"dList": 4.0,
+"name": "S2006_S_1",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65090": {
+"H": 16.6,
+"dList": 3.0,
+"name": "S2006_S_3",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65091": {
+"H": 16.2,
+"dList": 4.0,
+"name": "S2007_S_2",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65092": {
+"H": 15.8,
+"dList": 5.0,
+"name": "S2007_S_3",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65093": {
+"H": 16.6,
+"dList": 3.0,
+"name": "S2019_S_1",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65094": {
+"H": 16.5,
+"dList": 3.0,
+"name": "S2019_S_2",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65095": {
+"H": 16.8,
+"dList": 3.0,
+"name": "S2019_S_3",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65096": {
+"H": 16.1,
+"dList": 4.0,
+"name": "S2020_S_1",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65097": {
+"H": 16.4,
+"dList": 3.0,
+"name": "S2020_S_2",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65098": {
+"H": 16.3,
+"dList": 4.0,
+"name": "S2004_S_40",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"651": {
+"H": 15.3,
+"dList": 5.0,
+"name": "Greip",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65100": {
+"H": 16.5,
+"dList": 3.0,
+"name": "S2006_S_9",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65101": {
+"H": 16.9,
+"dList": 3.0,
+"name": "S2007_S_5",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65102": {
+"H": 16.5,
+"dList": 3.0,
+"name": "S2020_S_3",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65103": {
+"H": 16.3,
+"dList": 4.0,
+"name": "S2019_S_4",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65104": {
+"H": 16.6,
+"dList": 3.0,
+"name": "S2004_S_41",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65105": {
+"H": 16.2,
+"dList": 4.0,
+"name": "S2020_S_4",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65106": {
+"H": 14.3,
+"dList": 8.0,
+"name": "S2020_S_5",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65107": {
+"H": 16.8,
+"dList": 3.0,
+"name": "S2007_S_6",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65108": {
+"H": 16.2,
+"dList": 4.0,
+"name": "S2004_S_42",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65109": {
+"H": 16.8,
+"dList": 3.0,
+"name": "S2006_S_10",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65110": {
+"H": 16.4,
+"dList": 3.0,
+"name": "S2019_S_5",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65111": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2004_S_43",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65112": {
+"H": 16.6,
+"dList": 3.0,
+"name": "S2004_S_44",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65113": {
+"H": 15.7,
+"dList": 5.0,
+"name": "S2004_S_45",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65114": {
+"H": 15.7,
+"dList": 5.0,
+"name": "S2006_S_11",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65115": {
+"H": 15.8,
+"dList": 5.0,
+"name": "S2006_S_12",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65116": {
+"H": 16.3,
+"dList": 4.0,
+"name": "S2019_S_6",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65117": {
+"H": 15.4,
+"dList": 6.0,
+"name": "S2006_S_13",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65118": {
+"H": 16.9,
+"dList": 2.0,
+"name": "S2019_S_7",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65119": {
+"H": 16.1,
+"dList": 4.0,
+"name": "S2019_S_8",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65120": {
+"H": 16.3,
+"dList": 4.0,
+"name": "S2019_S_9",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65121": {
+"H": 17.2,
+"dList": 2.0,
+"name": "S2004_S_46",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65122": {
+"H": 16.1,
+"dList": 4.0,
+"name": "S2019_S_10",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65123": {
+"H": 15.9,
+"dList": 4.0,
+"name": "S2004_S_47",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65124": {
+"H": 16.1,
+"dList": 4.0,
+"name": "S2019_S_11",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65125": {
+"H": 15.9,
+"dList": 4.0,
+"name": "S2006_S_14",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65126": {
+"H": 16.6,
+"dList": 3.0,
+"name": "S2019_S_12",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65127": {
+"H": 15.7,
+"dList": 4.0,
+"name": "S2020_S_6",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65128": {
+"H": 16.3,
+"dList": 4.0,
+"name": "S2019_S_13",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65129": {
+"H": 16.1,
+"dList": 4.0,
+"name": "S2005_S_4",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65130": {
+"H": 16.2,
+"dList": 4.0,
+"name": "S2007_S_7",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65131": {
+"H": 16.5,
+"dList": 3.0,
+"name": "S2007_S_8",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65132": {
+"H": 16.5,
+"dList": 3.0,
+"name": "S2020_S_7",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65133": {
+"H": 14.8,
+"dList": 7.0,
+"name": "S2019_S_14",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65134": {
+"H": 16.9,
+"dList": 3.0,
+"name": "S2019_S_15",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65135": {
+"H": 16.6,
+"dList": 3.0,
+"name": "S2005_S_5",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65136": {
+"H": 16.5,
+"dList": 3.0,
+"name": "S2006_S_15",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65137": {
+"H": 16.8,
+"dList": 3.0,
+"name": "S2006_S_16",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65138": {
+"H": 15.9,
+"dList": 4.0,
+"name": "S2006_S_17",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65139": {
+"H": 14.5,
+"dList": 6.0,
+"name": "S2004_S_48",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65140": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2020_S_8",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65141": {
+"H": 16.8,
+"dList": 3.0,
+"name": "S2004_S_49",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65142": {
+"H": 16.8,
+"dList": 3.0,
+"name": "S2004_S_50",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65143": {
+"H": 15.9,
+"dList": 4.0,
+"name": "S2006_S_18",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65144": {
+"H": 16.6,
+"dList": 3.0,
+"name": "S2019_S_16",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65145": {
+"H": 15.9,
+"dList": 4.0,
+"name": "S2019_S_17",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65146": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2019_S_18",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65147": {
+"H": 15.4,
+"dList": 5.0,
+"name": "S2019_S_19",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65148": {
+"H": 15.9,
+"dList": 4.0,
+"name": "S2019_S_20",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65149": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2006_S_19",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65150": {
+"H": 17.0,
+"dList": 3.0,
+"name": "S2004_S_51",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65151": {
+"H": 16.9,
+"dList": 3.0,
+"name": "S2020_S_9",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65152": {
+"H": 16.2,
+"dList": 4.0,
+"name": "S2004_S_52",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65153": {
+"H": 16.9,
+"dList": 2.0,
+"name": "S2007_S_9",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65154": {
+"H": 16.2,
+"dList": 4.0,
+"name": "S2004_S_53",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65155": {
+"H": 16.1,
+"dList": 4.0,
+"name": "S2020_S_10",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65156": {
+"H": 16.2,
+"dList": 4.0,
+"name": "S2019_S_21",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65157": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2006_S_20",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65158": {
+"H": 15.3,
+"dList": 5.0,
+"name": "S2004_S_54",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65159": {
+"H": 15.3,
+"dList": 5.0,
+"name": "S2004_S_55",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65160": {
+"H": 15.8,
+"dList": 5.0,
+"name": "S2004_S_56",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65161": {
+"H": 16.4,
+"dList": 3.0,
+"name": "S2004_S_57",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65162": {
+"H": 16.2,
+"dList": 4.0,
+"name": "S2004_S_58",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65163": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2004_S_59",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65164": {
+"H": 16.6,
+"dList": 3.0,
+"name": "S2004_S_60",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65165": {
+"H": 16.3,
+"dList": 4.0,
+"name": "S2004_S_61",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65166": {
+"H": 16.4,
+"dList": 3.0,
+"name": "S2005_S_6",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65167": {
+"H": 16.8,
+"dList": 3.0,
+"name": "S2005_S_7",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65168": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2006_S_21",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65169": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2006_S_22",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65170": {
+"H": 15.7,
+"dList": 5.0,
+"name": "S2006_S_23",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65171": {
+"H": 16.3,
+"dList": 4.0,
+"name": "S2006_S_24",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65172": {
+"H": 16.0,
+"dList": 4.0,
+"name": "S2006_S_25",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65173": {
+"H": 16.4,
+"dList": 3.0,
+"name": "S2006_S_26",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65174": {
+"H": 17.0,
+"dList": 3.0,
+"name": "S2006_S_27",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65175": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2006_S_28",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65176": {
+"H": 17.0,
+"dList": 3.0,
+"name": "S2006_S_29",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65177": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2007_S_10",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65178": {
+"H": 16.5,
+"dList": 3.0,
+"name": "S2007_S_11",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65179": {
+"H": 15.3,
+"dList": 5.0,
+"name": "S2019_S_22",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65180": {
+"H": 15.3,
+"dList": 5.0,
+"name": "S2019_S_23",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65181": {
+"H": 16.5,
+"dList": 3.0,
+"name": "S2019_S_24",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65182": {
+"H": 16.1,
+"dList": 4.0,
+"name": "S2019_S_25",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65183": {
+"H": 15.7,
+"dList": 5.0,
+"name": "S2019_S_26",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65184": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2019_S_27",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65185": {
+"H": 16.8,
+"dList": 3.0,
+"name": "S2019_S_28",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65186": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2019_S_29",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65187": {
+"H": 15.4,
+"dList": 5.0,
+"name": "S2019_S_30",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65188": {
+"H": 16.5,
+"dList": 3.0,
+"name": "S2019_S_31",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65189": {
+"H": 16.3,
+"dList": 4.0,
+"name": "S2019_S_32",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65190": {
+"H": 14.5,
+"dList": 7.0,
+"name": "S2019_S_33",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65191": {
+"H": 14.3,
+"dList": 8.0,
+"name": "S2019_S_34",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65192": {
+"H": 16.8,
+"dList": 3.0,
+"name": "S2019_S_35",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65193": {
+"H": 15.9,
+"dList": 4.0,
+"name": "S2019_S_36",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65194": {
+"H": 16.9,
+"dList": 3.0,
+"name": "S2019_S_37",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65195": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2019_S_38",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65196": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2019_S_39",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65197": {
+"H": 16.6,
+"dList": 3.0,
+"name": "S2019_S_40",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65198": {
+"H": 16.9,
+"dList": 3.0,
+"name": "S2019_S_41",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65199": {
+"H": 16.6,
+"dList": 3.0,
+"name": "S2019_S_42",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"652": {
+"H": 14.8,
+"dList": 7.0,
+"name": "Tarqeq",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65200": {
+"H": 16.9,
+"dList": 3.0,
+"name": "S2019_S_43",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65201": {
+"H": 16.9,
+"dList": 3.0,
+"name": "S2019_S_44",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65202": {
+"H": 15.3,
+"dList": 5.0,
+"name": "S2020_S_11",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65203": {
+"H": 16.1,
+"dList": 4.0,
+"name": "S2020_S_12",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65204": {
+"H": 16.8,
+"dList": 3.0,
+"name": "S2020_S_13",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65205": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2020_S_14",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65206": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2020_S_15",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65207": {
+"H": 16.9,
+"dList": 3.0,
+"name": "S2020_S_16",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65208": {
+"H": 16.8,
+"dList": 3.0,
+"name": "S2020_S_17",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65209": {
+"H": 16.8,
+"dList": 3.0,
+"name": "S2020_S_18",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65210": {
+"H": 15.4,
+"dList": 5.0,
+"name": "S2020_S_19",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65211": {
+"H": 16.5,
+"dList": 3.0,
+"name": "S2020_S_20",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65212": {
+"H": 16.4,
+"dList": 3.0,
+"name": "S2020_S_21",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65213": {
+"H": 14.5,
+"dList": 7.0,
+"name": "S2020_S_22",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65214": {
+"H": 16.0,
+"dList": 4.0,
+"name": "S2020_S_23",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65215": {
+"H": 16.4,
+"dList": 3.0,
+"name": "S2020_S_24",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65216": {
+"H": 16.3,
+"dList": 4.0,
+"name": "S2020_S_25",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65217": {
+"H": 15.7,
+"dList": 4.0,
+"name": "S2020_S_26",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65218": {
+"H": 16.5,
+"dList": 3.0,
+"name": "S2020_S_27",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65219": {
+"H": 15.8,
+"dList": 5.0,
+"name": "S2020_S_28",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65220": {
+"H": 16.8,
+"dList": 3.0,
+"name": "S2020_S_29",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65221": {
+"H": 16.5,
+"dList": 3.0,
+"name": "S2020_S_30",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65222": {
+"H": 15.8,
+"dList": 4.0,
+"name": "S2020_S_31",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65223": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2020_S_32",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65224": {
+"H": 16.6,
+"dList": 3.0,
+"name": "S2020_S_33",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65225": {
+"H": 16.8,
+"dList": 3.0,
+"name": "S2020_S_34",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65226": {
+"H": 15.4,
+"dList": 5.0,
+"name": "S2020_S_35",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65227": {
+"H": 15.9,
+"dList": 4.0,
+"name": "S2020_S_36",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65228": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2020_S_37",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65229": {
+"H": 16.6,
+"dList": 3.0,
+"name": "S2020_S_38",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65230": {
+"H": 16.1,
+"dList": 4.0,
+"name": "S2020_S_39",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65231": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2020_S_40",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65232": {
+"H": 16.6,
+"dList": 3.0,
+"name": "S2020_S_41",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65233": {
+"H": 16.1,
+"dList": 4.0,
+"name": "S2020_S_42",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65234": {
+"H": 16.9,
+"dList": 3.0,
+"name": "S2020_S_43",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65235": {
+"H": 16.8,
+"dList": 3.0,
+"name": "S2020_S_44",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65236": {
+"H": 16.6,
+"dList": 3.0,
+"name": "S2023_S_1",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65237": {
+"H": 15.3,
+"dList": 5.0,
+"name": "S2023_S_2",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65238": {
+"H": 17.0,
+"dList": 3.0,
+"name": "S2023_S_3",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65239": {
+"H": 16.8,
+"dList": 3.0,
+"name": "S2023_S_4",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65240": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2023_S_5",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65241": {
+"H": 16.4,
+"dList": 3.0,
+"name": "S2023_S_6",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65242": {
+"H": 15.9,
+"dList": 4.0,
+"name": "S2023_S_7",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65243": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2023_S_8",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65244": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2023_S_9",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65245": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2023_S_10",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65246": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2023_S_11",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65247": {
+"H": 16.9,
+"dList": 3.0,
+"name": "S2023_S_12",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65248": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2023_S_13",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65249": {
+"H": 16.8,
+"dList": 3.0,
+"name": "S2023_S_14",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65250": {
+"H": 16.2,
+"dList": 4.0,
+"name": "S2023_S_15",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65251": {
+"H": 16.5,
+"dList": 3.0,
+"name": "S2023_S_16",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65252": {
+"H": 16.5,
+"dList": 3.0,
+"name": "S2023_S_17",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65253": {
+"H": 16.5,
+"dList": 3.0,
+"name": "S2023_S_18",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65254": {
+"H": 17.0,
+"dList": 3.0,
+"name": "S2023_S_19",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65255": {
+"H": 16.8,
+"dList": 3.0,
+"name": "S2023_S_20",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65256": {
+"H": 16.8,
+"dList": 3.0,
+"name": "S2023_S_21",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65257": {
+"H": 16.0,
+"dList": 4.0,
+"name": "S2023_S_22",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65258": {
+"H": 16.3,
+"dList": 4.0,
+"name": "S2023_S_23",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65259": {
+"H": 15.8,
+"dList": 5.0,
+"name": "S2023_S_24",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65260": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2023_S_25",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65261": {
+"H": 15.9,
+"dList": 4.0,
+"name": "S2023_S_26",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65262": {
+"H": 16.5,
+"dList": 3.0,
+"name": "S2023_S_27",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65263": {
+"H": 15.9,
+"dList": 4.0,
+"name": "S2023_S_28",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65264": {
+"H": 16.1,
+"dList": 4.0,
+"name": "S2023_S_29",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65265": {
+"H": 16.2,
+"dList": 4.0,
+"name": "S2023_S_30",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65266": {
+"H": 16.8,
+"dList": 3.0,
+"name": "S2023_S_31",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65267": {
+"H": 14.6,
+"dList": 7.0,
+"name": "S2023_S_32",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65268": {
+"H": 16.8,
+"dList": 3.0,
+"name": "S2023_S_33",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65269": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2023_S_34",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65270": {
+"H": 16.0,
+"dList": 4.0,
+"name": "S2023_S_35",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65271": {
+"H": 16.0,
+"dList": 4.0,
+"name": "S2023_S_36",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65272": {
+"H": 15.9,
+"dList": 4.0,
+"name": "S2023_S_37",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65273": {
+"H": 17.0,
+"dList": 3.0,
+"name": "S2023_S_38",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65274": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2023_S_39",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65275": {
+"H": 15.9,
+"dList": 4.0,
+"name": "S2023_S_40",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65276": {
+"H": 16.6,
+"dList": 3.0,
+"name": "S2023_S_41",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65277": {
+"H": 16.5,
+"dList": 3.0,
+"name": "S2023_S_42",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65278": {
+"H": 16.5,
+"dList": 3.0,
+"name": "S2023_S_43",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65279": {
+"H": 16.3,
+"dList": 4.0,
+"name": "S2023_S_44",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65280": {
+"H": 16.0,
+"dList": 4.0,
+"name": "S2023_S_45",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65281": {
+"H": 16.8,
+"dList": 3.0,
+"name": "S2023_S_46",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65282": {
+"H": 17.0,
+"dList": 3.0,
+"name": "S2023_S_47",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65283": {
+"H": 16.1,
+"dList": 4.0,
+"name": "S2023_S_48",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65284": {
+"H": 16.5,
+"dList": 3.0,
+"name": "S2023_S_49",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65285": {
+"H": 16.9,
+"dList": 3.0,
+"name": "S2023_S_50",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65286": {
+"H": 16.2,
+"dList": 4.0,
+"name": "S2020_S_45",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65287": {
+"H": 16.4,
+"dList": 3.0,
+"name": "S2020_S_46",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65288": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2020_S_47",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65289": {
+"H": 17.1,
+"dList": 3.0,
+"name": "S2020_S_48",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65290": {
+"H": 16.0,
+"dList": 4.0,
+"name": "S2023_S_51",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65291": {
+"H": 16.0,
+"dList": 4.0,
+"name": "S2023_S_52",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65292": {
+"H": 16.3,
+"dList": 4.0,
+"name": "S2023_S_53",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65293": {
+"H": 16.8,
+"dList": 3.0,
+"name": "S2023_S_54",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65294": {
+"H": 16.8,
+"dList": 3.0,
+"name": "S2023_S_55",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65295": {
+"H": 15.3,
+"dList": 5.0,
+"name": "S2023_S_56",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65296": {
+"H": 17.2,
+"dList": 2.0,
+"name": "S2023_S_57",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65297": {
+"H": 15.3,
+"dList": 5.0,
+"name": "S2020_S_49",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65298": {
+"H": 16.8,
+"dList": 3.0,
+"name": "S2023_S_58",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65299": {
+"H": 16.1,
+"dList": 4.0,
+"name": "S2023_S_59",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"653": {
+"H": null,
+"dList": 0.66,
+"name": "Aegaeon",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65300": {
+"H": 16.8,
+"dList": 3.0,
+"name": "S2023_S_60",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65301": {
+"H": 15.7,
+"dList": 5.0,
+"name": "S2023_S_61",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65302": {
+"H": 16.7,
+"dList": 3.0,
+"name": "S2023_S_62",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"65303": {
+"H": 15.3,
+"dList": 5.0,
+"name": "S2023_S_63",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"654": {
+"H": 15.8,
+"dList": 4.0,
+"name": "Gridr",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"655": {
+"H": 16.1,
+"dList": 4.0,
+"name": "Angrboda",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"656": {
+"H": 15.5,
+"dList": 4.0,
+"name": "Skrymir",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"657": {
+"H": 15.9,
+"dList": 4.0,
+"name": "Gerd",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"658": {
+"H": 15.7,
+"dList": 5.0,
+"name": "S2004_S_26",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"659": {
+"H": 15.4,
+"dList": 6.0,
+"name": "Eggther",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"660": {
+"H": 16.5,
+"dList": 3.0,
+"name": "S2004_S_29",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"661": {
+"H": 16.1,
+"dList": 4.0,
+"name": "Beli",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"662": {
+"H": 15.7,
+"dList": 4.0,
+"name": "Gunnlod",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"663": {
+"H": 15.9,
+"dList": 4.0,
+"name": "Thiazzi",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"664": {
+"H": 16.6,
+"dList": 3.0,
+"name": "S2004_S_34",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"665": {
+"H": 15.6,
+"dList": 6.0,
+"name": "Alvaldi",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"666": {
+"H": 15.9,
+"dList": 4.0,
+"name": "Geirrod",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"706": {
+"H": 10.9,
+"dList": 39.6,
+"name": "Cordelia",
+"rJPL": 13.0,
+"rJPLapprox": false,
+"src": "JPL Horizons radius"
+},
+"707": {
+"H": 10.5,
+"dList": 43.3,
+"name": "Ophelia",
+"rJPL": 16.0,
+"rJPLapprox": false,
+"src": "JPL Horizons radius"
+},
+"708": {
+"H": 9.9,
+"dList": 50.9,
+"name": "Bianca",
+"rJPL": 22.0,
+"rJPLapprox": false,
+"src": "JPL Horizons radius"
+},
+"709": {
+"H": 9.5,
+"dList": 79.0,
+"name": "Cressida",
+"rJPL": 33.0,
+"rJPLapprox": false,
+"src": "JPL Horizons radius"
+},
+"710": {
+"H": 9.8,
+"dList": 64.3,
+"name": "Desdemona",
+"rJPL": 29.0,
+"rJPLapprox": false,
+"src": "JPL Horizons radius"
+},
+"711": {
+"H": 8.8,
+"dList": 94.4,
+"name": "Juliet",
+"rJPL": 42.0,
+"rJPLapprox": false,
+"src": "JPL Horizons radius"
+},
+"712": {
+"H": 8.3,
+"dList": 134.9,
+"name": "Portia",
+"rJPL": 55.0,
+"rJPLapprox": false,
+"src": "JPL Horizons radius"
+},
+"713": {
+"H": 9.8,
+"dList": 72.0,
+"name": "Rosalind",
+"rJPL": 29.0,
+"rJPLapprox": false,
+"src": "JPL Horizons radius"
+},
+"714": {
+"H": 9.4,
+"dList": 80.2,
+"name": "Belinda",
+"rJPL": 34.0,
+"rJPLapprox": false,
+"src": "JPL Horizons radius"
+},
+"715": {
+"H": 7.5,
+"dList": 162.0,
+"name": "Puck",
+"rJPL": 77.0,
+"rJPLapprox": false,
+"src": "JPL Horizons radius"
+},
+"716": {
+"H": 9.7,
+"dList": 42.0,
+"name": "Caliban",
+"rJPL": 30.0,
+"rJPLapprox": true,
+"src": "JPL Horizons radius"
+},
+"717": {
+"H": 8.2,
+"dList": 157.0,
+"name": "Sycorax",
+"rJPL": 60.0,
+"rJPLapprox": true,
+"src": "JPL Horizons radius"
+},
+"718": {
+"H": 10.6,
+"dList": 50.0,
+"name": "Prospero",
+"rJPL": 50.0,
+"rJPLapprox": false,
+"src": "JPL Horizons radius"
+},
+"719": {
+"H": 10.6,
+"dList": 47.0,
+"name": "Setebos",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"720": {
+"H": 11.6,
+"dList": 32.0,
+"name": "Stephano",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"721": {
+"H": 12.7,
+"dList": 18.0,
+"name": "Trinculo",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"722": {
+"H": 12.9,
+"dList": 22.0,
+"name": "Francisco",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"723": {
+"H": 12.7,
+"dList": 20.0,
+"name": "Margaret",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"724": {
+"H": 12.4,
+"dList": 21.0,
+"name": "Ferdinand",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"725": {
+"H": 11.4,
+"dList": 26.6,
+"name": "Perdita",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"726": {
+"H": 11.1,
+"dList": 12.0,
+"name": "Mab",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"727": {
+"H": 12.3,
+"dList": 17.8,
+"name": "Cupid",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"75051": {
+"H": 11.6,
+"dList": 32.0,
+"name": "S2023_U1",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"75052": {
+"H": 13.6,
+"dList": 9.0,
+"name": "S2025_U_1",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"809": {
+"H": 9.9,
+"dList": 61.0,
+"name": "Halimede",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"810": {
+"H": 10.8,
+"dList": 38.0,
+"name": "Psamathe",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"811": {
+"H": 11.0,
+"dList": 40.0,
+"name": "Sao",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"812": {
+"H": 10.8,
+"dList": 40.0,
+"name": "Laomedeia",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"813": {
+"H": 10.7,
+"dList": 60.0,
+"name": "Neso",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"814": {
+"H": 10.5,
+"dList": 34.8,
+"name": "Hippocamp",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"85051": {
+"H": 11.2,
+"dList": 38.0,
+"name": "S2002_N5",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+},
+"85052": {
+"H": 12.1,
+"dList": 25.0,
+"name": "S2021_N1",
+"rJPL": null,
+"rJPLapprox": false,
+"src": "H: MPC (Wikipedia list)"
+}
+}

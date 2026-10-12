@@ -1,0 +1,40 @@
+{
+ "saturn": {
+  "file": "saturn_tau_pps_1km.u16",
+  "r0": 72000.0,
+  "dr": 1.0,
+  "n": 70501,
+  "encoding": "uint16 LE, tau*1e4",
+  "cap": 4.5,
+  "saturatedSamples": 4666,
+  "sha256": "07151330896f7d21c6266745df82243f2b876ea0deffdfc7c9d9eae17c3af0c0",
+  "regionMeans": {
+   "C": 0.112,
+   "B": 1.985,
+   "CassiniDiv": 0.146,
+   "A": 0.545,
+   "Encke": 0.044,
+   "F": 0.012
+  },
+  "source": "PDS Ring-Moon Systems Node, VG_2801 (Voyager 2 PPS), EASYDATA/KM001",
+  "licence": "NASA/PDS public domain"
+ },
+ "uranus": {
+  "file": "uranus_tau_pps_1km.u16",
+  "r0": 48000.0,
+  "dr": 1.0,
+  "n": 5596,
+  "encoding": "uint16 LE, tau*1e4",
+  "cap": 4.0,
+  "saturatedSamples": 0,
+  "sha256": "b67a6fbc18956893b407b020ac0b05a30d28d5d6140fee0e70ad7698b7cc459f",
+  "regionMeans": {
+   "delta": 0.138,
+   "lam": 0.027,
+   "eps": 0.008
+  },
+  "source": "PDS Ring-Moon Systems Node, VG_2801 (Voyager 2 PPS), EASYDATA/KM001",
+  "licence": "NASA/PDS public domain",
+  "shipped": false
+ }
+}

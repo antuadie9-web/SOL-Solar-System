@@ -1,0 +1,326 @@
+{
+ "_doc": "Reference-ephemeris acceptance spec. Tolerances were DECLARED HERE BEFORE any comparison was run (master spec 9.3). Each tolerance cites the expected accuracy of the SOL model tier being tested, not the observed residual. Frame: Horizons REF_SYSTEM=ICRF, REF_PLANE=ECLIPTIC (J2000 ecliptic, IAU76 obliquity 84381.448 arcsec), geometric states (no light-time/aberration), TDB epochs, km. SOL internal frame uses obliquity 84381.406 arcsec (IAU 2006); the 0.042 arcsec frame offset is below every tolerance and is documented, not hidden.",
+ "epochsJdTdb": {
+  "J1950": 2433282.5,
+  "J2000": 2451545.0,
+  "D2026": 2461321.5,
+  "D2026b": 2461322.0,
+  "D2050": 2469807.5,
+  "D2075": 2478938.5,
+  "X1": 2453123.137,
+  "X2": 2457890.613,
+  "X3": 2461333.391,
+  "X4": 2466001.871
+ },
+ "groups": [
+  {
+   "id": "planets",
+   "model": "VSOP87B via astronomia 4.2 (full series)",
+   "expected": "Bretagnon & Francou 1988: < 1 arcsec over 1900-2100 for all planets",
+   "tol": {
+    "angArcsec": 2.0,
+    "radialRel": 5e-06
+   },
+   "center": "500@10",
+   "targets": {
+    "mercury": "199",
+    "venus": "299",
+    "earth": "399",
+    "mars": "499",
+    "jupiter": "599",
+    "saturn": "699",
+    "uranus": "799",
+    "neptune": "899"
+   },
+   "epochs": [
+    "J1950",
+    "J2000",
+    "D2026",
+    "D2075"
+   ]
+  },
+  {
+   "id": "moon",
+   "model": "ELP/MPP02 (DE405 fit) via astronomia + precession to J2000",
+   "expected": "series accuracy tens of metres 1950-2060 (Chapront & Francou 2003); 2 km allows for date-to-J2000 frame transform",
+   "tol": {
+    "absKm": 2.0
+   },
+   "center": "500@399",
+   "targets": {
+    "moon": "301"
+   },
+   "epochs": [
+    "J1950",
+    "J2000",
+    "D2026",
+    "D2050"
+   ]
+  },
+  {
+   "id": "galilean",
+   "model": "Lieske E5 (Meeus ch.44 high accuracy)",
+   "expected": "E5 vs modern JPL satellite ephemerides: O(100 km)",
+   "tol": {
+    "absKm": 500
+   },
+   "center": "500@599",
+   "targets": {
+    "io": "501",
+    "europa": "502",
+    "ganymede": "503",
+    "callisto": "504"
+   },
+   "epochs": [
+    "D2026",
+    "D2026b"
+   ]
+  },
+  {
+   "id": "mean-element-moons",
+   "model": "JPL SSD mean satellite elements with apsidal/nodal precession",
+   "expected": "JPL describes mean elements as approximate; we require <= 1% of semimajor axis near the element epoch",
+   "tol": {
+    "relToA": 0.01
+   },
+   "targets": {
+    "phobos": [
+     "401",
+     "500@499",
+     9376
+    ],
+    "deimos": [
+     "402",
+     "500@499",
+     23458
+    ],
+    "titan": [
+     "606",
+     "500@699",
+     1221870
+    ],
+    "rhea": [
+     "605",
+     "500@699",
+     527068
+    ],
+    "triton": [
+     "801",
+     "500@899",
+     354759
+    ],
+    "titania": [
+     "703",
+     "500@799",
+     435910
+    ]
+   },
+   "epochs": [
+    "D2026"
+   ]
+  },
+  {
+   "id": "pluto-system",
+   "model": "SBDB osculating barycentre orbit (2-body) + Charon mean elements",
+   "expected": "unperturbed 2-body over ~10 yr from element epoch: O(1e5 km); Charon mean elements 1% of a",
+   "tol": {
+    "plutoAbsKm": 100000,
+    "charonRelToA": 0.01
+   },
+   "targets": {
+    "pluto": [
+     "999",
+     "500@10"
+    ],
+    "charon": [
+     "901",
+     "500@999",
+     19596
+    ]
+   },
+   "epochs": [
+    "D2026"
+   ]
+  },
+  {
+   "id": "small-bodies",
+   "model": "SBDB osculating elements, 2-body",
+   "expected": "main-belt 2-body within ~0.5 yr of epoch: O(1e3-1e4 km)",
+   "tol": {
+    "absKm": 20000
+   },
+   "center": "500@10",
+   "targets": {
+    "ceres": "1;",
+    "vesta": "4;",
+    "pallas": "2;"
+   },
+   "epochs": [
+    "D2026"
+   ]
+  },
+  {
+   "id": "comets",
+   "model": "SBDB osculating elements, 2-body (no non-gravitational forces)",
+   "expected": "short-period comets propagated years from epoch: O(1e5-1e6 km); reported, gated loosely",
+   "tol": {
+    "absKm": 2000000
+   },
+   "center": "500@10",
+   "targets": {
+    "encke": "DES=2P;CAP",
+    "halley": "DES=1P;CAP"
+   },
+   "epochs": [
+    "D2026"
+   ]
+  },
+  {
+   "id": "sampled-interp",
+   "model": "Sampled Horizons tier, Kepler-blend interpolation at OFF-GRID epochs",
+   "expected": "interpolation error measured in prototyping 1-130 km depending on step; declared budget 1e-3 of orbital radius (sub-pixel whenever the orbit spans < 1000 px)",
+   "tol": {
+    "relToA": 0.001
+   },
+   "targets": {
+    "phobos": [
+     "401",
+     "500@499",
+     9376
+    ],
+    "deimos": [
+     "402",
+     "500@499",
+     23458
+    ],
+    "io": [
+     "501",
+     "500@599",
+     421800
+    ],
+    "europa": [
+     "502",
+     "500@599",
+     671100
+    ],
+    "ganymede": [
+     "503",
+     "500@599",
+     1070400
+    ],
+    "callisto": [
+     "504",
+     "500@599",
+     1882700
+    ],
+    "mimas": [
+     "601",
+     "500@699",
+     185539
+    ],
+    "enceladus": [
+     "602",
+     "500@699",
+     238042
+    ],
+    "tethys": [
+     "603",
+     "500@699",
+     294672
+    ],
+    "dione": [
+     "604",
+     "500@699",
+     377415
+    ],
+    "rhea": [
+     "605",
+     "500@699",
+     527068
+    ],
+    "titan": [
+     "606",
+     "500@699",
+     1221870
+    ],
+    "hyperion": [
+     "607",
+     "500@699",
+     1500880
+    ],
+    "iapetus": [
+     "608",
+     "500@699",
+     3560840
+    ],
+    "phoebe": [
+     "609",
+     "500@699",
+     12947780
+    ],
+    "miranda": [
+     "705",
+     "500@799",
+     129900
+    ],
+    "ariel": [
+     "701",
+     "500@799",
+     190900
+    ],
+    "umbriel": [
+     "702",
+     "500@799",
+     266000
+    ],
+    "titania": [
+     "703",
+     "500@799",
+     435910
+    ],
+    "oberon": [
+     "704",
+     "500@799",
+     583520
+    ],
+    "triton": [
+     "801",
+     "500@899",
+     354759
+    ],
+    "nereid": [
+     "802",
+     "500@899",
+     5513818
+    ],
+    "proteus": [
+     "808",
+     "500@899",
+     117647
+    ],
+    "charon": [
+     "901",
+     "500@999",
+     19596
+    ]
+   },
+   "epochs": [
+    "X1",
+    "X2",
+    "X3",
+    "X4"
+   ]
+  }
+ ],
+ "knownDeviations": [],
+ "resolvedDeviations": [
+  {
+   "group": "planets",
+   "id": "neptune",
+   "jd": 2478938.5,
+   "observed": "2.44 arcsec",
+   "reason": "VSOP87B truncation/accuracy for Neptune exceeds the 2 arcsec budget late in the 21st century. Inside 2000-2050 SOL uses the sampled Horizons tier; outside it VSOP87B remains the documented medium-precision fallback. Tracked as ISSUE-SCI-003.",
+   "resolved": "v3.4: secondary JPL Horizons DE441 long-window barycentre tier 1900\u20132200 (tools/ingest/planets-ext.mjs) replaces VSOP87B outside 2000\u20132050"
+  }
+ ]
+}

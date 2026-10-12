@@ -1,0 +1,83 @@
+{
+ "image": "titan.png",
+ "version": "3.6.0",
+ "object": "titan",
+ "view": "titan",
+ "request": 3.2,
+ "camera": {
+  "posHelioEclKm": [
+   1382387789.1879811,
+   270246094.5742447,
+   -59567960.57771458
+  ],
+  "quat": [
+   0.053296399338387694,
+   0.8689577220087293,
+   0.09597275213328604,
+   -0.4825569417456615
+  ],
+  "fovDeg": 50,
+  "mode": "orbit",
+  "distanceKm": 8239.040000075669,
+  "altitudeKm": 5664.340000075669
+ },
+ "simJdTT": 2461322.000800722,
+ "simUtc": "2026-10-08T11:59:59.998Z",
+ "viewingMode": "scientific",
+ "phaseAngleDeg": 43.72741003597134,
+ "quality": "high",
+ "toneMap": "neutral",
+ "exposureEV": 7.03,
+ "skyEV": 7.03,
+ "detailTier": 5,
+ "terrain": {
+  "maxLevel": 7,
+  "finestData": 4,
+  "patches": 233,
+  "provisional": 2
+ },
+ "rings": null,
+ "backend": "WebGPU (native)",
+ "adapter": {
+  "vendor": "google",
+  "architecture": "swiftshader",
+  "device": "",
+  "description": "",
+  "fallback": true,
+  "features": [
+   "depth32float-stencil8",
+   "rg11b10ufloat-renderable",
+   "bgra8unorm-storage",
+   "texture-compression-bc",
+   "core-features-and-limits",
+   "chromium-experimental-sampling-resource-table",
+   "chromium-experimental-timestamp-query-inside-passes",
+   "float32-filterable",
+   "indirect-first-instance",
+   "texture-compression-astc-sliced-3d",
+   "float32-blendable",
+   "subgroup-size-control",
+   "texture-compression-unaligned",
+   "texture-compression-astc",
+   "texture-compression-etc2",
+   "depth-clip-control",
+   "texture-compression-bc-sliced-3d",
+   "clip-distances",
+   "timestamp-query",
+   "texture-component-swizzle",
+   "subgroups"
+  ],
+  "limits": {
+   "maxTextureDimension2D": 8192,
+   "maxBufferSize": 1073741824,
+   "maxStorageBufferBindingSize": 1073741824,
+   "maxComputeWorkgroupStorageSize": 32768
+  },
+  "qaSoftware": true
+ },
+ "resolution": [
+  1280,
+  720
+ ],
+ "limitations": "Software WebGPU (SwiftShader) capture; not real-GPU look or performance evidence"
+}

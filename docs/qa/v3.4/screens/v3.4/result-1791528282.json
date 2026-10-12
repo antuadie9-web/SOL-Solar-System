@@ -1,0 +1,370 @@
+{
+  "url": "http://localhost:4383/?qa-off=small,smallcompute&qa-software-gpu=1",
+  "software": true,
+  "ready": true,
+  "bootMs": 23208,
+  "viewport": [
+    1280,
+    720
+  ],
+  "state": {
+    "err": null,
+    "frames": 5,
+    "gpu": {
+      "vendor": "google",
+      "architecture": "swiftshader",
+      "device": "",
+      "description": "",
+      "fallback": true,
+      "features": [
+        "depth32float-stencil8",
+        "rg11b10ufloat-renderable",
+        "bgra8unorm-storage",
+        "texture-compression-bc",
+        "core-features-and-limits",
+        "chromium-experimental-sampling-resource-table",
+        "chromium-experimental-timestamp-query-inside-passes",
+        "float32-filterable",
+        "indirect-first-instance",
+        "texture-compression-astc-sliced-3d",
+        "float32-blendable",
+        "subgroup-size-control",
+        "texture-compression-unaligned",
+        "texture-compression-astc",
+        "texture-compression-etc2",
+        "depth-clip-control",
+        "texture-compression-bc-sliced-3d",
+        "clip-distances",
+        "timestamp-query",
+        "texture-component-swizzle",
+        "subgroups"
+      ],
+      "limits": {
+        "maxTextureDimension2D": 8192,
+        "maxBufferSize": 1073741824,
+        "maxStorageBufferBindingSize": 1073741824,
+        "maxComputeWorkgroupStorageSize": 32768
+      },
+      "qaSoftware": true
+    },
+    "loaderText": "\n      \n      \n        \n    \n    \n        SOL\n        The Solar System at true scale\n        \n        Ready100%\n        Enter\n        Jupiter’s Great Red Spot is wider than Earth.\n        v3.3 · native WebGPU · desktop Chrome\n      ",
+    "diag": {
+      "backend": "WebGPU (native)",
+      "adapter": {
+        "vendor": "google",
+        "architecture": "swiftshader",
+        "device": "",
+        "description": "",
+        "fallback": true,
+        "features": [
+          "depth32float-stencil8",
+          "rg11b10ufloat-renderable",
+          "bgra8unorm-storage",
+          "texture-compression-bc",
+          "core-features-and-limits",
+          "chromium-experimental-sampling-resource-table",
+          "chromium-experimental-timestamp-query-inside-passes",
+          "float32-filterable",
+          "indirect-first-instance",
+          "texture-compression-astc-sliced-3d",
+          "float32-blendable",
+          "subgroup-size-control",
+          "texture-compression-unaligned",
+          "texture-compression-astc",
+          "texture-compression-etc2",
+          "depth-clip-control",
+          "texture-compression-bc-sliced-3d",
+          "clip-distances",
+          "timestamp-query",
+          "texture-component-swizzle",
+          "subgroups"
+        ],
+        "limits": {
+          "maxTextureDimension2D": 8192,
+          "maxBufferSize": 1073741824,
+          "maxStorageBufferBindingSize": 1073741824,
+          "maxComputeWorkgroupStorageSize": 32768
+        },
+        "qaSoftware": true
+      },
+      "deviceLost": null,
+      "frame": {
+        "n": 5,
+        "medianMs": 100,
+        "p95Ms": 100,
+        "p99Ms": 100,
+        "cpuMs": 6.8
+      },
+      "drawCalls": 23,
+      "views": 3,
+      "orbits": 0,
+      "textures": {
+        "entries": 7,
+        "placeholder": 0,
+        "base": 7,
+        "hi": 0,
+        "residentMiB": 106.7,
+        "budgetMiB": 1536,
+        "loading": []
+      },
+      "terrain": null,
+      "net": {
+        "requests": 29,
+        "bytes": 46477323,
+        "failures": 0,
+        "inFlight": 0,
+        "queued": 0
+      },
+      "exposureEV": 7.45
+    }
+  },
+  "scenario": {
+    "epochUtcMs": 1791460800000,
+    "shots": [
+      {
+        "name": "saturn",
+        "file": "/workspace/work/qa34/saturn.png",
+        "wallMs": 52589,
+        "id": "saturn",
+        "distKm": 391742,
+        "tier": "JPL Horizons sampled barycentre − moon offsets",
+        "terrain": null,
+        "diag": {
+          "backend": "WebGPU (native)",
+          "adapter": {
+            "vendor": "google",
+            "architecture": "swiftshader",
+            "device": "",
+            "description": "",
+            "fallback": true,
+            "features": [
+              "depth32float-stencil8",
+              "rg11b10ufloat-renderable",
+              "bgra8unorm-storage",
+              "texture-compression-bc",
+              "core-features-and-limits",
+              "chromium-experimental-sampling-resource-table",
+              "chromium-experimental-timestamp-query-inside-passes",
+              "float32-filterable",
+              "indirect-first-instance",
+              "texture-compression-astc-sliced-3d",
+              "float32-blendable",
+              "subgroup-size-control",
+              "texture-compression-unaligned",
+              "texture-compression-astc",
+              "texture-compression-etc2",
+              "depth-clip-control",
+              "texture-compression-bc-sliced-3d",
+              "clip-distances",
+              "timestamp-query",
+              "texture-component-swizzle",
+              "subgroups"
+            ],
+            "limits": {
+              "maxTextureDimension2D": 8192,
+              "maxBufferSize": 1073741824,
+              "maxStorageBufferBindingSize": 1073741824,
+              "maxComputeWorkgroupStorageSize": 32768
+            },
+            "qaSoftware": true
+          },
+          "deviceLost": null,
+          "frame": {
+            "n": 8,
+            "medianMs": 100,
+            "p95Ms": 100,
+            "p99Ms": 100,
+            "cpuMs": 5.2
+          },
+          "drawCalls": 26,
+          "views": 7,
+          "orbits": 0,
+          "textures": {
+            "entries": 11,
+            "placeholder": 0,
+            "base": 11,
+            "hi": 0,
+            "residentMiB": 149.3,
+            "budgetMiB": 1536,
+            "loading": []
+          },
+          "terrain": null,
+          "net": {
+            "requests": 33,
+            "bytes": 49100291,
+            "failures": 0,
+            "inFlight": 0,
+            "queued": 0
+          },
+          "exposureEV": 8.32
+        }
+      },
+      {
+        "name": "ring-flythrough",
+        "file": "/workspace/work/qa34/ring-flythrough.png",
+        "wallMs": 36905,
+        "id": "saturn",
+        "ring": {
+          "active": true,
+          "tau": 0.5,
+          "count": 8886,
+          "altKm": 0.020000004886242095,
+          "rKm": 127999.99999996873
+        },
+        "diag": {
+          "backend": "WebGPU (native)",
+          "adapter": {
+            "vendor": "google",
+            "architecture": "swiftshader",
+            "device": "",
+            "description": "",
+            "fallback": true,
+            "features": [
+              "depth32float-stencil8",
+              "rg11b10ufloat-renderable",
+              "bgra8unorm-storage",
+              "texture-compression-bc",
+              "core-features-and-limits",
+              "chromium-experimental-sampling-resource-table",
+              "chromium-experimental-timestamp-query-inside-passes",
+              "float32-filterable",
+              "indirect-first-instance",
+              "texture-compression-astc-sliced-3d",
+              "float32-blendable",
+              "subgroup-size-control",
+              "texture-compression-unaligned",
+              "texture-compression-astc",
+              "texture-compression-etc2",
+              "depth-clip-control",
+              "texture-compression-bc-sliced-3d",
+              "clip-distances",
+              "timestamp-query",
+              "texture-component-swizzle",
+              "subgroups"
+            ],
+            "limits": {
+              "maxTextureDimension2D": 8192,
+              "maxBufferSize": 1073741824,
+              "maxStorageBufferBindingSize": 1073741824,
+              "maxComputeWorkgroupStorageSize": 32768
+            },
+            "qaSoftware": true
+          },
+          "deviceLost": null,
+          "frame": {
+            "n": 18,
+            "medianMs": 100,
+            "p95Ms": 100,
+            "p99Ms": 100,
+            "cpuMs": 5.9
+          },
+          "drawCalls": 26,
+          "views": 7,
+          "orbits": 0,
+          "textures": {
+            "entries": 11,
+            "placeholder": 0,
+            "base": 11,
+            "hi": 0,
+            "residentMiB": 149.3,
+            "budgetMiB": 1536,
+            "loading": []
+          },
+          "terrain": null,
+          "net": {
+            "requests": 33,
+            "bytes": 49100291,
+            "failures": 0,
+            "inFlight": 0,
+            "queued": 0
+          },
+          "exposureEV": 8.31
+        }
+      },
+      {
+        "name": "ring-flythrough-B",
+        "file": "/workspace/work/qa34/ring-flythrough-B.png",
+        "wallMs": 27589,
+        "id": "saturn",
+        "ring": {
+          "active": true,
+          "tau": 1.8,
+          "count": 24000,
+          "altKm": 0.014999983759480529,
+          "rKm": 105000.0000000427
+        },
+        "diag": {
+          "backend": "WebGPU (native)",
+          "adapter": {
+            "vendor": "google",
+            "architecture": "swiftshader",
+            "device": "",
+            "description": "",
+            "fallback": true,
+            "features": [
+              "depth32float-stencil8",
+              "rg11b10ufloat-renderable",
+              "bgra8unorm-storage",
+              "texture-compression-bc",
+              "core-features-and-limits",
+              "chromium-experimental-sampling-resource-table",
+              "chromium-experimental-timestamp-query-inside-passes",
+              "float32-filterable",
+              "indirect-first-instance",
+              "texture-compression-astc-sliced-3d",
+              "float32-blendable",
+              "subgroup-size-control",
+              "texture-compression-unaligned",
+              "texture-compression-astc",
+              "texture-compression-etc2",
+              "depth-clip-control",
+              "texture-compression-bc-sliced-3d",
+              "clip-distances",
+              "timestamp-query",
+              "texture-component-swizzle",
+              "subgroups"
+            ],
+            "limits": {
+              "maxTextureDimension2D": 8192,
+              "maxBufferSize": 1073741824,
+              "maxStorageBufferBindingSize": 1073741824,
+              "maxComputeWorkgroupStorageSize": 32768
+            },
+            "qaSoftware": true
+          },
+          "deviceLost": null,
+          "frame": {
+            "n": 28,
+            "medianMs": 100,
+            "p95Ms": 100,
+            "p99Ms": 100,
+            "cpuMs": 8.3
+          },
+          "drawCalls": 28,
+          "views": 8,
+          "orbits": 0,
+          "textures": {
+            "entries": 12,
+            "placeholder": 0,
+            "base": 12,
+            "hi": 0,
+            "residentMiB": 160,
+            "budgetMiB": 1536,
+            "loading": []
+          },
+          "terrain": null,
+          "net": {
+            "requests": 34,
+            "bytes": 49286846,
+            "failures": 0,
+            "inFlight": 0,
+            "queued": 0
+          },
+          "exposureEV": 8.01
+        }
+      }
+    ]
+  },
+  "log": [],
+  "gpuErrors": []
+}

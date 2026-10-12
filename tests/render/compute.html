@@ -1,0 +1,22 @@
+<!doctype html><canvas id="c" width="64" height="64"></canvas>
+<script type="module">
+// Bisect harness for the small-body compute pass (ISSUE GPU-003). ?variant=trivial|loop|full&n=94523
+import * as THREE from 'three/webgpu';
+import { Fn, instancedArray, instanceIndex, vec4, float, sin, cos, sqrt, Loop, length, vec3, uniform } from 'three/tsl';
+const q = new URLSearchParams(location.search), variant = q.get('variant') ?? 'full', n = +(q.get('n') ?? 94523);
+const r = new THREE.WebGPURenderer({ canvas: document.getElementById('c') }); (r)._getFallback = null; await r.init();
+const e0 = new Float32Array(n * 4).map((_, i) => i % 4 === 0 ? 2.7 : i % 4 === 1 ? 0.1 : 0.3);
+const E0 = instancedArray(e0, 'vec4'), P = instancedArray(n, 'vec4'), days = uniform(9000);
+const c = Fn(() => {
+  const a0 = E0.element(instanceIndex);
+  if (variant === 'trivial') { P.element(instanceIndex).assign(a0); return; }
+  const M = days.mul(0.004).fract().mul(6.2831853), e = a0.y;
+  const E = M.toVar();
+  if (variant !== 'noloop') Loop(10, () => { E.assign(E.sub(E.sub(e.mul(sin(E))).sub(M).div(float(1).sub(e.mul(cos(E)))))); });
+  P.element(instanceIndex).assign(vec4(a0.x.mul(cos(E).sub(e)), a0.x.mul(sqrt(float(1).sub(e.mul(e)))).mul(sin(E)), 0, length(vec3(E, e, 1))));
+})().compute(n);
+let k = 0; window.done = 0;
+async function step() { r.compute(c); k++; if (k < 30) requestAnimationFrame(step); else { const b = await r.getArrayBufferAsync(P.value); window.result = Array.from(new Float32Array(b).slice(0, 8)); window.done = 1; } }
+r.onDeviceLost = (i) => { window.lost = i.message; window.done = 1; };
+step();
+</script>

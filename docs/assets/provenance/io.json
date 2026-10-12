@@ -1,0 +1,70 @@
+{
+ "object_id": "io",
+ "source_url": "https://asc-pds-services.s3.us-west-2.amazonaws.com/mosaic/Io_GalileoSSI-Voyager_Global_Mosaic_ClrMerge_1km.tif",
+ "label_url": "https://asc-pds-services.s3.us-west-2.amazonaws.com/mosaic/Io_GalileoSSI-Voyager_Global_Mosaic_ClrMerge_1km.lbl",
+ "checksum": "eb9e79199ee38816bb17277a0d3598de",
+ "retrieval_date": "2026-10-09",
+ "producer": "USGS Astrogeology Science Center",
+ "attribution": "NASA/JPL/USGS \u2014 Galileo SSI & Voyager (colour merge)",
+ "license": "U.S. public domain (USGS-produced product of NASA mission data); credit requested",
+ "commercial": "yes",
+ "original_wavelength": "visible (clear/broadband; colour products: mission colour filters merged by USGS)",
+ "projection": "SimpleCylindrical",
+ "label": {
+  "ProjectionName": "SimpleCylindrical",
+  "CenterLongitude": "0.0",
+  "LongitudeDirection": "PositiveWest",
+  "MinimumLongitude": "-180.0",
+  "MaximumLongitude": "180.0",
+  "LatitudeType": "Planetocentric",
+  "Samples": "11445",
+  "Lines": "5723",
+  "Bands": "3",
+  "PixelResolution": "1000.0",
+  "Scale": "31.7904739999999997"
+ },
+ "native_size": [
+  11445,
+  5723
+ ],
+ "transform": {
+  "direction": "positive-west",
+  "leftEdgeEastDeg": -180.0,
+  "columnShift": 0,
+  "shiftDeg": 0.0
+ },
+ "colour": "observed (mission colour mosaic), white-balanced to the disc-integrated colour (0.88, 0.8, 0.45)",
+ "observed_coverage_fraction": 1.0,
+ "georeference_check_vs_v3_3": {
+  "bestShiftDeg": 0.0,
+  "corrAtZero": 0.578,
+  "note": "positive = new map must move east to match v3.3"
+ },
+ "tiers": {
+  "hi": {
+   "file": "assets/tex/io_hi.jpg",
+   "size": [
+    8192,
+    4096
+   ],
+   "sha256": "7f4af1f4b45d3f7ce67b6399dad0cec976212a9b079b87d77ece5cd5e5cab2f6",
+   "meanLinearLum": 0.26170726181086634
+  },
+  "base": {
+   "file": "assets/tex/io.jpg",
+   "size": [
+    2048,
+    1024
+   ],
+   "sha256": "fe543cfd505c9e452640e43da7eadf4d90e02ffc72bfae9c1a8e1b1f3aadb1b7",
+   "meanLinearLum": 0.26981748025663094
+  }
+ },
+ "white_balance_gains_linear": [
+  0.825,
+  1.101,
+  1.337
+ ],
+ "albedo_stretch": null,
+ "resampling": "BOX to 2\u00d7 then LANCZOS; sRGB 8-bit JPEG q92 4:4:4"
+}

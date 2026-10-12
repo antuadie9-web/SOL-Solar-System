@@ -1,0 +1,20 @@
+{
+ "format": "SOL stars3d v1: Float32 x10 [x,y,z pc; vx,vy,vz pc/yr; M; Teff; flags; σd/d], J2000 ecliptic, epoch J2016.0",
+ "count": 335865,
+ "gcns_d100pc": 331291,
+ "gaiaB_bright": 0,
+ "hipparcosFill": 4574,
+ "named": 157,
+ "sources": [
+  "Gaia Catalogue of Nearby Stars — Gaia Collaboration, Smart et al. 2021, A&A 649, A6 (VizieR J/A+A/649/A6) via https://tapvizier.cds.unistra.fr; Gaia data CC BY-SA 3.0 IGO",
+  "Hipparcos new reduction, van Leeuwen 2007 (VizieR I/311/hip2) via https://tapvizier.cds.unistra.fr"
+ ],
+ "cuts": {
+  "gcns": "GCNSprob > 0.38 (catalogue definition)",
+  "B": "G < 9 AND 0.1 < parallax <= 10 AND parallax_over_error > 5",
+  "hip": "Hp < 6.5, Plx/e_Plx > 5, no Gaia match within 90″ and 1.2 mag"
+ },
+ "truth": "positions OBSERVED (astrometry); distances DERIVED (GCNS Bayesian posterior medians; Hipparcos 1/parallax); Teff DERIVED; completeness: Gaia DR3 incompleteness at G<3 and in crowded fields",
+ "built": "2026-10-08T11:01:38.022Z",
+ "sha256": "a526685b067eab633dd70d3e9b62bf369ed733b081cf5bd3d04d0252605b5a6d"
+}

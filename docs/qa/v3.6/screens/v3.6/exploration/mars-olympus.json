@@ -1,0 +1,94 @@
+{
+ "image": "mars-olympus.png",
+ "version": "3.6.0",
+ "object": "mars",
+ "view": "mars-olympus",
+ "request": {
+  "site": {
+   "lat": 15.5,
+   "lon": 226.2,
+   "alt": 70,
+   "sunEl": 22,
+   "rel": 0,
+   "down": 0.55,
+   "span": 1.03,
+   "step": 0.01
+  }
+ },
+ "camera": {
+  "posHelioEclKm": [
+   2540059.1916475412,
+   234542722.22045925,
+   4854970.156283261
+  ],
+  "quat": [
+   -0.37185812445040356,
+   0.8149199327347358,
+   0.40952431315921484,
+   -0.1729649543789582
+  ],
+  "fovDeg": 60,
+  "mode": "free",
+  "distanceKm": 3477.6443000044756,
+  "altitudeKm": 81.4543000044755
+ },
+ "simJdTT": 2461322.700800703,
+ "simUtc": "2026-10-09T04:47:59.996Z",
+ "viewingMode": "exploration",
+ "phaseAngleDeg": 69.05669458520964,
+ "quality": "high",
+ "toneMap": "neutral",
+ "exposureEV": 1.12,
+ "skyEV": 20.29,
+ "detailTier": 4,
+ "terrain": {
+  "maxLevel": 8,
+  "finestData": 5,
+  "patches": 316,
+  "provisional": 4
+ },
+ "rings": null,
+ "backend": "WebGPU (native)",
+ "adapter": {
+  "vendor": "google",
+  "architecture": "swiftshader",
+  "device": "",
+  "description": "",
+  "fallback": true,
+  "features": [
+   "depth32float-stencil8",
+   "rg11b10ufloat-renderable",
+   "bgra8unorm-storage",
+   "texture-compression-bc",
+   "core-features-and-limits",
+   "chromium-experimental-sampling-resource-table",
+   "chromium-experimental-timestamp-query-inside-passes",
+   "float32-filterable",
+   "indirect-first-instance",
+   "texture-compression-astc-sliced-3d",
+   "float32-blendable",
+   "subgroup-size-control",
+   "texture-compression-unaligned",
+   "texture-compression-astc",
+   "texture-compression-etc2",
+   "depth-clip-control",
+   "texture-compression-bc-sliced-3d",
+   "clip-distances",
+   "timestamp-query",
+   "texture-component-swizzle",
+   "subgroups"
+  ],
+  "limits": {
+   "maxTextureDimension2D": 8192,
+   "maxBufferSize": 1073741824,
+   "maxStorageBufferBindingSize": 1073741824,
+   "maxComputeWorkgroupStorageSize": 32768
+  },
+  "qaSoftware": true
+ },
+ "resolution": [
+  1280,
+  720
+ ],
+ "limitations": "Software WebGPU (SwiftShader) capture; not real-GPU look or performance evidence"
+}

@@ -1,0 +1,494 @@
+{
+ "count": 47,
+ "tsNocheck": [
+  "src/astro/galilean.ts",
+  "src/galaxy/stars3d.ts",
+  "src/render/atmosphere.ts",
+  "src/render/camera.ts",
+  "src/render/comets.ts",
+  "src/render/corona.ts",
+  "src/render/engine.ts",
+  "src/render/geometry.ts",
+  "src/render/lines.ts",
+  "src/render/planetMaterial.ts",
+  "src/render/points.ts",
+  "src/render/rings.ts",
+  "src/render/shaderlib.ts",
+  "src/render/sky.ts",
+  "src/render/smallbodies.ts",
+  "src/render/sun.ts"
+ ],
+ "modules": [
+  {
+   "path": "src/astro/constants.ts",
+   "lines": 17,
+   "tsNocheck": false,
+   "imports": []
+  },
+  {
+   "path": "src/astro/frames.ts",
+   "lines": 30,
+   "tsNocheck": false,
+   "imports": [
+    "./constants",
+    "./vec"
+   ]
+  },
+  {
+   "path": "src/astro/galilean.ts",
+   "lines": 338,
+   "tsNocheck": true,
+   "imports": [
+    "astronomia"
+   ]
+  },
+  {
+   "path": "src/astro/kepler.ts",
+   "lines": 96,
+   "tsNocheck": false,
+   "imports": [
+    "./constants",
+    "./vec"
+   ]
+  },
+  {
+   "path": "src/astro/moon.ts",
+   "lines": 14,
+   "tsNocheck": false,
+   "imports": [
+    "./precession",
+    "./vec",
+    "astronomia",
+    "astronomia/data/elpMppDe"
+   ]
+  },
+  {
+   "path": "src/astro/planets.ts",
+   "lines": 38,
+   "tsNocheck": false,
+   "imports": [
+    "./constants",
+    "./vec",
+    "astronomia",
+    "astronomia/data/vsop87Bearth",
+    "astronomia/data/vsop87Bjupiter",
+    "astronomia/data/vsop87Bmars",
+    "astronomia/data/vsop87Bmercury",
+    "astronomia/data/vsop87Bneptune",
+    "astronomia/data/vsop87Bsaturn",
+    "astronomia/data/vsop87Buranus",
+    "astronomia/data/vsop87Bvenus"
+   ]
+  },
+  {
+   "path": "src/astro/precession.ts",
+   "lines": 21,
+   "tsNocheck": false,
+   "imports": [
+    "./vec"
+   ]
+  },
+  {
+   "path": "src/astro/rotation.ts",
+   "lines": 82,
+   "tsNocheck": false,
+   "imports": [
+    "./constants",
+    "./frames",
+    "./vec"
+   ]
+  },
+  {
+   "path": "src/astro/sampled.ts",
+   "lines": 67,
+   "tsNocheck": false,
+   "imports": [
+    "./twobody",
+    "./vec"
+   ]
+  },
+  {
+   "path": "src/astro/solar.ts",
+   "lines": 4,
+   "tsNocheck": false,
+   "imports": []
+  },
+  {
+   "path": "src/astro/system.ts",
+   "lines": 341,
+   "tsNocheck": false,
+   "imports": [
+    "../data/catalog",
+    "./constants",
+    "./frames",
+    "./galilean",
+    "./kepler",
+    "./moon",
+    "./planets",
+    "./precession",
+    "./rotation",
+    "./sampled",
+    "./twobody",
+    "./vec"
+   ]
+  },
+  {
+   "path": "src/astro/time.ts",
+   "lines": 75,
+   "tsNocheck": false,
+   "imports": [
+    "astronomia"
+   ]
+  },
+  {
+   "path": "src/astro/twobody.ts",
+   "lines": 39,
+   "tsNocheck": false,
+   "imports": [
+    "./vec"
+   ]
+  },
+  {
+   "path": "src/astro/vec.ts",
+   "lines": 27,
+   "tsNocheck": false,
+   "imports": []
+  },
+  {
+   "path": "src/contracts/precision.ts",
+   "lines": 46,
+   "tsNocheck": false,
+   "imports": []
+  },
+  {
+   "path": "src/core/assets.ts",
+   "lines": 54,
+   "tsNocheck": false,
+   "imports": [
+    "three/webgpu"
+   ]
+  },
+  {
+   "path": "src/core/clock.ts",
+   "lines": 23,
+   "tsNocheck": false,
+   "imports": [
+    "../astro/time"
+   ]
+  },
+  {
+   "path": "src/core/gpu.ts",
+   "lines": 21,
+   "tsNocheck": false,
+   "imports": []
+  },
+  {
+   "path": "src/core/settings.ts",
+   "lines": 42,
+   "tsNocheck": false,
+   "imports": []
+  },
+  {
+   "path": "src/core/textures.ts",
+   "lines": 104,
+   "tsNocheck": false,
+   "imports": [
+    "./assets",
+    "three/webgpu"
+   ]
+  },
+  {
+   "path": "src/data/catalog.ts",
+   "lines": 229,
+   "tsNocheck": false,
+   "imports": []
+  },
+  {
+   "path": "src/data/events.ts",
+   "lines": 23,
+   "tsNocheck": false,
+   "imports": [
+    "../astro/time"
+   ]
+  },
+  {
+   "path": "src/galaxy/stars3d.ts",
+   "lines": 56,
+   "tsNocheck": true,
+   "imports": [
+    "../render/points",
+    "three/tsl",
+    "three/webgpu"
+   ]
+  },
+  {
+   "path": "src/main.ts",
+   "lines": 126,
+   "tsNocheck": false,
+   "imports": [
+    "./astro/sampled",
+    "./astro/system",
+    "./astro/time",
+    "./core/assets",
+    "./core/clock",
+    "./core/gpu",
+    "./core/settings",
+    "./core/textures",
+    "./render/engine",
+    "./ui/ui",
+    "three/webgpu"
+   ]
+  },
+  {
+   "path": "src/render/atmosphere.ts",
+   "lines": 79,
+   "tsNocheck": true,
+   "imports": [
+    "../data/catalog",
+    "three/tsl",
+    "three/webgpu"
+   ]
+  },
+  {
+   "path": "src/render/camera.ts",
+   "lines": 187,
+   "tsNocheck": true,
+   "imports": [
+    "../astro/system",
+    "../astro/vec",
+    "three/webgpu"
+   ]
+  },
+  {
+   "path": "src/render/comets.ts",
+   "lines": 70,
+   "tsNocheck": true,
+   "imports": [
+    "./geometry",
+    "./points",
+    "three/tsl",
+    "three/webgpu"
+   ]
+  },
+  {
+   "path": "src/render/corona.ts",
+   "lines": 56,
+   "tsNocheck": true,
+   "imports": [
+    "../astro/solar",
+    "./shaderlib",
+    "three/tsl",
+    "three/webgpu"
+   ]
+  },
+  {
+   "path": "src/render/engine.ts",
+   "lines": 739,
+   "tsNocheck": true,
+   "imports": [
+    "../astro/constants",
+    "../astro/frames",
+    "../astro/kepler",
+    "../astro/system",
+    "../astro/vec",
+    "../core/assets",
+    "../core/gpu",
+    "../core/settings",
+    "../core/textures",
+    "../galaxy/stars3d",
+    "../terrain/dem",
+    "../terrain/terrain",
+    "./atmosphere",
+    "./camera",
+    "./comets",
+    "./corona",
+    "./geometry",
+    "./guides",
+    "./identity",
+    "./lines",
+    "./planetMaterial",
+    "./points",
+    "./rings",
+    "./sky",
+    "./smallbodies",
+    "./sun",
+    "three/addons/loaders/GLTFLoader.js",
+    "three/addons/tsl/display/BloomNode.js",
+    "three/addons/utils/BufferGeometryUtils.js",
+    "three/tsl",
+    "three/webgpu"
+   ]
+  },
+  {
+   "path": "src/render/geometry.ts",
+   "lines": 176,
+   "tsNocheck": true,
+   "imports": [
+    "./identity",
+    "three/addons/utils/BufferGeometryUtils.js",
+    "three/webgpu"
+   ]
+  },
+  {
+   "path": "src/render/guides.ts",
+   "lines": 61,
+   "tsNocheck": false,
+   "imports": []
+  },
+  {
+   "path": "src/render/identity.ts",
+   "lines": 99,
+   "tsNocheck": false,
+   "imports": [
+    "../data/catalog"
+   ]
+  },
+  {
+   "path": "src/render/lines.ts",
+   "lines": 111,
+   "tsNocheck": true,
+   "imports": [
+    "../contracts/precision",
+    "three/tsl",
+    "three/webgpu"
+   ]
+  },
+  {
+   "path": "src/render/planetMaterial.ts",
+   "lines": 216,
+   "tsNocheck": true,
+   "imports": [
+    "../data/catalog",
+    "./identity",
+    "./shaderlib",
+    "three/tsl",
+    "three/webgpu"
+   ]
+  },
+  {
+   "path": "src/render/points.ts",
+   "lines": 89,
+   "tsNocheck": true,
+   "imports": [
+    "three/tsl",
+    "three/webgpu"
+   ]
+  },
+  {
+   "path": "src/render/rings.ts",
+   "lines": 73,
+   "tsNocheck": true,
+   "imports": [
+    "./geometry",
+    "three/tsl",
+    "three/webgpu"
+   ]
+  },
+  {
+   "path": "src/render/shaderlib.ts",
+   "lines": 121,
+   "tsNocheck": true,
+   "imports": [
+    "three/tsl"
+   ]
+  },
+  {
+   "path": "src/render/sky.ts",
+   "lines": 49,
+   "tsNocheck": true,
+   "imports": [
+    "../astro/frames",
+    "../astro/vec",
+    "three/tsl",
+    "three/webgpu"
+   ]
+  },
+  {
+   "path": "src/render/smallbodies.ts",
+   "lines": 72,
+   "tsNocheck": true,
+   "imports": [
+    "../astro/constants",
+    "./points",
+    "three/tsl",
+    "three/webgpu"
+   ]
+  },
+  {
+   "path": "src/render/sun.ts",
+   "lines": 209,
+   "tsNocheck": true,
+   "imports": [
+    "../astro/constants",
+    "./shaderlib",
+    "three/tsl",
+    "three/webgpu"
+   ]
+  },
+  {
+   "path": "src/terrain/dem.ts",
+   "lines": 19,
+   "tsNocheck": false,
+   "imports": []
+  },
+  {
+   "path": "src/terrain/terrain.ts",
+   "lines": 122,
+   "tsNocheck": false,
+   "imports": [
+    "./dem",
+    "three/webgpu"
+   ]
+  },
+  {
+   "path": "src/ui/format.ts",
+   "lines": 37,
+   "tsNocheck": false,
+   "imports": [
+    "../astro/constants",
+    "../contracts/precision"
+   ]
+  },
+  {
+   "path": "src/ui/store.ts",
+   "lines": 22,
+   "tsNocheck": false,
+   "imports": []
+  },
+  {
+   "path": "src/ui/styles.css",
+   "lines": 355,
+   "tsNocheck": false,
+   "imports": []
+  },
+  {
+   "path": "src/ui/tours.ts",
+   "lines": 43,
+   "tsNocheck": false,
+   "imports": []
+  },
+  {
+   "path": "src/ui/ui.ts",
+   "lines": 930,
+   "tsNocheck": false,
+   "imports": [
+    "../astro/constants",
+    "../astro/system",
+    "../astro/time",
+    "../astro/vec",
+    "../core/clock",
+    "../core/settings",
+    "../data/events",
+    "../render/engine",
+    "../render/guides",
+    "../render/identity",
+    "../render/smallbodies",
+    "../render/sun",
+    "./format",
+    "./store",
+    "./tours",
+    "lucide"
+   ]
+  }
+ ]
+}

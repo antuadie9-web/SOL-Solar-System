@@ -1,0 +1,131 @@
+# SOL — prioritized issue tracker (updated for v3.5.0)
+
+Status: **FIXED** (code + test/evidence in repo) · **PARTIAL** · **OPEN** · **BLOCKED** (needs something unavailable here).
+Severity P0 = correctness/stability blocker, P1 = major fidelity/UX gap, P2 = polish/coverage.
+
+| ID | Sev | Area | Finding (evidence) | Status / where |
+|---|---|---|---|---|
+| SCI-001 | P0 | Ephemeris | Saturn/Uranus/Neptune/Mars moons from mean elements off by up to 2.4 million km (R-006) | FIXED — sampled tier + osculating states; `tests/astro/ephemeris.test.ts` |
+| SCI-002 | P0 | Ephemeris | Small-body elements truncated to 3 s.f. → 10⁶ km errors (R-004) | FIXED — `tools/ingest/sbdb.mjs` |
+| SCI-003 | P2 | Ephemeris | VSOP87B Neptune 2.4″ at 2075 (budget 2″) — outside sampled window | FIXED v3.4 — secondary 1900–2200 Horizons DE441 barycentre tier; Neptune 2075 now 0.080″; exemption removed |
+| SCI-004 | P2 | Ephemeris | Mimas interpolation error 166 km (≈0.9·10⁻³ a) | OPEN — halve step or J2-aware propagation |
+| SCI-005 | P1 | Small bodies | `smallbodies.bin` elements rounded (~4 s.f.) → O(10⁵ km) for points | OPEN — on-demand full-precision SBDB fetch when an object is selected/approached |
+| SCI-006 | P0 | Frames | Moon/E5 precession in longitude only (R-003) | FIXED |
+| SCI-007 | P1 | Time | TT−UTC model wrong before 2017; no TDB/UT1 distinction (R-009) | FIXED — `src/astro/time.ts`, `tests/astro/time.test.ts` |
+| SCI-008 | P1 | Rotation | Unknown spin axes silently drawn at RA 0/Dec 90; unmeasured moons assumed synchronous | PARTIAL — labelled in inspector; real pole data per body still to source |
+| SCI-009 | P1 | Ephemeris | Pluto 2-body barycentre orbit 5.5 million km off | FIXED — Horizons sampled barycentre + Charon |
+| SCI-010 | P2 | Ephemeris | Halley 27 million km (2-body from 1994 elements) | FIXED in window (sampled); outside window labelled extrapolation |
+| GPU-001 | P0 | Backend | three r186 auto-falls back to WebGL2 | FIXED — fallback removed, backend asserted (R-010) |
+| GPU-002 | P0 | Stability | Device loss silent (black canvas) | FIXED — explicit error screen; recovery (re-init) OPEN |
+| GPU-003 | P1 | Stability | SwiftShader GPU-process crash in asteroid compute pass | DIAGNOSED — any WebGPU compute (even raw, no three.js) kills SwiftShader on Chromium 154 arm64 (R-013); hardware check in RTX3050 guide §2a |
+| BOOT-001 | P0 | Startup | Missing required asset → crash (reproduced) | FIXED — staged boot with required/optional lists |
+| BOOT-002 | P0 | Memory | All surface maps eager-loaded, hi maps never evicted, size-changing re-upload | FIXED — `TextureStore` (lazy, budget, LRU, dispose) |
+| PERF-001 | P1 | Perf | No frame-time / residency instrumentation | FIXED — `engine.diagnostics()` + overlay; GPU timestamp queries OPEN |
+| PERF-002 | P1 | Memory | No GPU-compressed textures (KTX2/Basis) | OPEN — needs target-GPU format test + transcoder pipeline |
+| PERF-003 | P1 | Perf | Real-GPU frame-time baseline | BLOCKED — no GPU in build environment; protocol in `docs/qa/benchmark-protocol.md` |
+| CAM-001 | P0 | Camera | Wheel/drag ignored during travel ("stuck") | FIXED — gestures cancel flight preserving view direction |
+| CAM-002 | P1 | Camera | NaN/inside-body states possible | FIXED — finite guard + min-distance clamp |
+| CAM-003 | P1 | Camera | Inconsistent pixel-ratio formula boot vs settings | FIXED — `pixelRatioFor()` |
+| CAM-004 | P1 | Camera | Full state machine (Surface/Tour/Galactic), bookmarks, undo | OPEN — Phase 6/7 |
+| SUN-001 | P1 | Sun | Sun vanished below 0.55 px | FIXED — photometric point source with flux-conserving cross-fade |
+| SUN-002 | P1 | Sun | Disc clipped white until 420 px wide | FIXED — exposure weights the disc from ~8 px; verify on hardware |
+| SUN-003 | P1 | Sun | Corona/chromosphere/eclipse corona | FIXED — physical Baumbach corona + chromosphere, eclipse metering (R-015) |
+| SUN-004b | P0 | Sun | Owner: close/mid Sun immature, white ball | IMPLEMENTED, VISUALLY UNAPPROVED — new photosphere, metering, glare policy, 3 looks (R-020); owner choice of look pending; hardware look NOT TESTED |
+| SUN-005 | P2 | Sun | Dated HMI-informed active-region layer | OPEN — licensed multi-epoch reprojection needed |
+| SUN-007 | P1 | Sun | Granulation hash periodic (≈9.7 cells) → diagonal banding at the limb | FIXED v3.5 — PCG3D hash + second warp octave |
+| SUN-006 | P2 | Sun | Prominences / illustrative flares (toggle) | PARTIAL v3.4 — simulated limb prominences with toggle and physically scaled Scientific look; flares not implemented |
+| EXP-001 | P0 | Exposure | NaN exposure on exact night-side views → permanent white frame | FIXED (R-014) |
+| EXP-002 | P0 (v3.5 audit) | Exposure | Bright bodies clipped (measured on v3.4 screens: Io 45 %, Triton 47 %, Europa 32 %, Vesta 35 %, Pluto 40 %, 67P 80 % of disc pixels with a channel ≥ 250) | FIXED v3.5 (software captures) — highlight-protected metering from per-map p99 statistics × photometric peak; Io 0.001 %, Triton 0 %, Europa 0.008 %, Vesta 0.001 %, Pluto 0 %, 67P 0 %; hardware look pending |
+| SUN-004 | P2 | Optics | Bloom haloed correctly exposed bodies | FIXED — threshold 6× display white (verify on hardware) |
+| ORB-001 | P1 | Overlays | Fixed 720-vertex orbits, nearest-vertex phase | FIXED — adaptive conic (chord ≤1.5·10⁻⁴ r), exact phase, tests |
+| ORB-002 | P1 | Overlays | Heliocentric orbits cross the view near a planet ("spaghetti"); comets at level 1 | FIXED — context fade to zero, comets at level 2 |
+| ORB-003 | P1 | Overlays | Sampled ephemeris trajectory, apsides/nodes markers | FIXED — amber ephemeris trajectory ±½ period, Pe/Ap/☊/☋ landmarks; legend in Guides panel (v3.3) |
+| ORB-004 | P0 | Overlays | Owner: lines vibrate/shimmer in distant views | FIXED (code + numeric test) — relative-to-eye hi/lo vertices (R-019); hardware slow-pan video NOT TESTED |
+| ORB-005 | P1 | Overlays | Owner: guide clutter, always-on spaghetti | FIXED — 5 guide modes, clean default, inside-orbit suppression, spin axis/equator only in scientific mode |
+| AST-001 | P1 | Assets | 3 shape models unused despite README claim | FIXED — wired |
+| AST-002 | P1 | Assets | Ariel 43 %, Oberon 58 %, Titania 50 % unobserved | FIXED — masked, labelled reconstruction + coverage row; albedo calibration corrected (R-016) |
+| AST-003 | P1 | Assets | Licences: 31 files personal/non-commercial (Albers mosaics) | PARTIAL v3.4 — 28 of 31 replaced by USGS public-domain / NASA PIA17214 mosaics (tools/ingest/usgs_mosaics.py); Ariel/Titania/Oberon remain NC (no PD global mosaic located) |
+| AST-004 | P1 | Assets | Ryugu/Itokawa/Ida/Lutetia/Miranda/Umbriel need mission shapes/maps | OPEN — family reconstructions (tier C) shipped and labelled; licensed JAXA/PDS products to verify |
+| AST-005 | P0 | Visual identity | Owner: bodies look alike (shared 7-lobe/26-crater + one fBm recipe) | FIXED for featured bodies — profiles + 7 shape / 8 surface families (R-021); owner visual sign-off pending |
+| AST-006 | P2 | Assets | GLB import kept first mesh only | FIXED — all primitives merged, content reported (R-022) |
+| AST-007 | P2 | Assets | Byte-duplicate JetBrains Mono 500 file | FIXED — removed |
+| TYPE-001 | P2 | Code | Render modules under `@ts-nocheck` | OPEN — incremental typing |
+| UX-001 | P1 | UI | Reduced motion, diagnostics overlay, texture budget | FIXED |
+| UX-002 | P0 | UI | Owner: UI not premium/complete | IMPLEMENTED, VISUALLY UNAPPROVED — full redesign (see CHANGELOG 3.3.0); still OPEN: drag-resize/dock panels, compare mode, i18n string tables, screen-reader audit with real AT |
+| UX-003 | P2 | UI | Labels drawn across nearer bodies | FIXED |
+| CAM-005 | P1 | Camera | Surface explorer, Galactic navigator, cinematic flight modes | OPEN — orbit/free/travel/tour/co-rotate exist; others Phase 4/7 |
+| QA-001 | P1 | QA | Playwright Chromium 141 loses SwiftShader device after canvas configure | WORKED AROUND — harness uses Debian Chromium 154 (R-023) |
+| GAL-001 | P0 | Scope | No 3D stars / galaxy / DSOs / exoplanets | PARTIAL — 335,865 stars in true 3D (GCNS + Hipparcos), 157 navigable named stars (R-018); Galaxy model, Gaia DR3 bulk tiles, DSOs, exoplanets OPEN |
+| GEO-001 | P1 | Cartography | v3.3 Vesta map 150° off (Claudia vs IAU-2014 system) and Charon map 180° off; Pluto/Charon/Triton maps contained invented fill in unobserved latitudes | FIXED v3.4 — USGS mosaics re-indexed from ISIS labels, verified by Marcia crater (Vesta) and Herschel (Mimas); unobserved parts flagged noData → labelled reconstruction |
+| TONE-001 | P1 | Colour | AgX desaturated the photosphere and planet colour to near-grey (measured) | FIXED v3.4 — Khronos PBR Neutral default, AgX selectable; hardware look NOT TESTED |
+| RING-001 | P1 | Rings | No near-field ring structure | PARTIAL v3.4 — particle slice (a⁻³ sizes, τ density, shear, shadow) within ~90 m of the plane; wakes, collisions, particle shadowing, mid-range layered self-shadow OPEN |
+| CAT-001 | P1 | Catalogues | Single 13 MB star file, no streaming contract | FIXED v3.4 — 85 SHA-256-verified sector shards via CatalogStream; Gaia DR3 bulk (beyond 100 pc) still OPEN |
+| ARCH-001 | P0 | Architecture | No frame/object/catalogue/LOD/camera/evidence contracts | IMPLEMENTED v3.4 — src/contracts/*, src/navigation/cameraState.ts, 14 tests; engine.ts/ui.ts still monolithic (no rewrite) |
+| TER-001 | P0 | Scope | No terrain LOD / surface travel | PARTIAL v3.6 — tile pyramid + streaming, 118 m Moon / 200 m Mars regional tiles, SSE refinement, horizon shadows, patch-local precision; global high-res pyramids, Earth/Mercury/icy moons, surface camera mode, worker builds OPEN |
+
+### Final visual QA (2026-10-09)
+| ID | Sev | Area | Finding | Status |
+|---|---|---|---|---|
+| VQA-001 | P1 | Sun | Close disc flat beige (over-metered, AgX compression) | FIXED in code; software capture only |
+| VQA-002 | P1 | Sun | Repeating/woven granulation at limb | v3.4 claim FIXED was premature (periodic hash remained); FIXED v3.5 (SUN-007) |
+| VQA-003 | P1 | Exposure | Small bodies near-white, dark bodies not dark | IMPROVED — still photographic auto-exposure per subject; bright icy bodies (Miranda, Hyperion) still render near 200/255 by design |
+| VQA-004 | P1 | Exposure | Mid-size planet discs clipped + brown bloom halo | FIXED |
+| VQA-005 | P2 | Rings | Blue band at Saturn ring outer edge | FIXED |
+| VQA-006 | P2 | Sun | At 0.05 AU (~72 px disc) granulation is below resolution, so disc reads smooth warm-white | BY DESIGN (band-limited to avoid shimmer) |
+
+### v3.5 (2026-10-09) — lighting & visibility milestone
+| ID | Sev | Area | Finding (evidence) | Status |
+|---|---|---|---|---|
+| LGT-001 | P0 | Sky | Stars/Milky Way vanish near any sunlit body (single scene exposure; MW gain LS·4e-6) | FIXED — viewing modes; sky exposure domain (presentation.ts); Scientific keeps the physical behaviour, labelled |
+| LGT-002 | P0 | Depth | Far-plane sprites at reversed depth 1e-9·w drawn IN FRONT of bodies farther than ≈2·10⁴ km | FIXED — z = 0 exactly (points.ts, lines.ts) |
+| LGT-003 | P1 | Sky | Milky Way map double-counted catalogue stars; calibration ≈100× too bright | FIXED — star-removed diffuse layer, derived μ-calibration |
+| LGT-004 | P0 | Surfaces | Night sides pure black, no secondary light, unbounded night-side exposure pumping | FIXED — planetshine (physical), labelled inspection light (Exploration/Cinematic), night cap |
+| LGT-005 | P2 | Earth | No airglow | FIXED — calibrated 95 km layer, night only |
+| RING-002 | P1 | Rings | Ring-particle slice stayed visible after leaving Saturn | FIXED — hidden unless updated this frame |
+| COM-001 | P1 | Comets | 3000× coma boost at the nucleus → white frame (67P 80 % clipped) | FIXED — boost fades to ×1 within 2·10⁵ km |
+| AUD-01 | P2 | Settings | Docs claimed a schema bump that did not happen | FIXED — schema 8, migration chain, tests, docs corrected |
+| AUD-02 | P1 | Camera | Rig ↔ state machine desync via direct field writes | FIXED — accessors + invariant + tests |
+| AUD-03 | P1 | Catalogues | All shards streamed at boot | FIXED — named-star extract at boot; residency-driven streaming beyond 300 AU |
+| AUD-04 | P1 | LOD | Detail contract not driving rendering | PARTIAL→FIXED for atmosphere sampling, hi-res streaming, terrain switch; geometry LOD per tier OPEN |
+| AUD-05 | P1 | Honesty | Inferred/representative map colour not shown | FIXED — HUD + inspector labels from the manifest |
+| AUD-06 | P2 | Tests | Tautological p99 assertion hid a percentile bug | FIXED — nearest-rank + real assertions |
+| AUD-07 | P1 | Honesty | Docs claimed visible sunspots at 0.05 AU | FIXED — claim withdrawn; `sun_spots` metric in QA |
+| RES-01 | P2 | Research | universesimulator.org and ARK Starmap require WebGL/WebGL 2 — not inspectable in this environment | OPEN — inspect on a GPU desktop |
+| GAS-001 | P2 | Giants | Upper-haze forward scattering at the giants' night limb; ring shine on Saturn | OPEN |
+| SKY-002 | P2 | Sky | Zodiacal light & gegenschein (Leinert 1998 model) | OPEN — natural next layer of the sky domain |
+| PERF-004 | P1 | Perf | Real-GPU cost of the new terms (planetshine, airglow march term, grade) | PENDING-HARDWARE (benchmark protocol unchanged) |
+
+### v3.6 (2026-10-09) — atmospheres, terrain, close Sun, integration
+| ID | Sev | Area | Finding (evidence) | Status |
+|---|---|---|---|---|
+| ATM-001 | P1 | Titan | Surface visible through a τ ≈ 0.5 haze (blue globe) | FIXED — Titan haze τ ≈ 3–6.5 (APPROXIMATE, Tomasko 2008) |
+| ATM-002 | P1 | Mars | Dust τ ≈ 0.01 (50× too clear), artistic red Rayleigh | FIXED — derived CO₂ Rayleigh + τ 0.5 dust with per-channel ω₀/g |
+| ATM-003 | P1 | All | Ozone on the ground profile, grey Mie g, single scattering, plane-parallel ground light | FIXED — LUTs, tent ozone, multi-scatter, LUT ground light, skylight |
+| ATM-004 | P2 | Mars | Single typical dust state (no season / storm τ, no clouds) | OPEN |
+| ATM-005 | P2 | All | Aerial perspective blends with a grey alpha (no per-channel transmittance) | OPEN |
+| TER-002 | P1 | Terrain | Patch bounding radius from one corner → holes with cone culling near cube-face edges (Gale) | FIXED (found in v3.6 QA) |
+| TER-003 | P1 | Terrain | No cast shadows | FIXED — horizon maps (8 azimuths) |
+| TER-004 | P1 | Terrain | Body-centred float32 vertices (≈ 0.27 m error at the surface) | FIXED — patch-local origins via frame anchors (test) |
+| TER-005 | P2 | Terrain | Albedo maps much coarser than the 118–231 m relief | OPEN — needs LROC WAC / CTX-class mosaics |
+| SUN-008 | P1 | Sun | Single granule scale, hairline lanes at close range | IMPROVED — size distribution, exploding granules, bright points; look unapproved |
+| PERF-005 | P2 | Perf | LUT builds (0.3–0.45 s) and terrain patch builds (≈ 6 ms each) on the main thread | OPEN — Web Worker |
+| PERF-006 | P1 | Perf | Real-GPU cost of LUT atmosphere, horizon-shadowed terrain (≈ 450 patches near the ground), 192-segment focused spheres | PENDING-HARDWARE |
+| AUD-04b | P1 | LOD | Geometry LOD per tier | FIXED — plain ellipsoids 24/96(128)/192 by tier |
+| QA-002 | P2 | QA | v3.5 `qa-final/exp-b` ring-leak PNGs pre-dated the RING-002 fix | RESOLVED — fresh v3.5 capture is clean |
+
+## v3.7 (2026-10-10)
+| ID | Sev | Area | Issue | Status |
+|---|---|---|---|---|
+| RING-001 | P1 | Saturn near field | B-ring particle cap 24,000 ≈ 55 % of τ | FIXED (cap 65,536; τ from the PPS profile). PPS-saturated core τ 4.5 still capped |
+| RING-002b | P1 | Rings close | 8–30 m float32 banding of r 30 m above the plane | FIXED — precise near-field patch (series r0 + Δr, camera-relative vertices) |
+| RING-003 | P2 | Uranus | Eccentric/inclined rings (ε e = 0.0079) drawn circular | OPEN |
+| RING-004 | P2 | All | R5 volumetric ring rendering, wakes, spokes, propellers | OPEN |
+| RING-005 | P2 | Jupiter | Halo/gossamer vertical thickness not rendered | OPEN |
+| RING-006 | P2 | Neptune | Arc absolute longitude not anchored to an observed epoch | OPEN (REPRESENTATIVE) |
+| RING-007 | P2 | Jupiter | Exploration gain ×1000 made the backlit (forward-scattering) rings blinding | FIXED — cap ×200; a geometry-aware gain is OPEN |
+| ATM-010 | P2 | Giants | Shell coefficients channel-averaged; no 3-D cloud layers or storms beyond maps | OPEN |
+| ATM-011 | P1 | Venus | Venus terminator view (phase 95°) metered ≈ 5.6 EV darker than the day view (`venus-terminator`, exposure −6.87 EV vs −1.23). Two hypotheses tested and ruled out in v3.7 (CPU limb protection capped at +2 EV; highlight peak metered over μ ≥ 0.3 behind atmospheres) — exposure unchanged, root cause NOT yet isolated | OPEN |
+| ATM-012 | P2 | Io | Plumes barely visible at the limb at physical τ (gain ×4) | OPEN (needs a dedicated limb plume view/brightness check) |
+| CLD-001 | P1 | All | No volumetric clouds, cloud shadows or weather anywhere | OPEN |
+| NAV-001 | P1 | Moon/Mars | No surface walking/collision mode; descents shown as ordered frames only | OPEN |
+| INT-001 | P1 | Interstellar | True-scale interstellar travel demonstration not attempted (P7/P8 prerequisites) | OPEN |
