@@ -18,7 +18,8 @@ date: "12 October 2026"
 | Galactic context card (WP-C/L) | **Redesigned** | §8 |
 | Intro "Into the Universe" (WP-K) | **Implemented** | §8 |
 | Free-look judder (WP-I) | **Fixed + test** | §7 |
-| Atmospheres (WP-E), rings (WP-F), terrain (WP-H), wider UI pass, perf integration | **Next** | §10 |
+| Regression set vs v3.8.0 (22 views) | **Passed**; one pre-existing exposure defect found and fixed (EXP-381-02) | §9 |
+| Atmospheres (WP-E), rings (WP-F), terrain (WP-H), wider UI pass, perf integration | **Next** | §11 |
 
 Tests **329/329** (310 inherited + 19 new), typecheck clean, asset manifest 1,527 files / 0 unmatched / **0 non-commercial**.
 Checkpoint 1 preserved as tag `v3.8.1-cp1`; this checkpoint is tag `v3.8.1-cp2`. Every capture is software WebGPU
@@ -190,9 +191,13 @@ source for review, a README and SHA-256 sums of every file.
 - **Collects** per-frame interval / CPU / GPU time, hitches, long tasks, JS heap, adapter + feature list, Chrome UA,
   window/canvas/DPR, SOL settings and version. No files, accounts, browsing data or IP.
 - **Uploads nothing.** The result is a JSON in Downloads; you decide whether to send it (plain text, readable in Notepad).
-- **Verified here:** the packaged kit was extracted, served with `serve.mjs` and run end-to-end in the sandbox
-  (software adapter): no page errors; all six phases recorded frames (4 / 10 / 15 / 7 / 2 / 5 at ≈0.1 fps); the report correctly labelled itself "SOFTWARE ADAPTER — not hardware evidence" and downloaded. `serve.ps1` and the .bat were reviewed but cannot be executed on Linux — first real run
-  on Windows is yours.
+- **Verified here (cp2 rebuild):** the kit was rebuilt from the final checkpoint-2 source. Its 1,578 files were checked
+  against `SHA256SUMS.txt` (all OK) after a clean extraction, served with the packaged `serve.mjs`, and run end to end
+  in the sandbox's software adapter: no page errors, all six phases recorded frames (1 / 8 / 12 / 7 / 1 / 4 at ≈0.1 fps),
+  and the report labelled itself "SOFTWARE ADAPTER — not hardware evidence" and downloaded.
+- **Not verified:** `RUN-SOL-BENCHMARK-WINDOWS.bat` and `serve.ps1` were reviewed but cannot run on Linux, so their
+  first real execution will be on your Windows PC. If PowerShell is blocked there, the launcher uses `serve.mjs`
+  whenever `node` is on PATH (an existing Node.js install, or the portable Node.js ZIP).
 
 # 7. Stellar close range and camera smoothing
 
@@ -231,6 +236,15 @@ Two exposure defects were found and fixed while verifying the disc:
 scale bar; Galactic-longitude ticks around the Sun; named nearby stars in the ±6 pc inset; HiDPI canvas; an enlarge (2×)
 toggle; and a note that the sky is the observed 2-D Gaia panorama, with a 3-D Milky Way planned for v3.9.
 
+A legibility review of the first capture found a wrapped header, legend text that broke apart, cut-off coordinates and
+overlapping arm and star labels. All are fixed (GAL-381-01b), with labels now placed without collisions.
+
+![Galactic context card at 1 pc from the Sun: v3.8.0.](img/L0-galmap-v380.png)
+
+![v3.8.1 card (software capture, 1600×900).](img/L1-galmap-v381.png)
+
+![v3.8.1 card enlarged (2×).](img/L2-galmap-v381-enlarged.png)
+
 **Intro "Into the Universe" (UX-381-01):** deep black with the resolved limb of a white-light Sun as the anchor, drawn
 from the same per-channel limb-darkening law the renderer uses; wordmark, a one-line purpose, **Begin exploration**, an
 optional **Resume · <last target>**, "skip this screen next time" (repeat users enter as soon as the scene is ready; never
@@ -239,15 +253,36 @@ slow drift. The footer version string still reads 3.8.0 until the release bump.
 
 ![Intro: v3.8.0 (top) and v3.8.1 at 1600×900 and 1280×800 @ DPR 2, ready state (software capture).](img/U4-intro-compare.png)
 
-# 9. Limitations
+# 9. Regression set and an order-dependence defect
+
+A 22-view regression set (Earth day/limb/sunset limb, Mars day/limb, Venus terminator/limb, Titan limb, Jupiter day/limb,
+Saturn day/overview/backlit, Uranus, Neptune, Moon and Mars ground, Enceladus and Io plumes, Sun close, Triton limb, Pluto
+haze) was captured with v3.8.0 and v3.8.1 at 960×540. It doubles as the "before" set for the atmosphere, ring and terrain
+work. Scene exposure was identical in 21 of 22 views. The visible differences are the intended ones: the neutral
+photosphere (SUN-381-05), the brighter EDR3 Milky Way, and the Galactic card hidden in clean captures.
+
+The one exposure difference (sat-backlit, 8.36 vs 9.30 EV) turned out to be a **pre-existing defect** (EXP-381-02). The
+atmospheric-limb brightness used by the highlight meter was refreshed only every 8 frames, so after a cut the exposure
+used the *previous* view's limb. Fixed: it is refreshed whenever the camera or Sun direction changes by more than 2° or
+the distance by more than 5 %. Verified: sat-backlit captured after Earth and after the Saturn overview now gives the
+same 8.36 EV and limb value (0.588).
+
+![Largest pixel differences, all intended.](img/R1-regression-a.png)
+
+![Atmospheres and limbs: unchanged in cp2. The Venus terminator and the Titan haze are the next targets.](img/R2b-regression-b.png)
+
+# 10. Limitations
 
 - All evidence is software WebGPU; star crispness, glare, sky brightness and frame times are UNVERIFIED on hardware.
 - Uranian maps: greyscale × tint, not observed colour; northern hemispheres reconstructed.
 - Small-moon surfaces remain procedural on observed shapes; controlled mosaics for these bodies are a later task.
 - Resolved stellar discs use representative limb darkening (no per-star fit) and no surface structure.
-- Galactic-context card and intro are first passes awaiting your visual review.
+- Galactic-context card and intro are first passes awaiting your visual review; the intro footer still reads v3.8.0 until the release version bump.
+- The Uranian-moon observed/reconstructed boundary still shows a faint line on some segments (AST-381-01d).
+- Icy small moons are exposed bright, with low contrast on their lit faces (metering to be tuned on hardware).
+- `serve.ps1` and the `.bat` launcher have not been run on Windows; only the Node server path was exercised end to end.
 
-# 10. Next
+# 11. Next
 
 WP-E atmospheres (Venus, Mars, Titan, giant limbs; LUT precision audit), WP-F rings (Saturn C/B/A structure and shadows,
 Uranus/Neptune), WP-H terrain regression, WP-L wider UI pass (inspector grouping, camera-state display, labels), WP-M

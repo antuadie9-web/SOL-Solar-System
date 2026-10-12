@@ -48,3 +48,13 @@ numerical trace or unit test, **HW** = owner-supplied real-GPU evidence (none ye
   Galactic card redesign, new intro.
 - Lessons: /tmp and system packages can vanish between sessions → tools/qa/sandbox/setup.sh, outputs in work/qa; always run a
   browser boot smoke after data-model edits (BOOT-381-01 was only caught by a capture run).
+
+## 2026-10-12/13 — Checkpoint 2 completed (tag v3.8.1-cp2)
+- Recovered after sandbox resets (×3 during the session): repo intact; rebuilt QA env with tools/qa/sandbox/setup.sh.
+- DPR-2 stability extracted; full Sun/mode/moon set (33 views) + v3.8.0 baseline; phase-70 and Voyager-epoch views added.
+- Capture review found and fixed: SUN-381-06 (resolved-Sun glare collapse), STAR-381-D2/D3 (photosphere exposure),
+  AST-381-01b/c (Uranian map seam; first 01c attempt broke all partial maps — caught by capture), EXP-381-02 (limb-meter
+  cache made exposure depend on the previous view; verified order-independent), GAL-381-01b (card legibility).
+- 22-view regression set vs v3.8.0 (also the WP-E/F/H "before" set): no unintended regressions.
+- Benchmark kit rebuilt from cp2, checksums verified, packaged serve.mjs self-test passed (SW). Windows .bat/.ps1 unverified.
+- 329/329 tests, tsc clean, build OK, assets 1527 / 0 unmatched / 0 non-commercial.
