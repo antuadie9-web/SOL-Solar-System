@@ -548,7 +548,7 @@ export class UI {
       }
       const rows: [string, string][] = this.tab === 'physical'
         ? [['Distance from Sun', `${fmt(dSun / 3.0857e13, 3)} pc · ${fmt(dSun / 9.4607e12, 3)} ly`], ['Distance from camera', fmtDist(dKm, this.settings.get('units') as string)],
-           ['Absolute magnitude (V)', b.info.absMag ? `${b.info.absMag} (derived from catalogue ${b.info.absMagSrc})` : '—'], ['Effective temperature', b.info.teff ?? '—'], ['Radius (derived, approximate)', b.info.radiusNote ?? '—'], ['Distance uncertainty', b.info.distErr ?? '—']]
+           ['Absolute magnitude (V)', b.info.absMag ? `${b.info.absMag} (derived from catalogue ${b.info.absMagSrc})` : '—'], ['Effective temperature', b.info.teff ?? '—'], [b.info.rSunMeasured === '1' ? 'Radius (measured)' : 'Radius (estimated)', b.info.radiusNote ?? '—'], ['Close-range view', 'Resolved disc when within reach: measured/estimated radius, V-band surface brightness from M_V and R, Planck colour, representative limb darkening — no surface features are invented'], ['Distance uncertainty', b.info.distErr ?? '—']]
         : this.tab === 'orbit' ? [['Motion', 'Linear space motion from catalogue proper motion' + (b.info.hasRV === '1' ? ' and radial velocity' : ' (no radial velocity: tangential only)')], ['Reference epoch', 'J2016.0'], ['Galactic orbit', 'Not modelled yet (Phase 9)']]
         : this.tab === 'evidence' ? [['Position', 'OBSERVED — catalogue astrometry'], ['Distance', 'DERIVED from parallax'], ['Radius', 'DERIVED from M and Teff (no bolometric correction)'], ['Appearance', 'Point source (photometric PSF); resolved stellar surfaces are a later phase'], ['Source', b.info.source ?? 'Gaia DR3']]
         : [['Rotation', 'Not modelled — no resolved stellar surface in this phase']];
@@ -564,6 +564,7 @@ export class UI {
       pane.innerHTML = this.rows([
         ['Mean radius', `${fmt(R, R < 10 ? 3 : 1)} km`],
         ...(b.info?.sizeSource ? [['Size source', b.info.sizeSource] as [string, string]] : []),
+        ...(b.info?.shape ? [['Shape', b.info.shape] as [string, string]] : []),
         ...(b.radii[0] !== b.radii[2] ? [['Dimensions', `${fmt(b.radii[0] * 2, 1)} × ${fmt(b.radii[1] * 2, 1)} × ${fmt(b.radii[2] * 2, 1)} km`] as [string, string]] : []),
         ...(b.GM ? [['Mass', sci(b.GM / 6.6743e-20) + ' kg'], ['Surface gravity', `${fmt(g, 3)} m/s²`], ['Escape velocity', `${fmt(vesc, 3)} km/s`], ['Mean density', `${fmt(rho, 3)} g/cm³`]] as [string, string][] : []),
         ['Geometric albedo', fmt(d.albedo, 3)],
