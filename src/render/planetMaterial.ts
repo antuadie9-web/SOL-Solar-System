@@ -157,7 +157,7 @@ fn familySurface(p: vec3<f32>, tint: vec3<f32>, spot: vec3<f32>, seed: f32, crat
   return vec4<f32>(max(c, vec3<f32>(0.0)), h);
 }`, [fbm, craters, vnoise]);
 
-export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { color?: THREE.Texture; normal?: THREE.Texture; night?: THREE.Texture; clouds?: THREE.Texture; ocean?: THREE.Texture; ring?: THREE.Texture; recon?: THREE.Texture }, profile?: BodyVisualProfile,
+export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { color?: THREE.Texture; normal?: THREE.Texture; night?: THREE.Texture; clouds?: THREE.Texture; ocean?: THREE.Texture; ring?: THREE.Texture; recon?: THREE.Texture; reconW?: THREE.Texture }, profile?: BodyVisualProfile,
   /** v3.6: `terrainAttr` = geometry is patch-local (terrain tiles); shading reads the body-fixed `bodyPos` attribute.
    *  `U` = share the uniforms of the body's sphere material (one set of lighting state per body). */
   /** `atmo` (v3.6): transmittance LUT + ground skylight table of the body's atmosphere (render/atmoModel.ts) */
@@ -189,7 +189,7 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
     const gy = vec2(select(abs(dyA.x).lessThan(abs(dyB)), dyA.x, dyB), dyA.y);
     const samp = (t: THREE.Texture) => texture(t, uvA).grad(gx, gy);
     let albedo: any = tint.mul(U.albedoScale), n: any = ng, height: any = float(0);
-    let noData: any = float(0), reconW: any = float(0), reconY: any = float(-1);
+    let noData: any = float(0), reconW: any = float(0), reconC: any = vec3(0);
     if (maps.color) {
       const c0 = samp(maps.color).rgb;
       albedo = c0.mul(U.albedoScale);
@@ -207,8 +207,9 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
         if (maps.recon) {
           // v3.8.1 AST-381-03 (owner review REV2-02): guide field — R = smooth reconstruction weight (0 on every observed
           // pixel), G = low-frequency observed albedo carried into the gap (tools/ingest/partial_recon.py)
-          const rc = texture(maps.recon, uvA).grad(gx, gy);
-          reconW = rc.r; reconY = pow(rc.g, float(2.2));
+          // iteration 2: colour guide (sRGB texture → linear) + separate smooth weight
+          reconC = texture(maps.recon, uvA).grad(gx, gy).rgb;
+          reconW = maps.reconW ? texture(maps.reconW, uvA).grad(gx, gy).r : float(0);
           noData = max(noData, reconW);
         }
       }
@@ -250,9 +251,13 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
         // regional albedo continues from the observed side (guide G, calibrated exactly like observed pixels); procedural
         // detail only modulates it, at the observed map's own small-scale relative contrast; the graticule label starts
         // inside the gap so the boundary itself is not outlined (the label is never removed: U.markUnknown)
-        const k = def.noData!.detail ?? 0.4, chroma = vec3(def.color[0] / tl, def.color[1] / tl, def.color[2] / tl);
+        // regional COLOUR from the guide (calibrated like observed pixels), modulated by procedural structure at the observed
+        // map's own measured contrast: mid scale (1°–6°, fBm) and fine scale (procedural albedo); both amplitudes come from
+        // tools/ingest/partial_recon.py statistics, not from taste
+        const kF = def.noData!.detail ?? 0.4, kM = def.noData!.mid ?? 0.3;
         const pn = dot(pr, vec3(0.2126, 0.7152, 0.0722));
-        rec = chroma.mul(reconY.mul(U.albedoScale)).mul(float(1).add(pn.sub(1).mul(k)));
+        const mid = fbm({ p: dirLocal.mul(8.0).add(vec3(proc.seed * 0.01, 0, 0)), oct: int(4) }).mul(2).sub(1);
+        rec = reconC.mul(U.albedoScale).mul(float(1).add(mid.mul(kM))).mul(float(1).add(pn.sub(1).mul(kF)));
         grid = grid.mul(smoothstep(0.5, 0.95, reconW));
       }
       albedo = mix(albedo, mix(rec, vec3(0.55, 0.62, 0.75).mul(U.recAlbedo), grid), noData);

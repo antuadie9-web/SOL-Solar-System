@@ -1,50 +1,92 @@
 {
  "ariel": {
-  "observedMeanLinY": 0.15238,
-  "smallScaleRelContrast": 0.1161,
+  "observedMeanLinRGB": [
+   0.15232,
+   0.15232,
+   0.15232
+  ],
+  "smallScaleRelContrast": 0.1163,
+  "midScaleRelContrast_1to6deg": 0.1157,
   "feather_deg": 5.0,
   "sigma_deg": 3.5,
   "relax_deg": 35.0,
-  "unobservedFraction_at_1024": 0.6197
+  "rimExcluded_deg": 2.0,
+  "unobservedFraction_at_1024": 0.6197,
+  "maxWeightOnObserved": 0.0118
  },
  "titania": {
-  "observedMeanLinY": 0.28952,
-  "smallScaleRelContrast": 0.1293,
+  "observedMeanLinRGB": [
+   0.29706,
+   0.29209,
+   0.27809
+  ],
+  "smallScaleRelContrast": 0.1291,
+  "midScaleRelContrast_1to6deg": 0.2303,
   "feather_deg": 5.0,
   "sigma_deg": 3.5,
   "relax_deg": 35.0,
-  "unobservedFraction_at_1024": 0.6335
+  "rimExcluded_deg": 2.0,
+  "unobservedFraction_at_1024": 0.6335,
+  "maxWeightOnObserved": 0.0118
  },
  "oberon": {
-  "observedMeanLinY": 0.22272,
-  "smallScaleRelContrast": 0.1199,
+  "observedMeanLinRGB": [
+   0.24165,
+   0.2236,
+   0.21268
+  ],
+  "smallScaleRelContrast": 0.1194,
+  "midScaleRelContrast_1to6deg": 0.3963,
   "feather_deg": 5.0,
   "sigma_deg": 3.5,
   "relax_deg": 35.0,
-  "unobservedFraction_at_1024": 0.6233
+  "rimExcluded_deg": 2.0,
+  "unobservedFraction_at_1024": 0.6233,
+  "maxWeightOnObserved": 0.0078
  },
  "triton": {
-  "observedMeanLinY": 0.32595,
-  "smallScaleRelContrast": 0.1053,
+  "observedMeanLinRGB": [
+   0.33538,
+   0.32757,
+   0.31983
+  ],
+  "smallScaleRelContrast": 0.1054,
+  "midScaleRelContrast_1to6deg": 0.1318,
   "feather_deg": 5.0,
   "sigma_deg": 3.5,
   "relax_deg": 35.0,
-  "unobservedFraction_at_1024": 0.3898
+  "rimExcluded_deg": 2.0,
+  "unobservedFraction_at_1024": 0.3898,
+  "maxWeightOnObserved": 0.0078
  },
  "pluto": {
-  "observedMeanLinY": 0.16571,
-  "smallScaleRelContrast": 0.2621,
+  "observedMeanLinRGB": [
+   0.19211,
+   0.16455,
+   0.1438
+  ],
+  "smallScaleRelContrast": 0.2532,
+  "midScaleRelContrast_1to6deg": 0.1638,
   "feather_deg": 5.0,
   "sigma_deg": 3.5,
   "relax_deg": 35.0,
-  "unobservedFraction_at_1024": 0.3259
+  "rimExcluded_deg": 2.0,
+  "unobservedFraction_at_1024": 0.3259,
+  "maxWeightOnObserved": 0.0078
  },
  "charon": {
-  "observedMeanLinY": 0.19924,
-  "smallScaleRelContrast": 0.2648,
+  "observedMeanLinRGB": [
+   0.22169,
+   0.19858,
+   0.18772
+  ],
+  "smallScaleRelContrast": 0.2623,
+  "midScaleRelContrast_1to6deg": 0.3625,
   "feather_deg": 5.0,
   "sigma_deg": 3.5,
   "relax_deg": 35.0,
-  "unobservedFraction_at_1024": 0.3449
+  "rimExcluded_deg": 2.0,
+  "unobservedFraction_at_1024": 0.3449,
+  "maxWeightOnObserved": 0.0078
  }
 }

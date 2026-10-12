@@ -8,7 +8,13 @@
  "ariel_recon": {
   "truth": "RECONSTRUCTION GUIDE (not observation)",
   "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
-  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: R = reconstruction weight (0 on observed pixels), G = low-frequency observed albedo carried into the unobserved region",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels)",
+  "commercial": "yes"
+ },
+ "ariel_reconw": {
+  "truth": "RECONSTRUCTION GUIDE (not observation)",
+  "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels)",
   "commercial": "yes"
  },
  "callisto": {
@@ -32,7 +38,13 @@
  "charon_recon": {
   "truth": "RECONSTRUCTION GUIDE (not observation)",
   "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
-  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: R = reconstruction weight (0 on observed pixels), G = low-frequency observed albedo carried into the unobserved region",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels)",
+  "commercial": "yes"
+ },
+ "charon_reconw": {
+  "truth": "RECONSTRUCTION GUIDE (not observation)",
+  "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels)",
   "commercial": "yes"
  },
  "dione": {
@@ -128,7 +140,13 @@
  "oberon_recon": {
   "truth": "RECONSTRUCTION GUIDE (not observation)",
   "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
-  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: R = reconstruction weight (0 on observed pixels), G = low-frequency observed albedo carried into the unobserved region",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels)",
+  "commercial": "yes"
+ },
+ "oberon_reconw": {
+  "truth": "RECONSTRUCTION GUIDE (not observation)",
+  "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels)",
   "commercial": "yes"
  },
  "pluto": {
@@ -140,7 +158,13 @@
  "pluto_recon": {
   "truth": "RECONSTRUCTION GUIDE (not observation)",
   "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
-  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: R = reconstruction weight (0 on observed pixels), G = low-frequency observed albedo carried into the unobserved region",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels)",
+  "commercial": "yes"
+ },
+ "pluto_reconw": {
+  "truth": "RECONSTRUCTION GUIDE (not observation)",
+  "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels)",
   "commercial": "yes"
  },
  "rhea": {
@@ -182,7 +206,13 @@
  "titania_recon": {
   "truth": "RECONSTRUCTION GUIDE (not observation)",
   "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
-  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: R = reconstruction weight (0 on observed pixels), G = low-frequency observed albedo carried into the unobserved region",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels)",
+  "commercial": "yes"
+ },
+ "titania_reconw": {
+  "truth": "RECONSTRUCTION GUIDE (not observation)",
+  "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels)",
   "commercial": "yes"
  },
  "triton": {
@@ -194,7 +224,13 @@
  "triton_recon": {
   "truth": "RECONSTRUCTION GUIDE (not observation)",
   "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
-  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: R = reconstruction weight (0 on observed pixels), G = low-frequency observed albedo carried into the unobserved region",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels)",
+  "commercial": "yes"
+ },
+ "triton_reconw": {
+  "truth": "RECONSTRUCTION GUIDE (not observation)",
+  "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels)",
   "commercial": "yes"
  },
  "uranus": {
