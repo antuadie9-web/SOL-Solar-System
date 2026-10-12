@@ -739,7 +739,7 @@ export class Engine {
       G.halo.value = amp.halo * on; G.veil.value = amp.veil * on * (mode === 'scientific' ? 0.6 : 1);
       G.angRad.value = angR; G.th1.value = th1; G.pxAng.value = this.pxAng; G.viewport.value.set(this.W, this.H);
       G.extentPx.value = Math.min(1.6 * Math.max(this.W, this.H), glareExtentRad(G.halo.value, G.veil.value, th1, 0.0087) / this.pxAng);
-      G.spikes.value = st.get('lensSpikes') && mode !== 'scientific' ? 1 : 0;
+      G.spikes.value = mode === 'scientific' ? 0 : mode === 'cinematic' ? 1 : st.get('lensSpikes') ? 1 : 0;   // REV2-01: default presentation has no stylised spikes; Cinematic keeps them (labelled)
       G.tint.value.set(...(mode === 'scientific' ? [1, 1, 1] : mode === 'cinematic' ? [1.0, 0.93, 0.84] : [1.0, 0.975, 0.94]) as [number, number, number]);
       this.glareDisplay = amp.halo;
       this.glareFlux = F;

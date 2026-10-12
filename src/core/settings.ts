@@ -1,7 +1,7 @@
 // Persistent user settings with change notifications.
 export type Val = number | boolean | string;
 export const DEFAULTS: Record<string, Val> = {
-  quality: 'high', renderScale: 1, hiTextures: true, bloom: true, bloomStrength: 0.35, glare: true, lensSpikes: true,
+  quality: 'high', renderScale: 1, hiTextures: true, bloom: true, bloomStrength: 0.35, glare: true, lensSpikes: false,
   autoExposure: true, ev: 0, manualExposure: 50, darkExposure: 2.5e4,
   stars: true, starBrightness: 1, milkyWay: true, skyBrightness: 1, constellations: false, ecliptic: false,
   atmospheres: true, clouds: true, cityLights: true, rings: true, cometTails: true, cometBoost: 3000,

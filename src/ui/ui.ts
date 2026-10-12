@@ -797,7 +797,7 @@ export class UI {
       ${sw('bloom', 'Bloom', 'Light scattering inside the lens for sources far above display white.')}
       ${rg('bloomStrength', 'Bloom strength', '', 0.05, 1.2, 0.01)}
       ${sw('glare', 'Camera glare', 'Wide-angle glare around the Sun; dims when eclipsed and when the disc fills the view.')}
-      ${sw('lensSpikes', 'Diffraction spikes', 'Six-point starburst from the camera aperture.')}
+      ${sw('lensSpikes', 'Diffraction spikes (stylised)', 'Optional lens-aperture starburst in Exploration — a presentation effect, not physical light. Always on in Cinematic, never in Scientific.')}
       ${sg('toneMap', 'Tone mapping', 'How scene-linear light becomes display colour. Neutral (Khronos PBR) keeps surface colours faithful; AgX is softer and desaturates bright regions.', [['neutral', 'Neutral'], ['agx', 'AgX']])}
       <h3>Diagnostics</h3>
       ${sw('showFps', 'Show frame rate', '')}

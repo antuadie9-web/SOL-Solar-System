@@ -197,14 +197,17 @@ export const SUN_LOOKS: Record<SunLook, { tint: [number, number, number]; contra
  *  physical camera clips). Pure presentation (labelled HDR compression); exposure, lighting and irradiance unchanged. */
 export function sunDiscScale(centreDisplay: number, rpx: number, mode: 'scientific' | 'exploration' | 'cinematic', target = 2.4) {
   if (mode === 'scientific' || !(centreDisplay > target)) return 1;
-  const t = Math.max(0, Math.min(1, (rpx - 3) / 9)), w = t * t * (3 - 2 * t);
+  // v3.8.1 REV2-01 (SUN-381-07): full local presentation from ≈5 px radius (was 12 px). Between the resolution threshold and
+  // the full metering size (≈40 px) the auto-exposure is still far above the disc's own level, so a disc compressed only
+  // partially was displayed at 10–100× white: a bloom/glare blob that made the Mars-distance Sun at 20° FOV the largest.
+  const t = Math.max(0, Math.min(1, (rpx - 3) / 2)), w = t * t * (3 - 2 * t);
   return Math.exp(w * Math.log(target / centreDisplay));
 }
 /** v3.8.1 (SUN-381-01) glare amplitude (display-linear) from the Sun's display flux x = F·E. Logarithmic in brightness,
  *  so the visible glare radius grows and shrinks smoothly with distance and exposure and never saturates into a disc. */
 export function glareAmplitudes(x: number) {
   const xs = Math.max(x, 0);
-  return { halo: Math.min(4.0, 0.22 * Math.pow(xs, 0.3)), veil: Math.min(0.18, 0.015 * Math.pow(xs, 0.22)) };
+  return { halo: Math.min(2.5, 0.22 * Math.pow(xs, 0.3)), veil: Math.min(0.18, 0.015 * Math.pow(xs, 0.22)) };   // cap 4 → 2.5 (REV2-01)
 }
 /** v3.8.1 cp2 (SUN-381-06) glare of a RESOLVED disc. Scattered light from a disc of radiance L and solid angle Ω at angle θ is
  *  L·Ω·P(θ); the glare profile is scaled in angle by th1 ∝ the disc's angular radius, so the amplitude at th1 is ∝ L — a
@@ -213,7 +216,9 @@ export function glareAmplitudes(x: number) {
  *  Mercury at 50°) its glare collapsed and a Mercury-distance Sun read smaller and flatter than at Earth. */
 export function resolvedGlare(discDisplay: number, mode: 'scientific' | 'exploration' | 'cinematic') {
   const k = mode === 'scientific' ? 0.35 : mode === 'cinematic' ? 0.8 : 0.6;
-  return { halo: k * discDisplay, veil: (mode === 'scientific' ? 0.05 : 0.12) * discDisplay };
+  // display-referred and bounded: the glare is that of the disc AS SHOWN (≤ 4× display white), never of an unbounded HDR value
+  const D = Math.min(discDisplay, 4);
+  return { halo: k * D, veil: (mode === 'scientific' ? 0.05 : 0.12) * D };
 }
 /** Smooth hand-over between point-like and resolved glare (sun radius in device px). */
 export function resolvedGlareWeight(rpx: number) { const t = Math.max(0, Math.min(1, (rpx - 3.5) / 4.5)); return t * t * (3 - 2 * t); }
@@ -321,7 +326,7 @@ export function makeGlare() {
     // diffraction-like spikes (4 + 4 at 45°, thin, length ∝ halo amplitude) — optional "lens spikes" setting
     const ang = atan(vPx.y, vPx.x).add(U.rot);
     const sp = pow(ang.mul(2).cos().abs(), 260).add(pow(ang.mul(2).add(0.785398).cos().abs(), 400).mul(0.35));
-    const spike = sp.mul(U.halo).mul(0.03).mul(exp(th.div(U.th1.mul(6)).negate())).mul(U.spikes);
+    const spike = sp.mul(U.halo).mul(0.02).mul(exp(th.div(U.th1.mul(6)).negate())).mul(U.spikes);
     const fade = smoothstep(1, 0.75, length(vPx).div(U.extentPx));
     return vec4(U.tint.mul(halo.add(veil).add(spike)).mul(outside).mul(fade), 1);
   })();

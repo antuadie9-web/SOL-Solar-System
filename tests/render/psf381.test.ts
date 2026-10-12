@@ -78,7 +78,7 @@ test('SUN-381-02: local disc presentation is identity in Scientific, continuous 
   assert.equal(sunDiscScale(1e6, 50, 'scientific'), 1);
   assert.equal(sunDiscScale(1e6, 2, 'exploration'), 1, 'unresolved/tiny discs are not compressed (point regime)');
   assert.ok(Math.abs(sunDiscScale(1e6, 20, 'exploration') * 1e6 - 2.4) < 1e-6);
-  let prev = 1; for (let r = 2; r < 20; r += 0.01) { const s = sunDiscScale(1e6, r, 'cinematic'); assert.ok(s <= prev + 1e-12); assert.ok(Math.abs(Math.log(s) - Math.log(prev)) < 0.05, `jump at ${r}`); prev = s; }
+  let prev = 1; for (let r = 2; r < 20; r += 0.002) { const s = sunDiscScale(1e6, r, 'cinematic'); assert.ok(s <= prev + 1e-12); assert.ok(Math.abs(Math.log(s) - Math.log(prev)) < 0.05, `jump at ${r}`); prev = s; }   // REV2-01: ramp 3→5 px (was 3→12), so the continuity probe is finer
 });
 test('SUN-381-01: glare amplitudes are monotone, bounded and grow only logarithmically with brightness; extent shrinks with distance', () => {
   let prev = { halo: 0, veil: 0 };

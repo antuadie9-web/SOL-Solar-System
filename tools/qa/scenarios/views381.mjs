@@ -32,3 +32,10 @@ export const GLAREAUDIT = [0.3, 0.39, 0.6, 1, 1.52, 2.5, 5].flatMap(a => [20, 50
   [`glare-${pad(a)}AU-f${f}-auto`, 'sun', { sunAt: { km: a * AU, fov: f } }],
   [`glare-${pad(a)}AU-f${f}-fixed`, 'sun', { sunAt: { km: a * AU, fov: f }, set: { autoExposure: false, manualExposure: Math.pow(2, -10.26) } }]]));
 V381.push(...GLAREAUDIT);
+// REV2-02 partial-mosaic boundaries on the shared pipeline: Triton (unobserved north, boundary 15–45°N, lit now),
+// Pluto and Charon (unobserved south, boundary 30–45°S) at the 1988 equinox so the boundary is sunlit
+const EQ1988 = 2447200.5 - NOW_JD;
+export const PARTIAL381 = [['partial-triton-north', 'triton', { bf: { r: 1353 * 3.2, el: 28, abs: true, az: 0, fov: 50 } }],
+  ['partial-pluto-south-1988', 'pluto', { jdOff: EQ1988, bf: { r: 1188 * 3.2, el: -32, abs: true, az: 0, fov: 50 } }],
+  ['partial-charon-south-1988', 'charon', { jdOff: EQ1988, bf: { r: 606 * 3.2, el: -32, abs: true, az: 0, fov: 50 } }]];
+V381.push(...PARTIAL381);
