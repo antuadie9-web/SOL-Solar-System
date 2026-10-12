@@ -416,3 +416,4 @@ table.rings .badge { font-size: 10px; padding: 1px 5px; }
 #galmap .lg.cov { border-top: 1.5px dashed rgba(143,217,176,0.8); }
 #galmap .gm-info { white-space: pre; font-size: var(--fs-xs); color: var(--t2); margin-top: 6px; }
 #galmap .note { font-size: var(--fs-xs); color: var(--t3); margin-top: 6px; line-height: 1.35; }
+body.cine #galmap { display: none; }   /* v3.8.1: clean-capture mode hides the Galactic context card (it covered the aim point at small viewports) */

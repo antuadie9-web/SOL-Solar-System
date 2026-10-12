@@ -7,7 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 export default async function (page, { out }) {
   const star = process.env.STAR || 'Proxima Centauri', dists = (process.env.DISTS || '5,1,0.3').split(',').map(Number), NF = +(process.env.NF || 8);
-  await page.evaluate(() => { document.querySelector('#loader .enter, #loader .ld-enter')?.dispatchEvent(new MouseEvent('click', { bubbles: true })); document.body.classList.add('cine'); const s = window.__sol; s.clock.paused = true; s.settings.set('orbits', false); s.settings.set('labels', false); });
+  await page.evaluate(() => { document.querySelector('#loader .enter, #loader .ld-enter')?.dispatchEvent(new MouseEvent('click', { bubbles: true })); document.body.classList.add('cine'); const s = window.__sol; s.clock.paused = true; s.settings.set('orbits', false); s.settings.set('labels', false); if (s.ui.galmap) { s.ui.galmap.auto = false; s.ui.galmap.toggle(false); } });
   const res = { star, frames: [] };
   for (const D of dists) {
     await page.evaluate(([star, D]) => { const s = window.__sol, r = s.engine.rig, b = s.sys.bodies.find(x => x.name === star); r.flight = null; s.ui.following = false; r.tFov = r.fov = 50; r.setTarget(b, D * 149597870.7); r.yaw = r.tYaw = 0.7; r.pitch = r.tPitch = 0.3; r.lookYaw = r.lookPitch = 0; window.__solStarsTick?.(); }, [star, D]);
