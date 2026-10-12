@@ -808,6 +808,7 @@ export class Engine {
       textures: this.assets.textures.stats(), terrain: this.terrainStats, net: { ...netStats }, exposureEV: +Math.log2(this.displayExposure).toFixed(2),
       detail: this.targetDetail(),
       // v3.5 exposure/visibility state
+      sunGlare: { rpx: +this.sunRpx.toFixed(2), halo: +this.glareDisplay.toFixed(4), veil: +(this.glare?.U.veil.value ?? 0).toFixed(4), discScale: +(this.sunDiscScaleNow || 1).toFixed(4), pointEV: this.sunPointExposure ? +Math.log2(this.sunPointExposure).toFixed(2) : null, flux: +(this.glareFlux || 0).toFixed(4) },
       view: { mode: this.enhancement.mode, sceneEV: +Math.log2(this.displayExposure).toFixed(2), skyEV: +Math.log2(this.skyExp).toFixed(2), veil: +this.veil.toFixed(3), sunVeil: +this.sunVeil.toFixed(3),
         meter: this.meter, inspect: this.enhancement.inspect, skyDecoupled: this.enhancement.skyDecoupled },
       tiers: [...this.views.values()].reduce((o: Record<string, number>, v) => { if (v.group.visible) o['D' + v.tier] = (o['D' + v.tier] ?? 0) + 1; return o; }, {}),

@@ -27,3 +27,8 @@ export const MOONS381B = [['janus', 'sat610', 103.4], ['epimetheus', 'sat611', 7
   .map(([n, id, R]) => [`moon381-${n}-ph70`, id, { bf: { r: R * 3.4, el: 10, az: 70, fov: 50 } }]);
 export const URANIAN1986 = ['ariel', 'titania', 'oberon'].map(n => [`moon381-${n}-1986`, n, { jdOff: VOYAGER_JD - NOW_JD, bf: { r: { ariel: 579, titania: 789, oberon: 761 }[n] * 3.2, el: 15, az: 20, fov: 50 } }]);
 V381.push(...MOONS381B, ...URANIAN1986);
+// REV2-01 (SUN-381-07) glare audit: distance × FOV, auto exposure and a FIXED exposure (2^-10.26, the 1 AU / 20° auto value)
+export const GLAREAUDIT = [0.3, 0.39, 0.6, 1, 1.52, 2.5, 5].flatMap(a => [20, 50].flatMap(f => [
+  [`glare-${pad(a)}AU-f${f}-auto`, 'sun', { sunAt: { km: a * AU, fov: f } }],
+  [`glare-${pad(a)}AU-f${f}-fixed`, 'sun', { sunAt: { km: a * AU, fov: f }, set: { autoExposure: false, manualExposure: Math.pow(2, -10.26) } }]]));
+V381.push(...GLAREAUDIT);
