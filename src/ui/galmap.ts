@@ -23,24 +23,28 @@ export class GalMap {
     // v3.8.1 GAL-381-01: legible, provenance-first card — truth legend, scale bar, l-direction ticks, enlarge (2×) toggle,
     // HiDPI canvas. It remains a SCHEMATIC of a parametric model: SOL has no navigable 3-D Galaxy yet (v3.9).
     this.el.innerHTML = `<header><h2>Galactic context</h2><span class="badge rec" title="Inferred structure from published fits — not an observed 3-D map">Model · schematic</span><button class="tb sm grow" aria-label="Enlarge Galactic context" aria-pressed="false" title="Enlarge (2×)">⤢</button><button class="tb sm close" aria-label="Close Galactic context">×</button></header>
-      <canvas width="296" height="296" aria-hidden="true"></canvas><div class="gm-info num" aria-live="off"></div>
+      <div class="gm-body"><canvas width="296" height="296" aria-hidden="true"></canvas><div class="gm-side"><div class="gm-info num" aria-live="off"></div>
       <ul class="gm-legend" aria-label="Legend">
         <li><i class="lg arm"></i><span>Spiral arm traced by maser parallaxes (Reid et al. 2019) — <b>measured</b></span></li>
         <li><i class="lg ext"></i><span>Arm model extrapolated beyond the data — <b>inferred</b></span></li>
         <li><i class="lg bar"></i><span>Bar &amp; exponential discs (Bland-Hawthorn &amp; Gerhard 2016) — <b>model fit</b></span></li>
         <li><i class="lg cov"></i><span>Dense parallax coverage (≈ 5 kpc around the Sun)</span></li>
       </ul>
-      <p class="note">Sun–centre distance ${MW.R0_kpc.value} kpc (GRAVITY 2019). The sky behind you is the <b>observed 2-D Gaia panorama</b>, not this model; a navigable 3-D Milky Way is planned for v3.9.</p>`;
+      <p class="note">Sun–centre distance ${MW.R0_kpc.value} kpc (GRAVITY 2019). The sky behind you is the <b>observed 2-D Gaia panorama</b>, not this model; a navigable 3-D Milky Way is planned for v3.9.</p></div></div>`;
     parent.appendChild(this.el);
     this.cv = this.el.querySelector('canvas')!; this.info = this.el.querySelector('.gm-info')!;
     (this.el.querySelector('.close') as HTMLButtonElement).onclick = () => { this.toggle(false); this.auto = false; };
     const grow = this.el.querySelector('.grow') as HTMLButtonElement;
     grow.onclick = () => { const big = !this.el.classList.contains('big'); this.el.classList.toggle('big', big); grow.setAttribute('aria-pressed', String(big)); this.resizeCanvas(); };
-    this.resizeCanvas();
+    this.resizeCanvas(); window.addEventListener('resize', () => this.resizeCanvas());
   }
   /** HiDPI backing store: CSS size × devicePixelRatio (v3.8.0 drew a 264-px canvas stretched on 2× displays) */
   resizeCanvas() {
-    const css = this.el.classList.contains('big') ? 592 : 296; this.dpr = Math.min(3, window.devicePixelRatio || 1);
+    // REV2-06: the enlarged card must not reach the global header / mode bar (top 104 px) or the time dock (bottom 120 px);
+    // it lays the legend out beside the map, so the map takes the full available height up to 592 CSS px
+    const big = this.el.classList.contains('big'), avail = window.innerHeight - 104 - 120 - 64;
+    const css = big ? Math.max(296, Math.min(592, avail)) : Math.max(220, Math.min(296, window.innerHeight - 104 - 120 - 330));
+    this.dpr = Math.min(3, window.devicePixelRatio || 1);
     this.cv.style.width = this.cv.style.height = css + 'px'; this.cv.width = this.cv.height = Math.round(css * this.dpr); this.bg = null;
   }
   toggle(on = !this.open) { this.open = on; this.el.classList.toggle('open', on); if (on) this.bg = null; }

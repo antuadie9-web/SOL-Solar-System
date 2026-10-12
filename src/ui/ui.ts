@@ -75,7 +75,7 @@ class Loader {
         </div>
         <p class="ld-fact" aria-live="polite"></p>
       </div>
-      <p class="ld-foot">v${typeof __SOL_VERSION__ !== 'undefined' ? __SOL_VERSION__ : ''} · desktop Chrome · imagery: NASA, ESA/Gaia/DPAC, USGS — see Credits</p>`);
+      <p class="ld-foot">v${typeof __SOL_VERSION__ !== 'undefined' ? __SOL_VERSION__ : ''} · desktop Chrome · Sun: NASA SDO/HMI, 2026-09-21 (observed) · imagery: NASA, ESA/Gaia/DPAC, USGS — see Credits</p>`);
     this.el.id = 'loader'; document.body.appendChild(this.el);
     $('.ld-enter', this.el).onclick = () => this.onEnter?.();
     const rb = this.el.querySelector('.ld-resume') as HTMLButtonElement | null; if (rb) rb.onclick = () => this.onResume?.();
@@ -123,18 +123,23 @@ const QA_HARNESS = () => /qa-|bench/.test(location.search);
  *  limb-darkening law as sun.ts (Neckel & Labs fits; I(μ)/I₀ at ≈650/550/450 nm), sampled into SVG gradient stops; a
  *  soft angular glare outside the limb. Neutral (sunlight = white balance) with the gentle 'natural' grade. */
 function solarLimb() {
+  // REV2-06: the anchor is now the OBSERVED Sun — NASA SDO/HMI quick-look continuum of 2026-09-21 15:11 TAI (sunspots and
+  // faculae of that day), converted to SOL's white-light limb-darkening law (tools/ingest/intro_sun.py). The previous
+  // gradient-only disc read as featureless. 134 kB JPEG, decoded off the critical path; the gradient below is its placeholder.
   const stops: string[] = [];
   for (let i = 0; i <= 10; i++) {
     const r = i / 10, mu = Math.sqrt(Math.max(0, 1 - r * r)), om = 1 - mu, om2 = 1 - mu * mu;
     const ch = [[0.48, 0.18], [0.58, 0.20], [0.70, 0.20]].map(([a, b]) => Math.max(0.05, 1 - a * om - b * om2));
-    const tint = [1.0, 0.965, 0.915], k = 0.96;
+    const tint = [1.0, 0.965, 0.915], k = 0.72;
     const c = ch.map((x, j) => Math.round(255 * Math.min(1, Math.pow(x * tint[j] * k, 1 / 2.2))));
     stops.push(`<stop offset="${(r * 100).toFixed(0)}%" stop-color="rgb(${c.join(',')})"/>`);
   }
   return `<svg viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice"><defs>
     <radialGradient id="ldDisc" cx="500" cy="500" r="420" gradientUnits="userSpaceOnUse">${stops.join('')}</radialGradient>
-    <radialGradient id="ldGlare" cx="500" cy="500" r="520" gradientUnits="userSpaceOnUse"><stop offset="0.78" stop-color="#fff6e8" stop-opacity=".22"/><stop offset="0.84" stop-color="#fff2e0" stop-opacity=".06"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>
-    <circle cx="500" cy="500" r="520" fill="url(#ldGlare)"/><circle cx="500" cy="500" r="420" fill="url(#ldDisc)"/></svg>`;
+    <radialGradient id="ldGlare" cx="500" cy="500" r="540" gradientUnits="userSpaceOnUse"><stop offset="0.76" stop-color="#fff6e8" stop-opacity=".16"/><stop offset="0.82" stop-color="#fff2e0" stop-opacity=".04"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+    <clipPath id="ldClip"><circle cx="500" cy="500" r="420"/></clipPath></defs>
+    <circle cx="500" cy="500" r="540" fill="url(#ldGlare)"/><circle cx="500" cy="500" r="420" fill="url(#ldDisc)"/>
+    <image href="assets/tex/intro_sun_hmi.jpg" x="38.6" y="38.6" width="922.8" height="922.8" clip-path="url(#ldClip)" preserveAspectRatio="none" decoding="async"/></svg>`;
 }
 /** SOL brand mark: a limb-darkened disc inside an orbit ellipse (pure SVG, no raster). */
 function solMark(size: number) {

@@ -2,6 +2,19 @@
  "_doc": "Per-asset provenance & licence rules (spec §5 asset/licence contract). The FIRST rule whose regex matches a path under public/ applies. tools/validate/assets.mjs expands these into asset-manifest.json with size and SHA-256; tests/assets/manifest.test.ts fails if any shipped file is unmatched. 'commercial' is our reading of the stated terms, not legal advice. Retrieval dates are those recorded in v3.2 (2026-10-08) unless stated.",
  "rules": [
   {
+   "match": "^assets/tex/intro_sun_hmi\\.jpg$",
+   "source": "NASA SDO/HMI Quick-Look Continuum 617.3 nm, 2026-09-21T15:11:15 TAI (latest_1024_HMII.jpg), processed by tools/ingest/intro_sun.py",
+   "url": "https://sdo.gsfc.nasa.gov/assets/img/latest/latest_1024_HMII.jpg",
+   "licence": "NASA/SDO data — public domain (NASA media guidelines); credit \"Courtesy of NASA/SDO and the HMI science team\"",
+   "commercial": "yes (credit; no endorsement)",
+   "attribution": "Courtesy of NASA/SDO and the HMI science team",
+   "content": "observed white-light photosphere of 2026-09-21 (quick-look, not science-calibrated) converted to SOL white-light limb darkening",
+   "projection": "disc image",
+   "coverage": "Earth-facing hemisphere on that date",
+   "truth": "observed (quick-look); colour = SOL white-light model",
+   "retrieved": "2026-10-13"
+  },
+  {
    "match": "^assets/models/(pan|daphnis|atlas|prometheus|pandora|epimetheus|janus|telesto|calypso|helene|hyperion)\\.glb$",
    "source": "Thomas, P., Joseph, J. et al., Saturn Small Moon Shape Models, urn:nasa:pds:saturn_satellite_shape_models::1.0 (Cassini ISS stereogrammetry + limbs; *_30k_plt.tab), converted by tools/ingest/pds_shape_to_glb.py",
    "url": "https://sbn.psi.edu/pds/resource/saturnsatshapes.html",

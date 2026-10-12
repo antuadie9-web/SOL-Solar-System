@@ -59,6 +59,12 @@
   "source": "USGS Astrogeology global mosaic — Iapetus_Cassini_Voyager_mosaic_global_783m.tif",
   "commercial": "yes"
  },
+ "intro_sun_hmi": {
+  "truth": "observed (quick-look); colour = SOL white-light model",
+  "content": "observed white-light photosphere of 2026-09-21 (quick-look, not science-calibrated) converted to SOL white-light limb darkening",
+  "source": "NASA SDO/HMI Quick-Look Continuum 617.3 nm, 2026-09-21T15:11:15 TAI (latest_1024_HMII.jpg), processed by tools/ingest/intro_sun.py",
+  "commercial": "yes (credit; no endorsement)"
+ },
  "io": {
   "truth": "observed luminance",
   "content": "visible mosaic; colour observed (mission colour mosaic)",

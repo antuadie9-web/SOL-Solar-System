@@ -1,0 +1,12 @@
+{
+ "source": "NASA SDO/HMI Quick-Look Continuum 617.3 nm",
+ "observed": "2026-09-21T15:11:15 TAI",
+ "url": "https://sdo.gsfc.nasa.gov/assets/img/latest/latest_1024_HMII.jpg",
+ "sha256": "757c05ab92222de8a736ca0d66c300ae14560038fcc220aa35364724bb9ac194",
+ "disc": {
+  "cx": 511.5,
+  "cy": 511.5,
+  "R": 466.0
+ },
+ "bytes": 129807
+}
