@@ -156,3 +156,9 @@ Severity P0 = correctness/stability blocker, P1 = major fidelity/UX gap, P2 = po
 | UX-381-01 | P1 | UI | Intro modest | REDESIGNED — "Into the Universe", resume, skip for repeat users |
 | BOOT-381-01 | P0 | Startup | (found in cp2 QA) observed-shape moons lost colour/albedo → boot crash | FIXED + regression test |
 | QA-381-01 | P2 | QA | Galactic card covered the aim point in 640×360 captures | FIXED — hidden in clean-capture mode |
+| SUN-381-06 | P0 | Sun | (cp2 capture review) resolved-Sun glare collapsed at the resolution threshold: Mercury-distance Sun drawn smaller/flatter than at 1 AU | FIXED — glare = fixed fraction of displayed disc radiance, disc-scaled footprint, smooth hand-over; recaptured |
+| STAR-381-D2 | P1 | Stars | Resolved photosphere at sky exposure → Scientific frame-filling over-exposure | FIXED — meters like the Sun; exposure glides sky→scene |
+| STAR-381-D3 | P2 | Stars | M-dwarf red channel clipped, limb flat | FIXED — brightest-channel metering and local HDR target |
+| AST-381-01b | P2 | Moons | 1986 terminator baked into map edges → dark seam (double shading) | FIXED — rim treated as unobserved |
+| AST-381-01c | P2 | Moons | Bilinear seam at observed/unobserved boundary | FIXED — half-texel dilated mask (first attempt broke all partial maps via placeholder texel size; caught by capture, fixed with textureSize) |
+| QA-381-02 | P2 | QA | Uranian-moon "now" views show seasonal night side | Views at the Voyager epoch (1986-01-24) |
