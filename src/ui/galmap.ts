@@ -20,17 +20,34 @@ export class GalMap {
   el: HTMLElement; cv: HTMLCanvasElement; info: HTMLElement; open = false; auto = true; private bg: ImageData | null = null; private dpr = 1;
   constructor(parent: HTMLElement) {
     this.el = document.createElement('section'); this.el.id = 'galmap'; this.el.className = 'panel galmap'; this.el.setAttribute('aria-label', 'Galactic context');
-    this.el.innerHTML = `<header><h2>Galactic context</h2><span class="badge rec" title="Inferred structure from published fits — not an observed 3-D map">Model</span><button class="tb sm close" aria-label="Close Galactic context">×</button></header>
-      <canvas width="264" height="264" aria-hidden="true"></canvas><div class="gm-info num" aria-live="off"></div>
-      <p class="note">Arms: Reid et al. 2019 (masers; dotted = extrapolated). Discs & bar: Bland-Hawthorn & Gerhard 2016. Sun–centre distance ${MW.R0_kpc.value} kpc (GRAVITY). The sky you see is the observed Gaia panorama.</p>`;
+    // v3.8.1 GAL-381-01: legible, provenance-first card — truth legend, scale bar, l-direction ticks, enlarge (2×) toggle,
+    // HiDPI canvas. It remains a SCHEMATIC of a parametric model: SOL has no navigable 3-D Galaxy yet (v3.9).
+    this.el.innerHTML = `<header><h2>Galactic context</h2><span class="badge rec" title="Inferred structure from published fits — not an observed 3-D map">Model · schematic</span><button class="tb sm grow" aria-label="Enlarge Galactic context" aria-pressed="false" title="Enlarge (2×)">⤢</button><button class="tb sm close" aria-label="Close Galactic context">×</button></header>
+      <canvas width="296" height="296" aria-hidden="true"></canvas><div class="gm-info num" aria-live="off"></div>
+      <ul class="gm-legend" aria-label="Legend">
+        <li><i class="lg arm"></i>Spiral arm traced by maser parallaxes (Reid et al. 2019) — <b>measured</b> segment</li>
+        <li><i class="lg ext"></i>Same arm model extrapolated beyond the data — <b>inferred</b></li>
+        <li><i class="lg bar"></i>Bar &amp; exponential discs (Bland-Hawthorn &amp; Gerhard 2016) — <b>model fit</b></li>
+        <li><i class="lg cov"></i>Region with dense parallax coverage (≈ 5 kpc around the Sun)</li>
+      </ul>
+      <p class="note">Sun–centre distance ${MW.R0_kpc.value} kpc (GRAVITY 2019). The sky behind you is the <b>observed 2-D Gaia panorama</b>, not this model; a navigable 3-D Milky Way is planned for v3.9.</p>`;
     parent.appendChild(this.el);
     this.cv = this.el.querySelector('canvas')!; this.info = this.el.querySelector('.gm-info')!;
     (this.el.querySelector('.close') as HTMLButtonElement).onclick = () => { this.toggle(false); this.auto = false; };
+    const grow = this.el.querySelector('.grow') as HTMLButtonElement;
+    grow.onclick = () => { const big = !this.el.classList.contains('big'); this.el.classList.toggle('big', big); grow.setAttribute('aria-pressed', String(big)); this.resizeCanvas(); };
+    this.resizeCanvas();
+  }
+  /** HiDPI backing store: CSS size × devicePixelRatio (v3.8.0 drew a 264-px canvas stretched on 2× displays) */
+  resizeCanvas() {
+    const css = this.el.classList.contains('big') ? 592 : 296; this.dpr = Math.min(3, window.devicePixelRatio || 1);
+    this.cv.style.width = this.cv.style.height = css + 'px'; this.cv.width = this.cv.height = Math.round(css * this.dpr); this.bg = null;
   }
   toggle(on = !this.open) { this.open = on; this.el.classList.toggle('open', on); if (on) this.bg = null; }
   /** face-on background (drawn once): disc glow, bar, arms, GC */
   private drawBg(ctx: CanvasRenderingContext2D, W: number) {
-    const s = W / 34, c = W / 2;   // ±17 kpc
+    const s = W / 34, c = W / 2;   // ±17 kpc (W in device pixels)
+    const u = this.dpr;
     const X = (x: number) => c + x * s, Y = (y: number) => c - y * s;
     const img = ctx.createImageData(W, W);
     for (let j = 0; j < W; j++) for (let i = 0; i < W; i++) {
@@ -48,8 +65,16 @@ export class GalMap {
       ctx.strokeStyle = 'rgba(156,200,239,0.35)'; ctx.setLineDash([2, 4]); ctx.lineWidth = 1; ctx.beginPath(); ext.forEach(([x, y], i) => i ? ctx.lineTo(X(x), Y(y)) : ctx.moveTo(X(x), Y(y))); ctx.stroke();
       ctx.setLineDash([]); ctx.strokeStyle = 'rgba(170,215,255,0.85)'; ctx.lineWidth = Math.max(1.2, a.width * s * 0.9); ctx.beginPath(); obs.forEach(([x, y], i) => i ? ctx.lineTo(X(x), Y(y)) : ctx.moveTo(X(x), Y(y))); ctx.stroke();
     }
-    ctx.fillStyle = '#ffd9a3'; ctx.beginPath(); ctx.arc(X(0), Y(0), 2.5, 0, Math.PI * 2); ctx.fill();
-    ctx.font = '10px Inter, system-ui, sans-serif'; ctx.fillStyle = 'rgba(238,240,244,0.7)'; ctx.fillText('Sgr A*', X(0) + 5, Y(0) - 4);
+    // dense-parallax coverage (~5 kpc around the Sun; Reid et al. 2019 maser sample) — where the arm geometry is measured
+    ctx.setLineDash([3 * u, 3 * u]); ctx.strokeStyle = 'rgba(143,217,176,0.55)'; ctx.lineWidth = 1 * u; ctx.beginPath(); ctx.arc(X(-MW.R0_kpc.value), Y(0), 5 * s, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = '#ffd9a3'; ctx.beginPath(); ctx.arc(X(0), Y(0), 2.5 * u, 0, Math.PI * 2); ctx.fill();
+    ctx.font = `${10 * u}px Inter, system-ui, sans-serif`; ctx.fillStyle = 'rgba(238,240,244,0.8)'; ctx.fillText('Sgr A* (centre)', X(0) + 5 * u, Y(0) - 4 * u);
+    // arm names at their outer measured ends
+    ctx.font = `${9 * u}px Inter, system-ui, sans-serif`; ctx.fillStyle = 'rgba(190,220,250,0.75)';
+    for (const a of ARMS) { const obs = armPolyline(a, 1, 0); if (!obs.length) continue; const [x, y] = obs[obs.length - 1]; ctx.fillText(a.name.replace(/ \(.*\)/, ''), X(x) + 3 * u, Y(y)); }
+    // 5 kpc scale bar
+    const sbx = 8 * u, sby = W - 10 * u; ctx.strokeStyle = 'rgba(238,240,244,0.8)'; ctx.lineWidth = 1.5 * u; ctx.beginPath(); ctx.moveTo(sbx, sby); ctx.lineTo(sbx + 5 * s, sby); ctx.stroke();
+    ctx.fillStyle = 'rgba(238,240,244,0.8)'; ctx.font = `${9 * u}px Inter, system-ui, sans-serif`; ctx.fillText('5 kpc', sbx, sby - 4 * u);
     this.bg = ctx.getImageData(0, 0, W, W);
   }
   /** per-frame (cheap): Sun & camera markers, local inset, coordinates */
@@ -62,20 +87,25 @@ export class GalMap {
     const s = W / 34, c = W / 2, X = (x: number) => c + x * s, Y = (y: number) => c - y * s;
     // Sun in the face-on frame: (−R0, 0); arrow toward l = 90° (+y) = direction of Galactic rotation
     const sx = X(-MW.R0_kpc.value), sy = Y(0);
-    ctx.fillStyle = '#f2c27f'; ctx.beginPath(); ctx.arc(sx, sy, 3, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = 'rgba(238,240,244,0.85)'; ctx.font = '10px Inter, system-ui, sans-serif'; ctx.fillText('Sun', sx - 22, sy + 14);
+    const u = this.dpr;
+    ctx.fillStyle = '#f2c27f'; ctx.beginPath(); ctx.arc(sx, sy, 3 * u, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = 'rgba(238,240,244,0.9)'; ctx.font = `${10 * u}px Inter, system-ui, sans-serif`; ctx.fillText('Sun', sx - 22 * u, sy + 14 * u);
+    // Galactic longitude directions from the Sun (l = 0° toward the centre, 90° = direction of rotation)
+    ctx.font = `${8 * u}px Inter, system-ui, sans-serif`; ctx.fillStyle = 'rgba(238,240,244,0.55)';
+    for (const [l, dx, dy] of [[0, 1, 0], [90, 0, -1], [180, -1, 0], [270, 0, 1]] as [number, number, number][]) ctx.fillText(`${l}°`, sx + dx * 16 * u - 6 * u, sy + dy * 16 * u + 3 * u);
     // local inset (±6 pc, Galactic x→GC up… drawn with GC toward the right as in the main map)
-    const iw = 92, ix = W - iw - 6, iy = W - iw - 6, ic = iw / 2, ps = ic / 6;
+    const iw = Math.round(W * 0.36), ix = W - iw - 6 * u, iy = W - iw - 6 * u, ic = iw / 2, ps = ic / 6;
     ctx.fillStyle = 'rgba(3,4,7,0.82)'; ctx.fillRect(ix, iy, iw, iw); ctx.strokeStyle = 'rgba(255,255,255,0.22)'; ctx.strokeRect(ix + 0.5, iy + 0.5, iw - 1, iw - 1);
     const toInset = (g: [number, number, number]) => [ix + ic + (g[0] / PC) * ps, iy + ic - (g[1] / PC) * ps] as [number, number];
     for (const b of stars) {
       if (b.info?.dsoKind) continue; const g = eclToGal(b.pos as any); if (Math.hypot(g[0], g[1]) > 6 * PC) continue;
-      const [px, py] = toInset(g); ctx.fillStyle = b === target ? '#ffd9a3' : 'rgba(200,215,240,0.8)'; ctx.fillRect(px - 1, py - 1, 2, 2);
+      const [px, py] = toInset(g); ctx.fillStyle = b === target ? '#ffd9a3' : 'rgba(200,215,240,0.8)'; ctx.fillRect(px - u, py - u, 2 * u, 2 * u);
+      if (b === target || /Proxima|Sirius|Barnard|Alpha Centauri A|Wolf 359|Procyon|Altair/.test(b.name)) { ctx.font = `${8 * u}px Inter, system-ui, sans-serif`; ctx.fillStyle = 'rgba(220,228,240,0.75)'; ctx.fillText(b.name.replace('Centauri', 'Cen'), px + 3 * u, py - 2 * u); }
     }
-    ctx.fillStyle = '#f2c27f'; ctx.fillRect(ix + ic - 1.5, iy + ic - 1.5, 3, 3);
+    ctx.fillStyle = '#f2c27f'; ctx.fillRect(ix + ic - 1.5 * u, iy + ic - 1.5 * u, 3 * u, 3 * u);
     const gc = eclToGal(camKm), [cx, cy] = toInset(gc);
-    ctx.strokeStyle = '#8fd9b0'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(Math.max(ix + 3, Math.min(ix + iw - 3, cx)), Math.max(iy + 3, Math.min(iy + iw - 3, cy)), 3.5, 0, Math.PI * 2); ctx.stroke();
-    ctx.fillStyle = 'rgba(238,240,244,0.6)'; ctx.font = '9px Inter, system-ui, sans-serif'; ctx.fillText('±6 pc · camera ◯', ix + 4, iy + 11);
+    ctx.strokeStyle = '#8fd9b0'; ctx.lineWidth = 1.5 * u; ctx.beginPath(); ctx.arc(Math.max(ix + 3 * u, Math.min(ix + iw - 3 * u, cx)), Math.max(iy + 3 * u, Math.min(iy + iw - 3 * u, cy)), 3.5 * u, 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = 'rgba(238,240,244,0.7)'; ctx.font = `${9 * u}px Inter, system-ui, sans-serif`; ctx.fillText('local ±6 pc (measured stars) · camera ◯', ix + 4 * u, iy + 11 * u);
     const lbd = galacticLBD(camKm), R = Math.hypot(-MW.R0_kpc.value + gc[0] / PC / 1000, gc[1] / PC / 1000);
     this.info.textContent = `camera  l ${lbd.l.toFixed(2)}°  b ${lbd.b.toFixed(2)}°  ${(lbd.d / PC).toFixed(4)} pc from the Sun\nGalactocentric R ${R.toFixed(4)} kpc · z ${((gc[2] / PC) + MW.zSun_pc.value).toFixed(2)} pc (model frame)`;
     void azimuthToXY;

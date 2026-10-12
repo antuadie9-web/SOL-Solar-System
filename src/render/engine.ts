@@ -679,7 +679,7 @@ export class Engine {
       // displayed centre so the halo never outshines the locally presented photosphere
       const Eg = this.sunRpx > 3.5 ? LS : (this.sunPointExposure || LS);
       const amp = glareAmplitudes(F * Eg);
-      if (this.sunRpx > 3.5) { const discDisp = SUN_L0 * LS * (this.views.get('sun')?.discWeight ?? 1) * (this.sunDiscScaleNow || 1); amp.halo = Math.min(amp.halo, 0.8 * discDisp); amp.veil = Math.min(amp.veil, 0.08 * discDisp); }
+      if (this.sunRpx > 3.5) { const discDisp = SUN_L0 * LS * (this.views.get('sun')?.discWeight ?? 1) * (this.sunDiscScaleNow || 1); amp.halo = Math.min(amp.halo, 0.8 * discDisp); amp.veil = Math.min(amp.veil, 0.25 * discDisp); }   // cp2: wider veil cap (Mercury-distance Sun read flat in cp1)
       const on = front && st.get('glare') ? glareWeight(this.sunRpx, this.H) * P.glare : 0;
       const angR = Math.atan(R_SUN / dist), th1 = Math.max(angR * 2.2, this.pxAng * 2.5);
       const G = this.glare.U;

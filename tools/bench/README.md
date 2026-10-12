@@ -1,31 +1,44 @@
-# SOL v3.8.1 hardware benchmark (owner kit, PERF-381-01)
+# SOL v3.8.1 — hardware benchmark kit (PERF-381-01)
 
-The development sandbox has no physical GPU (software WebGPU only), so every real-hardware number in the v3.8.1 reports
-must come from this kit. It changes nothing in the renderer; it drives the normal camera API and records what happens.
+The development sandbox has no physical GPU, so real-hardware performance numbers can only come from your PC.
+This kit measures SOL on your machine. **It installs nothing, needs no administrator rights and uploads nothing.**
 
-## Run it (Windows, no coding)
-1. Install **Node.js LTS** from https://nodejs.org (default options) and make sure Google Chrome is up to date.
-2. Unzip SOL, open the folder `tools/bench/` and double-click **RUN-SOL-BENCHMARK-WINDOWS.bat**.
-   The first run installs and builds (a few minutes); later runs start in seconds.
-3. Chrome opens `http://localhost:4173/?bench=1`. Leave the mouse and keyboard alone for ~3 minutes.
-4. A file `sol-benchmark-<date>.json` downloads. Send it back together with a screenshot of `chrome://gpu`
-   (the "Graphics Feature Status" and "WebGPU" sections) and your Chrome version (`chrome://version`).
+## What is in the package
+| File | Purpose |
+|---|---|
+| `dist/` | the pre-built SOL app (HTML/JS + astronomical data and textures), exactly what the source builds to |
+| `tools/bench/RUN-SOL-BENCHMARK-WINDOWS.bat` | double-click launcher |
+| `tools/bench/serve.mjs` | tiny local web server using only Node.js built-ins (used if Node.js is installed) |
+| `tools/bench/serve.ps1` | the same server in Windows PowerShell (used if Node.js is not installed) |
+| `src/qa/bench.ts` (source zip) | the benchmark code itself, for review |
 
-Optional second run at a different window size or quality preset helps separate GPU-bound from CPU-bound stalls.
+## What the launcher does, step by step
+1. Checks that `dist/index.html` exists (no download, no build, no `npm install`).
+2. Starts a local web server in its own window: Node.js `serve.mjs` if `node` is on your PATH, otherwise PowerShell
+   `serve.ps1` (run with `-ExecutionPolicy Bypass` for that one process only — your system policy is not changed).
+   The server listens on **localhost:4173 only** (loopback); nothing outside your PC can connect to it.
+3. Opens Google Chrome at `http://localhost:4173/?bench=1` (falls back to your default browser if Chrome is not found).
+4. The page runs a fixed, hands-off script for about 3 minutes (please don't touch mouse/keyboard):
+   idle at Earth · first-visit travel Jupiter → Saturn → Titan → Enceladus → Neptune → Pluto → Earth · the same legs again
+   · Earth → Proxima Centauri → Earth · the Sun swept in and out of frame at 1 AU · hold and zoom near Proxima.
+5. Chrome saves `sol-benchmark-<date>.json` to your Downloads folder and shows a one-line summary.
 
-## What it measures
-| Phase | What happens | Why |
-|---|---|---|
-| idle-earth | 6 s at Earth | steady-state frame time |
-| travel-cold | Jupiter → Saturn → Titan → Enceladus → Neptune → Pluto → Earth (first visits) | shader/texture/mesh first-use stalls |
-| travel-warm | the same legs again | separates first-use cost from steady travel cost |
-| interstellar | Earth → Proxima Centauri → Earth | catalogue streaming, far-Sun regime |
-| sun-pan | Sun swept in and out of frame at 1 AU | exposure continuity under real GPU timing |
-| proxima-zoom | hold and zoom near Proxima | star-field stability and cost |
+## What it collects (stays on your PC unless you send it)
+- Per-frame: frame interval, CPU time of the render call, GPU time (WebGPU timestamp queries, if your GPU/driver exposes
+  them), which phase was running, scene/sky exposure.
+- Summary: p50/p95/p99/max frame time, hitches over 33/50/100 ms, long main-thread tasks, JS heap size.
+- Environment: Chrome user-agent string, WebGPU adapter vendor/architecture/description and feature list, window and
+  canvas size, device pixel ratio, SOL quality settings, SOL version/commit.
+- It does **not** collect files, browsing data, accounts, IP addresses or anything outside the SOL tab. The JSON is plain
+  text — open it in Notepad to see everything it contains before sending it.
 
-Per frame: rAF interval (what you perceive as a hitch), `engine.render()` CPU time, GPU time from WebGPU timestamp
-queries when the adapter supports them, scene/sky EV. Also long tasks (> 50 ms), JS heap, texture residency, adapter.
-The report states its evidence class (`HARDWARE` vs `SOFTWARE ADAPTER`).
+## Requirements
+Windows 10/11, current Google Chrome with hardware acceleration on. Node.js is optional. Free disk ≈ 1 GB (unzipped app).
 
-## Manual equivalent
-`npm ci && npm run build && npm run preview` then open `http://localhost:4173/?bench=1` in Chrome.
+## Please send back
+The `sol-benchmark-*.json`, a screenshot (or "Copy report to clipboard" text) of `chrome://gpu`, and `chrome://version`.
+Running it twice (e.g. at your normal window size and maximised) helps separate GPU-bound from CPU-bound stalls.
+
+## Stop / clean up
+Close the "SOL local server" window. Delete the unzipped folder to remove everything; nothing else was written except
+the downloaded JSON and Chrome's normal cache for localhost.

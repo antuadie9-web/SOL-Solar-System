@@ -9,3 +9,6 @@ export const EXPSWEEP = [1, 30].flatMap(a => [0, 20, 34, 38, 41, 45, 52, 65, 90]
 // D — Sun distance ladder incl. the owner's problem views (Mercury ≈ 0.39, Earth 1, Mars 1.52 AU) at two FOVs
 export const SUNLADDER = [0.3, 0.39, 1, 1.52, 5, 10, 30, 100, 1000, 3000].flatMap(a => [[`sun-ladder-${pad(a)}AU-f50`, 'sun', { sunAt: { km: a * AU, fov: 50 } }], [`sun-ladder-${pad(a)}AU-f20`, 'sun', { sunAt: { km: a * AU, fov: 20 } }]]);
 export const V381 = [...EXPSWEEP, ...SUNLADDER];
+// D (checkpoint 2) — the owner's problem distances in Scientific and Cinematic, plus 3,000 AU at both FOVs
+export const SUNMODES = [0.39, 1, 1.52].flatMap(a => ['scientific', 'cinematic'].map(m => [`sun-ladder-${pad(a)}AU-f50-${m.slice(0, 3)}`, 'sun', { mode: m, sunAt: { km: a * AU, fov: 50 } }]));
+V381.push(...SUNMODES);
