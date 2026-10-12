@@ -761,7 +761,7 @@ export class UI {
       ${sw('stars', 'Stars', 'Hipparcos–Tycho stars as point sources; Gaia DR3 / Hipparcos stars in 3D beyond 1,000 AU.')}
       ${rg('starBrightness', 'Star brightness', '1 = physically calibrated flux (v3.4 defaulted to a hidden 3×).', 0.25, 16, 0.05, v => `${fmt(v, 2)}×`, true)}
       ${sw('milkyWay', 'Milky Way diffuse light', 'ESA Gaia all-sky map with point sources removed (so catalogue stars are not counted twice), calibrated to ≈21 mag arcsec⁻² in the Galactic band. A 2D sky layer — not the 3D Milky Way, which is a later phase.')}
-      ${rg('skyBrightness', 'Milky Way brightness', '', 0.1, 6, 0.05, v => `${fmt(v, 2)}×`, true)}
+      ${rg('skyBrightness', 'Milky Way brightness', 'Your multiplier on the calibrated Gaia EDR3 sky (μ ≈ 21 mag/arcsec² in the band). The mode adds a labelled presentation gain: Scientific ×1 (calibrated), Exploration ×1.4, Cinematic ×1.6.', 0.1, 6, 0.05, v => `${fmt(v, 2)}×`, true)}
       ${sw('constellations', 'Constellation figures', 'IAU constellations drawn on the celestial sphere.')}
       <h3>Worlds</h3>
       ${sw('atmospheres', 'Atmospheres', 'Rayleigh + Mie single scattering, ray-marched per pixel, with per-world constituents.')}
