@@ -58,3 +58,23 @@ numerical trace or unit test, **HW** = owner-supplied real-GPU evidence (none ye
 - 22-view regression set vs v3.8.0 (also the WP-E/F/H "before" set): no unintended regressions.
 - Benchmark kit rebuilt from cp2, checksums verified, packaged serve.mjs self-test passed (SW). Windows .bat/.ps1 unverified.
 - 329/329 tests, tsc clean, build OK, assets 1527 / 0 unmatched / 0 non-commercial.
+
+## 2026-10-13 — owner review of cp2 (REV2-01…07), post-cp2 development
+- Registered REV2-01…07 in docs/issues.md (D/P/U classes). cp2 tag untouched.
+- REV2-01 SUN-381-07: glare audit (tools/qa/glare_audit.py, views GLAREAUDIT: 7 distances × 20°/50° × auto/fixed EV −10.26).
+  Root cause: between the resolution threshold and full metering the disc was displayed at 10–100× white (local
+  presentation ramp 3→12 px) → bloom/glare blob; Mars-20° G = 27.7k vs Mercury 4.3k. Fix: ramp 3→5 px, resolved glare
+  display-referred (≤4× white), point cap; spikes off by default (Cinematic on, labelled). Post: resolved range monotone
+  (4.2k → 1.19k → 0.78k). Point regime ×0.32 to remove the hand-over jump (verification run glare-post2 queued).
+- REV2-02 AST-381-03: reconstruction guide fields for all 6 partial mosaics (colour guide + weight; w≈0 on observed
+  pixels asserted); detail amplitudes from measured observed contrast; regional rim rule for the Uranian maps.
+  Iteration 1 (luminance-only) was insufficient (grey Pluto/Charon/Triton reconstructions, bands) → iteration 3.
+- REV2-03 AST-381-04: Cassini reference comparison (PIA17208, PIA12593, PIA21449): global tonal statistics already
+  match (p50/p99 similar); the deficit is small-scale relief. Generic crater recipe had d/D ≈ 0.004. On observed shape
+  models: fBm relief dropped, saturation-slope crater octaves with d/D 0.12 / 0.04 (mantled). Source meshes have few
+  creases (docs/qa/v3.8.1/shape-model-creases.json).
+- REV2-04 ATM-381-01: Venus/Titan twilight skylight from the atmosphere's own diffuse LUT; fill starts past twilight.
+- REV2-05 STAR-381-D4: per-channel limb darkening.
+- REV2-06 UX-381-02: intro anchor = observed SDO/HMI continuum Sun 2026-09-21 (tools/ingest/intro_sun.py); Galactic card
+  enlarged layout two-column and clear of header/mode bar/time dock.
+- Sandbox reset mid-session: queue scripts now in tools/qa/sandbox/rev2_queue*.sh (resumable).
