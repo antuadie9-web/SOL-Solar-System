@@ -218,6 +218,20 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
       const pa = familySurface({ p: (def.model ? positionLocal : dirLocal).mul(1.0), tint: vec3(pt[0], pt[1], pt[2]), spot: vec3(sp[0], sp[1], sp[2]), seed: float(proc.seed), craterAmt: float(proc.craters), fam: float(fam), fp: length(fwidth(dirLocal)), rkm: float(profile?.radiusKm ?? def.radius) });
       albedo = maps.color ? albedo : pa.rgb.mul(U.albedoScale);
       height = pa.w.mul(proc.rough * 0.04 + 0.01);
+      if (def.model && (fam === 10 || fam === 3 || fam === 9)) {
+        // v3.8.1 AST-381-04 (owner review REV2-03): on an OBSERVED shape model the long-wavelength relief is the model itself,
+        // so the procedural fBm relief is dropped and only sub-resolution craters are added — four octaves (cells 3…59 per
+        // radius, i.e. the shape model's ≈2 km resolution down to ≈0.5 km), equal weight per octave so the cumulative
+        // size–frequency slope is the saturation-equilibrium −2, with a depth/diameter of 0.12 (degraded simple craters on
+        // icy satellites) or 0.04 for the ring-particle-mantled moons (fam 9: Pan, Atlas, Daphnis, Telesto, Calypso, Helene).
+        // v3.4–cp2 used the generic recipe whose craters came out at d/D ≈ 0.004 — 30× too shallow to shade: "clay".
+        // Individual craters are synthetic (REPRESENTATIVE); the population statistics are what is constrained.
+        const qq = positionLocal.add(vec3(proc.seed * 0.00137, proc.seed * 0.00071, proc.seed * 0.00213)), fpx = length(fwidth(dirLocal));
+        let crs: any = float(0);
+        for (const sc of [1, 2.7, 7.3, 19.7]) crs = crs.add(craters({ p: qq.mul(sc), scale: float(3) }).div(3 * sc).mul(smoothstep(0.35, 0.12, fpx.mul(3 * sc))));
+        const dD = fam === 9 ? 0.04 : fam === 3 ? 0.10 : 0.12;
+        height = crs.mul(dD / 0.3);
+      }
       if (def.noData) height = height.mul(noData);     // procedural relief only where the map has no data (soft weight with a guide field)
       // screen-derivative bump, limited so that no normal tilts by more than ~35° from the geometric normal (v3.3: the
       // unbounded version produced black pixel speckles on crater rims at 2×2-quad derivative granularity)
