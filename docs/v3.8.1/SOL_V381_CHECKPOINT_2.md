@@ -10,7 +10,7 @@ date: "12 October 2026"
 |---|---|---|
 | Req. 1 — sky star removal validated in the rendered radiance domain | **Done** | §2, `docs/qa/v3.8.1/sky-removal-qa.json` |
 | Req. 2 — star stability in rendered frames at several resolutions / pixel ratios | **Done (SW)** | §3, `centroids.json` per run; CPU trace kept |
-| Req. 3 — Sun distances, 20° FOV, modes, far transitions | **Done (SW)** | §4 sheets |
+| Req. 3 — Sun distances, 20° FOV, modes, far transitions | **Done (SW)**; one new defect found and fixed (SUN-381-06) | §4 sheets |
 | Req. 4 — Ariel / Titania / Oberon rights-cleared maps | **Done** — 0 non-commercial assets remain | §5 |
 | Req. 5 — benchmark package + explanation | **Ready** (no install, no admin, no upload) | §6 |
 | Resolved stellar discs (WP-B close range) | **Implemented** | §7 |
@@ -20,7 +20,7 @@ date: "12 October 2026"
 | Free-look judder (WP-I) | **Fixed + test** | §7 |
 | Atmospheres (WP-E), rings (WP-F), terrain (WP-H), wider UI pass, perf integration | **Next** | §10 |
 
-Tests **328/328** (310 inherited + 18 new), typecheck clean, asset manifest 1,527 files / 0 unmatched / **0 non-commercial**.
+Tests **329/329** (310 inherited + 19 new), typecheck clean, asset manifest 1,527 files / 0 unmatched / **0 non-commercial**.
 Checkpoint 1 preserved as tag `v3.8.1-cp1`; this checkpoint is tag `v3.8.1-cp2`. Every capture is software WebGPU
 (SwiftShader); none of this is hardware or final visual acceptance.
 
@@ -84,7 +84,34 @@ jitter the owner sees.
 
 # 4. Requirement 3 — Sun distances, 20° FOV, viewing modes, far transitions
 
-SUNTEXT
+Views: camera on the Sun–Earth line, 20° above the ecliptic, looking at the Sun; 960×540, software WebGPU; every view
+has its metadata JSON (exposure, sky EV, meter, adapter) in the evidence archive.
+
+**Discovered in this checkpoint (SUN-381-06).** The 50° ladder showed the Mercury-distance Sun drawn *smaller and flatter
+than at 1 AU*. Cause: the glare amplitude came from the display flux F·E. Once the disc is resolved (≈3.5 px radius, which
+happens between 1 AU and 0.39 AU at 50°), the exposure meters on the disc and drops by ≈24 EV (scene EV +14.6 at 1 AU,
+−10.1 at 0.39 AU), so F·E collapses and the glare vanished exactly when the Sun got closer. Fix: for a resolved disc the
+glare is a fixed fraction of the *displayed* disc radiance (Exploration 0.6, Cinematic 0.8, Scientific 0.35), and its
+angular profile is already scaled by the disc's angular radius, so its integrated light grows ∝ angR² as the Sun is
+approached. A smoothstep over 3.5–8 px hands it over from the point-source glare. Why this is valid: scattered light from
+a disc of radiance L and solid angle Ω at angle θ is L·Ω·P(θ). With the profile in units of the disc radius, the amplitude
+at a fixed multiple of the radius is ∝ L. Scientific keeps the physical exposure and no spikes; its 0.35 is a stated
+camera-PSF wing level, not a measured lens.
+
+![Before/after SUN-381-06 (both v3.8.1): the Mercury Sun is now the most dazzling of the three, as it must be.](img/E0-sun06-fix.png)
+
+![Exploration, 50°: v3.8.0 vs v3.8.1 at Mercury, Earth and Mars distance.](img/E1-sun-distance-50.png)
+
+![Exploration, 20° FOV: the disc is resolved at all three distances; v3.8.1 shows limb-darkened discs where v3.8.0 drew fixed-size glare.](img/E2-sun-distance-20.png)
+
+![Scientific mode: physical exposure, neutral white, no spikes, the same in both versions' intent. v3.8.1 removes the warm lamp tint and the fixed glare quad.](img/E3-sun-scientific.png)
+
+![Cinematic: the labelled, warmer art-directed look is kept.](img/E4-sun-cinematic.png)
+
+![Far transitions: 100 AU, 3,000 AU (50° and 20°) and 1 pc. The Sun becomes a star smoothly. v3.8.0 frames show its Galactic card, which v3.8.1 hides in clean-capture mode.](img/E5-sun-far.png)
+
+Scientific mode was not traded for warmth. Its tint is [1, 1, 1], its exposure is the physical meter, and the only
+change to its glare is the resolved-disc rule above.
 
 # 5. Requirement 4 and WP-G — Uranian maps and observed small-moon shapes
 
@@ -115,7 +142,35 @@ stay the published values; the inspector labels the shape OBSERVED and the surfa
 A boot crash introduced while wiring this (lost colour/albedo fields) was caught in QA, fixed, and is now guarded by a
 regression test.
 
-MOONFIG
+Additional finding: at the "now" date, Ariel, Titania and Oberon have their mapped southern hemispheres in seasonal night.
+Uranus' north pole faces the Sun near the 2028 solstice. The comparison is therefore shown at the Voyager 2 epoch
+(1986-01-24), when the south was sunlit. Two map-processing corrections came out of it:
+- **AST-381-01b.** The mosaic's edge *is* the 1986 terminator, so its last pixels are darkened by illumination, not
+  albedo. SOL shades the sphere itself, so keeping them double-shaded a dark seam. A 3-px rim, plus pixels within 10 px
+  of the edge that are darker than 0.45× the observed median, are now treated as unobserved. Unobserved fractions are
+  now 61.7 / 63.0 / 61.8 % for Ariel / Titania / Oberon.
+- **AST-381-01c.** Bilinear filtering across the observed→0 step passed through dark values that the no-data threshold
+  missed. The mask is now the maximum over half-texel neighbours, a shader change for every partial-mosaic body.
+
+Titania's observed area at the captured longitude reaches only ≈−20° to −30°: that is the real limit of the Voyager
+coverage there. The Albers map looked fuller because it added processed Uranus-shine imagery, which the rights-cleared
+map does not include.
+
+![Ariel, Titania, Oberon at the Voyager epoch: Albers (non-commercial, v3.8.0) vs USGS/JPL (rights-cleared, v3.8.1). The graticule marks the labelled reconstruction.](img/N2-uranian-1986.png)
+
+![Observed Cassini shapes, phase ≈25°: v3.8.0 ellipsoids vs v3.8.1 shape models.](img/G1-moons-shapes-a.png)
+
+![Janus, Epimetheus, Helene, Telesto.](img/G2-moons-shapes-b.png)
+
+![Calypso, Daphnis, Hyperion.](img/G3-moons-shapes-c.png)
+
+![At a Cassini-like phase of ≈70° the observed relief reads: Janus, Epimetheus, Prometheus.](img/G4-moons-phase70.png)
+
+![Pan's equatorial ridge, Atlas, Hyperion at phase ≈70°.](img/G5-moons-phase70b.png)
+
+Remaining look issues (not hidden): the icy small moons are exposed bright, and their lit faces read low in contrast.
+Their surfaces are procedural on the observed shapes. A few thin dark creases on Helene follow the shape model's
+limb-constraint facets, which the PDS documentation notes "remain below the amplitudes of listed uncertainties".
 
 # 6. Requirement 5 — the benchmark package
 
@@ -154,7 +209,14 @@ software adapter). Rotation now accumulates into a target orientation followed b
 approach. New test: the v3.8.0 rig fails the burst-event smoothness test; v3.8.1 passes and ends at the same orientation
 at 60 and 144 Hz.
 
-XSTARFIG
+Two exposure defects were found and fixed while verifying the disc:
+- **STAR-381-D2.** In Scientific, the resolved photosphere was drawn at the sky exposure, giving a frame-filling
+  over-exposed blob. It now meters like the Sun (same weight law, its own surface brightness), and its exposure glides
+  in log space from sky to scene as it becomes the subject.
+- **STAR-381-D3.** Metering on luminance clipped an M dwarf's red channel (≈1.6× its luminance), flattening the limb.
+  Metering and the local HDR target now use the brightest channel.
+
+![Proxima Centauri at 40 and 8 radii: v3.8.0 draws Proxima as a glare blob displaced from the aim point (the float32 camera bug, STAR-J01) at an estimated radius; v3.8.1 shows a centred, measured-radius, limb-darkened disc in both Exploration and Scientific.](img/B1-proxima-close.png)
 
 # 8. Galactic context card and intro
 
@@ -169,7 +231,7 @@ optional **Resume · <last target>**, "skip this screen next time" (repeat users
 in QA runs), and the truthful stage ledger. No particles, no autoplay, no mandatory animation; reduced motion removes the
 slow drift. The footer version string still reads 3.8.0 until the release bump.
 
-![Intro at 1600×900 (software capture, during shader preparation).](img/U1-intro.png)
+![Intro: v3.8.0 (top) and v3.8.1 at 1600×900 and 1280×800 @ DPR 2, ready state (software capture).](img/U4-intro-compare.png)
 
 # 9. Limitations
 

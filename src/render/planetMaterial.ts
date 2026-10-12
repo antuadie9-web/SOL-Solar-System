@@ -3,6 +3,7 @@
 // with uniforms prepared in double precision on the CPU, so shading is stable at any distance.
 import * as THREE from 'three/webgpu';
 import {
+  textureSize, int,
   Fn, uniform, texture, positionLocal, normalLocal, vec2, vec3, vec4, float, normalize, dot, max, min, mix, smoothstep, clamp, exp, pow,
   dFdx, dFdy, length, cross, abs, sign, select, If, varying, wgslFn, acos, sin, cos, sqrt, fwidth, attribute,
   sampler,
@@ -198,9 +199,10 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
         // passes through dark intermediate values that the threshold did not catch, which drew a thin black seam. The mask is
         // now the max over the texel's four half-texel neighbours, so the reconstruction covers the interpolation zone.
         const Y = (c: any) => dot(c, vec3(0.2126, 0.7152, 0.0722)), th = def.noData.threshold;
-        const tw = 1 / ((maps.color.image as any)?.width || 2048), tht = 1 / ((maps.color.image as any)?.height || 1024);
+        // texel size from the BOUND image at draw time (the texture starts as a 1×1 placeholder and is swapped when it streams)
+        const tsz = vec2(textureSize(texture(maps.color), int(0))), tw = float(1).div(tsz.x), tht = float(1).div(tsz.y);
         const m0 = smoothstep(th * 1.6, th, Y(c0));
-        const mk = (dx: number, dy: number) => smoothstep(th * 1.6, th, Y(texture(maps.color, uvA.add(vec2(dx * tw, dy * tht))).grad(gx, gy).rgb));
+        const mk = (dx: number, dy: number) => smoothstep(th * 1.6, th, Y(texture(maps.color, uvA.add(vec2(tw.mul(dx), tht.mul(dy)))).grad(gx, gy).rgb));
         noData = max(max(m0, max(mk(0.6, 0), mk(-0.6, 0))), max(mk(0, 0.6), mk(0, -0.6)));
       }
     }
