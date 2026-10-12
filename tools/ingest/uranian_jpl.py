@@ -21,6 +21,7 @@ Usage: python3 tools/ingest/uranian_jpl.py <dir with ura1vuu2.tif ura3vuu2.tif u
 import hashlib, json, os, sys
 import numpy as np
 from PIL import Image
+from scipy import ndimage
 ROOT = os.path.join(os.path.dirname(__file__), '..', '..')
 SRC = sys.argv[1]
 BODIES = {'ariel': ('ura1vuu2.tif', (0.7, 0.7, 0.7)), 'titania': ('ura3vuu2.tif', (0.6, 0.58, 0.56)), 'oberon': ('ura4vuu2.tif', (0.52, 0.48, 0.46))}
@@ -32,6 +33,12 @@ for name, (f, col) in BODIES.items():
     p = os.path.join(SRC, f)
     g = np.asarray(Image.open(p).convert('L'), dtype=np.float64) / 255.0
     nodata = g < 1.5 / 255
+    # cp2 (AST-381-01b): the mosaics' edge is the 1986 TERMINATOR, so the last few pixels are darkened by illumination,
+    # not albedo; SOL shades the sphere itself, so keeping them drew a dark seam (double shading). Remove a 3-px rim and any
+    # pixel within 10 px of the edge darker than 0.45× the observed median (photometric fall-off) → labelled reconstruction.
+    med = float(np.median(g[~nodata]))
+    near = ndimage.binary_dilation(nodata, iterations=10)
+    nodata = ndimage.binary_dilation(nodata, iterations=3) | (near & (g < 0.45 * med))
     c = np.array(col) / (0.2126 * col[0] + 0.7152 * col[1] + 0.0722 * col[2])     # luminance-normalised tint
     rgb = lin(g)[..., None] * c[None, None, :]
     rgb[nodata] = 0
@@ -39,6 +46,6 @@ for name, (f, col) in BODIES.items():
     Image.fromarray((np.clip(enc(np.clip(rgb, 0, 1)), 0, 1) * 255 + 0.5).astype(np.uint8)).save(out, quality=95, subsampling=0, optimize=True)
     Y = (lin(np.asarray(Image.open(out).convert('RGB'), dtype=np.float64) / 255.0) @ np.array([0.2126, 0.7152, 0.0722]))
     report[name] = {'source': f, 'sourceSha256': sha(p), 'size': list(Image.open(p).size), 'outSha256': sha(out), 'meanLinearY': float(Y.mean()),
-                    'unobservedFraction': round(float(nodata.mean()), 3)}
+                    'unobservedFraction': round(float(nodata.mean()), 3), 'rimRemoved': 'terminator rim (3 px + dark fall-off within 10 px) treated as unobserved'}
 json.dump(report, open(os.path.join(ROOT, 'docs/assets/provenance/uranian-jpl-v381.json'), 'w'), indent=1)
 print(json.dumps(report, indent=1))
