@@ -20,7 +20,7 @@ date: "12 October 2026"
 | Free-look judder (WP-I) | **Fixed + test** | §7 |
 | Atmospheres (WP-E), rings (WP-F), terrain (WP-H), wider UI pass, perf integration | **Next** | §10 |
 
-Tests **327/327** (310 inherited + 17 new), typecheck clean, asset manifest 1,527 files / 0 unmatched / **0 non-commercial**.
+Tests **328/328** (310 inherited + 18 new), typecheck clean, asset manifest 1,527 files / 0 unmatched / **0 non-commercial**.
 Checkpoint 1 preserved as tag `v3.8.1-cp1`; this checkpoint is tag `v3.8.1-cp2`. Every capture is software WebGPU
 (SwiftShader); none of this is hardware or final visual acceptance.
 
@@ -63,7 +63,21 @@ Scenario `tools/qa/scenarios/stars381.mjs`: orbit mode around Proxima Centauri, 
 1 AU and at 0.2 AU, every frame rendered by the real app and cropped around the aim point; `tools/qa/star_centroids.py`
 measures the intensity-weighted centroid (linear light, CSS pixels). The CPU trace (`star-stability-trace.json`) is kept.
 
-ZOOMTABLE
+| Viewport | Start distance | v3.8.0 step RMS / max (px) | v3.8.1 step RMS / max (px) |
+|---|---|---|---|
+| 640×360, DPR 1 (canvas 640×360) | 1 AU | 1.417 / 2.426 | **0.001 / 0.001** |
+| 640×360, DPR 1 | 0.2 AU | 13.183 / 20.848 | **0.170 / 0.294** |
+| 640×360, DPR 2 (canvas 1280×720) | 1 AU | 2.503 / 4.178 | **0.002 / 0.003** |
+| 640×360, DPR 2 | 0.2 AU | 16.231 / 23.438 | **0.089 / 0.155** |
+
+Steps are in CSS pixels (4 frames per run; centroid of linear light within 12 CSS px of the brightest pixel near the aim
+point). The software adapter caps practical resolution, so a 1280×720 CSS / DPR 2 (2560×1440 device) run was not
+completed; DPR 2 at 1280×720 *device* pixels is the high-DPI case measured. The residual 0.1–0.3 px at 0.2 AU in v3.8.1 is
+the star growing toward the resolved-disc threshold while zooming (its image changes shape), not positional error — the
+mean offset from the aim point stays ≤ 1.5 px. The v3.8.0 DPR-1 run was taken before the Galactic card was hidden in
+clean-capture mode; the card covers part of the crop, but the star's centroid is measured on the star itself.
+
+![Rendered-frame stability: four consecutive frames per run, v3.8.0 vs v3.8.1 at DPR 1 and DPR 2.](img/R2-star-stability-frames.png)
 
 Because the camera always aims at the star, a correct renderer keeps the centroid fixed: the frame-to-frame step is the
 jitter the owner sees.

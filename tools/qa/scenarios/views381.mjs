@@ -20,3 +20,10 @@ export const MOONS381 = [MB('pan', 'sat618', 20.3), MB('atlas', 'sat615', 23.8),
 // B (checkpoint 2) — resolved photosphere of Proxima Centauri (measured radius 0.1542 R☉) at two distances
 export const XSTAR381 = [['xstar-proxima-40R', 'star:proxima-centauri', 40], ['xstar-proxima-8R', 'star:proxima-centauri', 8], ['xstar-proxima-8R-sci', 'star:proxima-centauri', { radii: 8, mode: 'scientific' }]];
 V381.push(...MOONS381, ...XSTAR381);
+// G2 (checkpoint 2 review) — Cassini-like phase (~70°) so the observed shape relief reads, and the Uranian moons at the
+// Voyager 2 epoch (1986-01-24): in 2026 their southern hemispheres are in seasonal darkness, so a "now" view shows the night side.
+const VOYAGER_JD = 2446454.5, NOW_JD = 2461322.0;   // 1986-01-24 0h TT; capture clock (2026-10-08)
+export const MOONS381B = [['janus', 'sat610', 103.4], ['epimetheus', 'sat611', 73.1], ['prometheus', 'sat616', 71.4], ['pan', 'sat618', 20.3], ['atlas', 'sat615', 23.8], ['hyperion', 'hyperion', 170]]
+  .map(([n, id, R]) => [`moon381-${n}-ph70`, id, { bf: { r: R * 3.4, el: 10, az: 70, fov: 50 } }]);
+export const URANIAN1986 = ['ariel', 'titania', 'oberon'].map(n => [`moon381-${n}-1986`, n, { jdOff: VOYAGER_JD - NOW_JD, bf: { r: { ariel: 579, titania: 789, oberon: 761 }[n] * 3.2, el: 15, az: 20, fov: 50 } }]);
+V381.push(...MOONS381B, ...URANIAN1986);

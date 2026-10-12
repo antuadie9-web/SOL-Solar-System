@@ -1,0 +1,26 @@
+{
+ "1": {
+  "frames": 4,
+  "offsetFromAimPx_mean": 0.884,
+  "offsetFromAimPx_max": 0.885,
+  "stepRmsPx": 0.001,
+  "stepMaxPx": 0.001,
+  "peakToPeakPx": 0.002,
+  "meanOffsetFromCentrePx": [
+   -0.63,
+   -0.62
+  ]
+ },
+ "0.2": {
+  "frames": 4,
+  "offsetFromAimPx_mean": 1.33,
+  "offsetFromAimPx_max": 1.504,
+  "stepRmsPx": 0.17,
+  "stepMaxPx": 0.294,
+  "peakToPeakPx": 0.295,
+  "meanOffsetFromCentrePx": [
+   -0.91,
+   -0.97
+  ]
+ }
+}
