@@ -18,8 +18,11 @@ test('catalogue texture and model references resolve to shipped files', () => {
     if (d.model) assert.ok(files.includes(`assets/models/${d.model}.glb`), `${d.id}: ${d.model}`);
   }
 });
-test('non-commercial imagery is flagged, not silently redistributed as free', () => {
-  const albers = rules.find((r: any) => r.re.test('assets/tex/titania.jpg')); assert.match(albers.commercial, /^NO/);
+test('non-commercial imagery is flagged, not silently redistributed as free (v3.8.1: none remain)', () => {
+  const man = JSON.parse(fs.readFileSync('docs/assets/asset-manifest.json', 'utf8'));
+  for (const a of man.assets) if (/^NO/.test(a.commercial)) assert.ok(man.nonCommercial.includes(a.path), a.path);
+  // AST-381-01: the former Steve Albers (personal / non-commercial) Uranian-moon maps were replaced by USGS Voyager mosaics (JPL)
+  for (const b of ['ariel', 'titania', 'oberon']) { const r = rules.find((x: any) => x.re.test(`assets/tex/${b}.jpg`)); assert.match(r.commercial, /^yes/, b); assert.match(r.attribution, /NASA\/JPL-Caltech/); }
 });
 test('v3.4 AST-003: the replaced Galilean/Saturnian/Neptunian/Pluto-system/Dawn maps are public-domain USGS or NASA products with provenance', () => {
   for (const b of ['io', 'europa', 'ganymede', 'mimas', 'enceladus', 'tethys', 'dione', 'rhea', 'iapetus', 'triton', 'pluto', 'charon', 'ceres', 'vesta']) {

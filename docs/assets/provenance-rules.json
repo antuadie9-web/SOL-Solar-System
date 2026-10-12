@@ -2,6 +2,20 @@
  "_doc": "Per-asset provenance & licence rules (spec §5 asset/licence contract). The FIRST rule whose regex matches a path under public/ applies. tools/validate/assets.mjs expands these into asset-manifest.json with size and SHA-256; tests/assets/manifest.test.ts fails if any shipped file is unmatched. 'commercial' is our reading of the stated terms, not legal advice. Retrieval dates are those recorded in v3.2 (2026-10-08) unless stated.",
  "rules": [
   {
+   "match": "^assets/tex/(ariel|titania|oberon)\\.jpg$",
+   "source": "USGS Voyager 2 mosaics distributed by NASA/JPL Solar System Simulator (ura1vuu2/ura3vuu2/ura4vuu2.tif, 1440×720), processed by SOL v3.8.1 tools/ingest/uranian_jpl.py",
+   "url": "https://space.jpl.nasa.gov/tmaps/uranus.html",
+   "licence": "JPL Image Use Policy (any purpose incl. commercial; credit required; no endorsement) — https://www.jpl.nasa.gov/jpl-image-use-policy/",
+   "commercial": "yes (credit \"Courtesy NASA/JPL-Caltech; USGS\")",
+   "attribution": "Courtesy NASA/JPL-Caltech; USGS (Voyager 2 mosaics, T. Becker)",
+   "content": "clear-filter greyscale Voyager 2 mosaic × catalogue disc-integrated tint; northern hemisphere unobserved (black, ≈61–62 %) → labelled procedural reconstruction at runtime",
+   "projection": "simple cylindrical, left edge −180° E, east-positive (verified against IAU Gazetteer feature centres)",
+   "coverage": "southern hemisphere (≈38–39 % observed)",
+   "resolution": "4 px/deg",
+   "truth": "observed (greyscale); colour = disc-integrated tint (labelled); unobserved region reconstructed (labelled)",
+   "retrieved": "2026-10-12"
+  },
+  {
    "match": "^assets/tex/milkyway_luma_8k\\.r8gz$",
    "source": "Derived (SOL v3.8.1, tools/ingest/sky_v381.py) from ESA/Gaia/DPAC \"The colour of the sky from Gaia's Early Data Release 3 – equirectangular projection\" (16000×8000 PNG, sha256 10a372d3…)",
    "url": "https://sci.esa.int/web/gaia/-/the-colour-of-the-sky-from-gaia-s-early-data-release-3-equirectangular-projection",
@@ -366,18 +380,6 @@
    "projection": "equirectangular",
    "coverage": "global (gaps filled by the author)",
    "truth": "observed + artistically completed (giants: representative)"
-  },
-  {
-   "match": "^assets/tex/(ariel|titania|oberon)(_hi)?\\.jpg$",
-   "source": "Steve Albers global mosaics from Galileo / Voyager / Cassini / Dawn / New Horizons data",
-   "url": "https://stevealbers.net/albers/sos/sos.html",
-   "licence": "Personal / non-commercial use stated by the author",
-   "commercial": "NO — replace before any commercial or public redistribution (ISSUE AST-003)",
-   "attribution": "Steve Albers, NOAA/CIRES; underlying data NASA/JPL",
-   "content": "Voyager 2 visible mosaics; unimaged northern hemispheres black (flagged noData → labelled reconstruction)",
-   "projection": "equirectangular",
-   "coverage": "partial for Uranian moons and Triton",
-   "truth": "observed (partial)"
   },
   {
    "match": "^assets/tex/callisto(_hi)?\\.jpg$",

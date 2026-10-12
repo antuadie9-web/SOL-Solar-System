@@ -1,9 +1,9 @@
 {
  "ariel": {
-  "truth": "observed (partial)",
-  "content": "Voyager 2 visible mosaics; unimaged northern hemispheres black (flagged noData → labelled reconstruction)",
-  "source": "Steve Albers global mosaics from Galileo / Voyager / Cassini / Dawn / New Horizons data",
-  "commercial": "NO — replace before any commercial or public redistribution (ISSUE AST-003)"
+  "truth": "observed (greyscale); colour = disc-integrated tint (labelled); unobserved region reconstructed (labelled)",
+  "content": "clear-filter greyscale Voyager 2 mosaic × catalogue disc-integrated tint; northern hemisphere unobserved (black, ≈61–62 %) → labelled procedural reconstruction at runtime",
+  "source": "USGS Voyager 2 mosaics distributed by NASA/JPL Solar System Simulator (ura1vuu2/ura3vuu2/ura4vuu2.tif, 1440×720), processed by SOL v3.8.1 tools/ingest/uranian_jpl.py",
+  "commercial": "yes (credit \"Courtesy NASA/JPL-Caltech; USGS\")"
  },
  "callisto": {
   "truth": "observed",
@@ -102,10 +102,10 @@
   "commercial": "yes (with attribution)"
  },
  "oberon": {
-  "truth": "observed (partial)",
-  "content": "Voyager 2 visible mosaics; unimaged northern hemispheres black (flagged noData → labelled reconstruction)",
-  "source": "Steve Albers global mosaics from Galileo / Voyager / Cassini / Dawn / New Horizons data",
-  "commercial": "NO — replace before any commercial or public redistribution (ISSUE AST-003)"
+  "truth": "observed (greyscale); colour = disc-integrated tint (labelled); unobserved region reconstructed (labelled)",
+  "content": "clear-filter greyscale Voyager 2 mosaic × catalogue disc-integrated tint; northern hemisphere unobserved (black, ≈61–62 %) → labelled procedural reconstruction at runtime",
+  "source": "USGS Voyager 2 mosaics distributed by NASA/JPL Solar System Simulator (ura1vuu2/ura3vuu2/ura4vuu2.tif, 1440×720), processed by SOL v3.8.1 tools/ingest/uranian_jpl.py",
+  "commercial": "yes (credit \"Courtesy NASA/JPL-Caltech; USGS\")"
  },
  "pluto": {
   "truth": "observed luminance; inferred colour",
@@ -144,10 +144,10 @@
   "commercial": "yes"
  },
  "titania": {
-  "truth": "observed (partial)",
-  "content": "Voyager 2 visible mosaics; unimaged northern hemispheres black (flagged noData → labelled reconstruction)",
-  "source": "Steve Albers global mosaics from Galileo / Voyager / Cassini / Dawn / New Horizons data",
-  "commercial": "NO — replace before any commercial or public redistribution (ISSUE AST-003)"
+  "truth": "observed (greyscale); colour = disc-integrated tint (labelled); unobserved region reconstructed (labelled)",
+  "content": "clear-filter greyscale Voyager 2 mosaic × catalogue disc-integrated tint; northern hemisphere unobserved (black, ≈61–62 %) → labelled procedural reconstruction at runtime",
+  "source": "USGS Voyager 2 mosaics distributed by NASA/JPL Solar System Simulator (ura1vuu2/ura3vuu2/ura4vuu2.tif, 1440×720), processed by SOL v3.8.1 tools/ingest/uranian_jpl.py",
+  "commercial": "yes (credit \"Courtesy NASA/JPL-Caltech; USGS\")"
  },
  "triton": {
   "truth": "observed luminance",
