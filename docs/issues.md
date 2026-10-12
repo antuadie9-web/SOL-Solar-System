@@ -162,3 +162,15 @@ Severity P0 = correctness/stability blocker, P1 = major fidelity/UX gap, P2 = po
 | AST-381-01b | P2 | Moons | 1986 terminator baked into map edges → dark seam (double shading) | FIXED — rim treated as unobserved |
 | AST-381-01c | P2 | Moons | Bilinear seam at observed/unobserved boundary | FIXED — half-texel dilated mask (first attempt broke all partial maps via placeholder texel size; caught by capture, fixed with textureSize) |
 | QA-381-02 | P2 | QA | Uranian-moon "now" views show seasonal night side | Views at the Voyager epoch (1986-01-24) |
+
+### Owner review of Checkpoint 2 (2026-10-13) — cp2 accepted as a development milestone; findings carried forward
+Classification: **D** = confirmed defect, **P** = visual preference / presentation, **U** = scientific uncertainty.
+| ID | Sev | Class | Finding (owner) | Reproducible test | Status |
+|---|---|---|---|---|---|
+| REV2-01 SUN-381-07 | P1 | D? (audit) | 20° FOV Mars-distance Sun shows disproportionately large/intense glare; spikes too stylised by default | views sun-ladder-{0p39,1,1p52}AU-f20 (+ fixed-exposure variants); glare-energy table vs angR, EV, FOV | OPEN — audit |
+| REV2-02 AST-381-03 | P1 | D | Uranian observed/reconstructed boundary highly conspicuous (albedo, shading, roughness, texture-frequency mismatch); check Triton/Pluto/Charon | moon381-{ariel,titania,oberon}-1986, triton-limb, pluto-day, charon views | OPEN |
+| REV2-03 AST-381-04 | P1 | D/P | Small moons too bright, uniform, clay-like; facets/creases to check against source | moon381-*-ph70, moon381-* (phase 25°); per-moon photometry table | OPEN |
+| REV2-04 ATM/RING | P1 | D/P | Venus terminator, Titan haze, Mars horizon, Pluto/Triton haze, giant limbs; ring edge-on black bands, transparency, depth order, scattering, shadows, moon–ring integration | reg set (venus-terminator, titan-limb, mars-limb, pluto-haze-backlit, triton-limb, jupiter-limb, sat-*) | OPEN (WP-E/F) |
+| REV2-05 STAR/SKY | P2 | P/U | Proxima disc very uniform; Gaia background flat/brown | xstar-proxima-*, sky views | OPEN |
+| REV2-06 UX-381-02 | P2 | D (overlap) / P (intro) | Intro solar disc featureless; enlarged Galactic card overlaps header/breadcrumbs; footer version | U*, L2 captures | OPEN |
+| REV2-07 | — | process | Preserve verified improvements; SW≠HW; full evidence | all | standing rule |
