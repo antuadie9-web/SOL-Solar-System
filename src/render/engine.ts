@@ -340,7 +340,8 @@ export class Engine {
       const keep = ['position', ...(hasNormals ? ['normal'] : []), ...(hasUV ? ['uv'] : [])];
       for (const p of parts) { for (const k of Object.keys(p.attributes)) if (!keep.includes(k)) p.deleteAttribute(k); if (!p.index) p.setIndex([...Array(p.attributes.position.count).keys()]); }
       const G = parts.length === 1 ? parts[0] : mergeGeometries(parts, false)!;
-      G.computeBoundingBox(); const bb = G.boundingBox!, c = new THREE.Vector3(); bb.getCenter(c); G.translate(-c.x, -c.y, -c.z);
+      const bodyFixed = !!this.sys.bodies.find(b => b.def.model === id && b.def.modelFrame === 'body-fixed');
+      G.computeBoundingBox(); const bb = G.boundingBox!, c = new THREE.Vector3(); bb.getCenter(c); if (!bodyFixed) G.translate(-c.x, -c.y, -c.z);   // v3.8.1: body-fixed models keep the source origin
       // normalise to unit longest semi-axis; the body's radii then scale it (longest axis → a)
       const sz = new THREE.Vector3(); bb.getSize(sz); const m = Math.max(sz.x, sz.y, sz.z) / 2; G.scale(1 / m, 1 / m, 1 / m);
       // orient longest extent along +x (rotation models use a as the long axis)

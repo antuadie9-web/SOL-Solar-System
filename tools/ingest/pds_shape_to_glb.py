@@ -6,10 +6,14 @@ Format: "Nv Nf" (or "Nv", then after the vertices a line "Nf"), Nv lines "i x y 
 import sys, struct, json
 src, dst = sys.argv[1], sys.argv[2]
 L = [l for l in open(src).read().split('\n') if l.strip()]; h = L[0].split()
-if len(h) >= 2: nv, nf = int(h[0]), int(h[1]); fo = 1 + nv          # "Nv Nf" header (Itokawa PDS3)
+if len(h) >= 2: nv, nf = int(h[0]), int(h[1]); fo = 1 + nv          # "Nv Nf" header (Itokawa PDS3; Thomas Saturn moons PDS4)
 else: nv = int(h[0]); nf = int(L[1 + nv].split()[0]); fo = 2 + nv   # "Nv" … "Nf" (Phoebe PDS4)
-V = [tuple(map(float, L[1 + i].split()[1:4])) for i in range(nv)]
-F = [tuple(int(x) - 1 for x in L[fo + j].split()[1:4]) for j in range(nf)]
+# v3.8.1: Thomas et al. Saturn small-moon "*_plt.tab" (urn:nasa:pds:saturn_satellite_shape_models) has NO index column:
+# vertex lines "x y z" (km) and 0-based facet lines "v1 v2 v3"
+plt = len(L[1].split()) == 3
+V = [tuple(map(float, (L[1 + i].split() if plt else L[1 + i].split()[1:4]))) for i in range(nv)]
+F = [tuple(int(x) - (0 if plt else 1) for x in (L[fo + j].split() if plt else L[fo + j].split()[1:4])) for j in range(nf)]
+assert all(0 <= k < nv for f in F for k in f), 'facet index out of range'
 pos = b''.join(struct.pack('<3f', *v) for v in V); idx = b''.join(struct.pack('<3I', *f) for f in F)
 mn = [min(v[k] for v in V) for k in range(3)]; mx = [max(v[k] for v in V) for k in range(3)]
 pad = lambda b, c=b'\0': b + c * ((4 - len(b) % 4) % 4)

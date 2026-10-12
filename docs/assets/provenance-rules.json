@@ -2,6 +2,19 @@
  "_doc": "Per-asset provenance & licence rules (spec §5 asset/licence contract). The FIRST rule whose regex matches a path under public/ applies. tools/validate/assets.mjs expands these into asset-manifest.json with size and SHA-256; tests/assets/manifest.test.ts fails if any shipped file is unmatched. 'commercial' is our reading of the stated terms, not legal advice. Retrieval dates are those recorded in v3.2 (2026-10-08) unless stated.",
  "rules": [
   {
+   "match": "^assets/models/(pan|daphnis|atlas|prometheus|pandora|epimetheus|janus|telesto|calypso|helene|hyperion)\\.glb$",
+   "source": "Thomas, P., Joseph, J. et al., Saturn Small Moon Shape Models, urn:nasa:pds:saturn_satellite_shape_models::1.0 (Cassini ISS stereogrammetry + limbs; *_30k_plt.tab), converted by tools/ingest/pds_shape_to_glb.py",
+   "url": "https://sbn.psi.edu/pds/resource/saturnsatshapes.html",
+   "licence": "NASA/PDS public domain",
+   "commercial": "yes",
+   "attribution": "P. Thomas, J. Joseph et al., NASA PDS Small Bodies Node (2018); Cassini ISS",
+   "content": "triangular plate model, body-fixed km, ~13.4–14.6 k vertices / ~27–29 k plates (uncertainties typically < 0.5 km)",
+   "projection": "3-D mesh",
+   "coverage": "global (resolution varies with Cassini coverage)",
+   "truth": "OBSERVED shape (surface markings in SOL remain procedural, labelled)",
+   "retrieved": "2026-10-12"
+  },
+  {
    "match": "^assets/tex/(ariel|titania|oberon)\\.jpg$",
    "source": "USGS Voyager 2 mosaics distributed by NASA/JPL Solar System Simulator (ura1vuu2/ura3vuu2/ura4vuu2.tif, 1440×720), processed by SOL v3.8.1 tools/ingest/uranian_jpl.py",
    "url": "https://space.jpl.nasa.gov/tmaps/uranus.html",

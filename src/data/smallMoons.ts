@@ -130,3 +130,16 @@ export function resolveSmallMoon(name: string, planet: string, aKm: number, iDeg
   return { periodH: m?.periodH, irregular, radius, radii: dims ? [dims[0] / 2, dims[1] / 2, dims[2] / 2] : undefined, albedo, tint, cls, status, sources: m ? [...m.sources, P.source] : [P.source],
     craters: P.craters, rough: P.rough, surface: P.surface, shape: P.shape, basis: P.basis };
 }
+
+/** v3.8.1 (AST-381-02): OBSERVED Cassini ISS shape models (Thomas, Joseph et al., NASA PDS SBN, urn:nasa:pds:saturn_satellite_shape_models::1.0,
+ *  2018; public domain). Extents are the models' own body-fixed bounding boxes in km (x toward Saturn for the synchronous
+ *  inner moons). Shapes are OBSERVED geometry; surface albedo/colour detail on them remains the labelled procedural layer. */
+export const OBSERVED_SHAPES: Record<string, { model: string; extentKm: [number, number, number]; bodyFixed: boolean }> = {
+  Pan: { model: 'pan', extentKm: [40.58, 31.46, 21.55], bodyFixed: true }, Daphnis: { model: 'daphnis', extentKm: [11.18, 9.71, 5.88], bodyFixed: true },
+  Atlas: { model: 'atlas', extentKm: [47.54, 41.29, 19.47], bodyFixed: true }, Prometheus: { model: 'prometheus', extentKm: [142.71, 83.45, 58.89], bodyFixed: true },
+  Pandora: { model: 'pandora', extentKm: [112.37, 82.72, 66.05], bodyFixed: true }, Epimetheus: { model: 'epimetheus', extentKm: [146.14, 112.81, 107.84], bodyFixed: true },
+  Janus: { model: 'janus', extentKm: [206.7, 189.81, 153.24], bodyFixed: true }, Telesto: { model: 'telesto', extentKm: [32.58, 23.77, 19.53], bodyFixed: true },
+  Calypso: { model: 'calypso', extentKm: [30.63, 19.35, 13.71], bodyFixed: true }, Helene: { model: 'helene', extentKm: [40.97, 39.65, 31.51], bodyFixed: true },
+  // Hyperion rotates chaotically; SOL's spin is a placeholder, so the mesh is re-oriented long-axis → x (not body-fixed)
+  Hyperion: { model: 'hyperion', extentKm: [341.26, 267.11, 252.48], bodyFixed: false },
+};

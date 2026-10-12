@@ -1,6 +1,6 @@
 {
  "generated": "2026-10-12",
- "count": 1516,
+ "count": 1527,
  "unmatched": [],
  "exactDuplicates": [],
  "nonCommercial": [],
@@ -1614,6 +1614,21 @@
    "truth": "observed shape (radar models: inverted from radar)"
   },
   {
+   "path": "assets/models/atlas.glb",
+   "bytes": 486556,
+   "sha256": "21ef635129c91198ff1ce599bf5539f163e08bfcccf1c5506dce52d370806e79",
+   "source": "Thomas, P., Joseph, J. et al., Saturn Small Moon Shape Models, urn:nasa:pds:saturn_satellite_shape_models::1.0 (Cassini ISS stereogrammetry + limbs; *_30k_plt.tab), converted by tools/ingest/pds_shape_to_glb.py",
+   "url": "https://sbn.psi.edu/pds/resource/saturnsatshapes.html",
+   "licence": "NASA/PDS public domain",
+   "commercial": "yes",
+   "attribution": "P. Thomas, J. Joseph et al., NASA PDS Small Bodies Node (2018); Cassini ISS",
+   "content": "triangular plate model, body-fixed km, ~13.4–14.6 k vertices / ~27–29 k plates (uncertainties typically < 0.5 km)",
+   "projection": "3-D mesh",
+   "coverage": "global (resolution varies with Cassini coverage)",
+   "truth": "OBSERVED shape (surface markings in SOL remain procedural, labelled)",
+   "retrieved": "2026-10-12"
+  },
+  {
    "path": "assets/models/bennu.glb",
    "bytes": 329596,
    "sha256": "644af15678447df90c2d9e85674809c7fc70f439e0865418aa6618a8483b7958",
@@ -1628,6 +1643,36 @@
    "truth": "observed shape (radar models: inverted from radar)"
   },
   {
+   "path": "assets/models/calypso.glb",
+   "bytes": 509700,
+   "sha256": "0223b7eb102aeae2364d165a9ebb46f09e2fdc4d091614d9b3aa04644a8eecb1",
+   "source": "Thomas, P., Joseph, J. et al., Saturn Small Moon Shape Models, urn:nasa:pds:saturn_satellite_shape_models::1.0 (Cassini ISS stereogrammetry + limbs; *_30k_plt.tab), converted by tools/ingest/pds_shape_to_glb.py",
+   "url": "https://sbn.psi.edu/pds/resource/saturnsatshapes.html",
+   "licence": "NASA/PDS public domain",
+   "commercial": "yes",
+   "attribution": "P. Thomas, J. Joseph et al., NASA PDS Small Bodies Node (2018); Cassini ISS",
+   "content": "triangular plate model, body-fixed km, ~13.4–14.6 k vertices / ~27–29 k plates (uncertainties typically < 0.5 km)",
+   "projection": "3-D mesh",
+   "coverage": "global (resolution varies with Cassini coverage)",
+   "truth": "OBSERVED shape (surface markings in SOL remain procedural, labelled)",
+   "retrieved": "2026-10-12"
+  },
+  {
+   "path": "assets/models/daphnis.glb",
+   "bytes": 485404,
+   "sha256": "72603ea5924a488501592e972881e2ceff5c9fc86f688fef4ab12c4840237455",
+   "source": "Thomas, P., Joseph, J. et al., Saturn Small Moon Shape Models, urn:nasa:pds:saturn_satellite_shape_models::1.0 (Cassini ISS stereogrammetry + limbs; *_30k_plt.tab), converted by tools/ingest/pds_shape_to_glb.py",
+   "url": "https://sbn.psi.edu/pds/resource/saturnsatshapes.html",
+   "licence": "NASA/PDS public domain",
+   "commercial": "yes",
+   "attribution": "P. Thomas, J. Joseph et al., NASA PDS Small Bodies Node (2018); Cassini ISS",
+   "content": "triangular plate model, body-fixed km, ~13.4–14.6 k vertices / ~27–29 k plates (uncertainties typically < 0.5 km)",
+   "projection": "3-D mesh",
+   "coverage": "global (resolution varies with Cassini coverage)",
+   "truth": "OBSERVED shape (surface markings in SOL remain procedural, labelled)",
+   "retrieved": "2026-10-12"
+  },
+  {
    "path": "assets/models/deimos.glb",
    "bytes": 1600012,
    "sha256": "5d5da763970acffe88aac26d3c3bd0fa66c5bef251d1bb4bfe2ae5fd723507e4",
@@ -1640,6 +1685,21 @@
    "projection": "n/a",
    "coverage": "global shape",
    "truth": "observed shape (radar models: inverted from radar)"
+  },
+  {
+   "path": "assets/models/epimetheus.glb",
+   "bytes": 501604,
+   "sha256": "cf1a2c01a748939542d4311a18dd8714bfafa156180af1b64f227dad13ed0fb1",
+   "source": "Thomas, P., Joseph, J. et al., Saturn Small Moon Shape Models, urn:nasa:pds:saturn_satellite_shape_models::1.0 (Cassini ISS stereogrammetry + limbs; *_30k_plt.tab), converted by tools/ingest/pds_shape_to_glb.py",
+   "url": "https://sbn.psi.edu/pds/resource/saturnsatshapes.html",
+   "licence": "NASA/PDS public domain",
+   "commercial": "yes",
+   "attribution": "P. Thomas, J. Joseph et al., NASA PDS Small Bodies Node (2018); Cassini ISS",
+   "content": "triangular plate model, body-fixed km, ~13.4–14.6 k vertices / ~27–29 k plates (uncertainties typically < 0.5 km)",
+   "projection": "3-D mesh",
+   "coverage": "global (resolution varies with Cassini coverage)",
+   "truth": "OBSERVED shape (surface markings in SOL remain procedural, labelled)",
+   "retrieved": "2026-10-12"
   },
   {
    "path": "assets/models/eros.glb",
@@ -1684,6 +1744,36 @@
    "truth": "observed shape (radar models: inverted from radar)"
   },
   {
+   "path": "assets/models/helene.glb",
+   "bytes": 486484,
+   "sha256": "6768e865c10d02489855102badf5fac7ca7838e3f5ba03c1b99007211e699800",
+   "source": "Thomas, P., Joseph, J. et al., Saturn Small Moon Shape Models, urn:nasa:pds:saturn_satellite_shape_models::1.0 (Cassini ISS stereogrammetry + limbs; *_30k_plt.tab), converted by tools/ingest/pds_shape_to_glb.py",
+   "url": "https://sbn.psi.edu/pds/resource/saturnsatshapes.html",
+   "licence": "NASA/PDS public domain",
+   "commercial": "yes",
+   "attribution": "P. Thomas, J. Joseph et al., NASA PDS Small Bodies Node (2018); Cassini ISS",
+   "content": "triangular plate model, body-fixed km, ~13.4–14.6 k vertices / ~27–29 k plates (uncertainties typically < 0.5 km)",
+   "projection": "3-D mesh",
+   "coverage": "global (resolution varies with Cassini coverage)",
+   "truth": "OBSERVED shape (surface markings in SOL remain procedural, labelled)",
+   "retrieved": "2026-10-12"
+  },
+  {
+   "path": "assets/models/hyperion.glb",
+   "bytes": 527556,
+   "sha256": "fe5ea46cb7dce835c1814ddd9186dd2965661a26ece327ed881b60ac15069260",
+   "source": "Thomas, P., Joseph, J. et al., Saturn Small Moon Shape Models, urn:nasa:pds:saturn_satellite_shape_models::1.0 (Cassini ISS stereogrammetry + limbs; *_30k_plt.tab), converted by tools/ingest/pds_shape_to_glb.py",
+   "url": "https://sbn.psi.edu/pds/resource/saturnsatshapes.html",
+   "licence": "NASA/PDS public domain",
+   "commercial": "yes",
+   "attribution": "P. Thomas, J. Joseph et al., NASA PDS Small Bodies Node (2018); Cassini ISS",
+   "content": "triangular plate model, body-fixed km, ~13.4–14.6 k vertices / ~27–29 k plates (uncertainties typically < 0.5 km)",
+   "projection": "3-D mesh",
+   "coverage": "global (resolution varies with Cassini coverage)",
+   "truth": "OBSERVED shape (surface markings in SOL remain procedural, labelled)",
+   "retrieved": "2026-10-12"
+  },
+  {
    "path": "assets/models/itokawa.glb",
    "bytes": 894720,
    "sha256": "041903cb42bc598ceb7d8e7d2e1d2ebf1e919f2b303dd825137b308f2b814778",
@@ -1696,6 +1786,21 @@
    "projection": "3-D mesh",
    "coverage": "global (stereophotoclinometry; Phoebe: Cassini 2004 coverage)",
    "truth": "OBSERVED shape"
+  },
+  {
+   "path": "assets/models/janus.glb",
+   "bytes": 482380,
+   "sha256": "30658d9d0c72981b60d5501ccec4ad7816368acd48fe19df99a54038d96c636a",
+   "source": "Thomas, P., Joseph, J. et al., Saturn Small Moon Shape Models, urn:nasa:pds:saturn_satellite_shape_models::1.0 (Cassini ISS stereogrammetry + limbs; *_30k_plt.tab), converted by tools/ingest/pds_shape_to_glb.py",
+   "url": "https://sbn.psi.edu/pds/resource/saturnsatshapes.html",
+   "licence": "NASA/PDS public domain",
+   "commercial": "yes",
+   "attribution": "P. Thomas, J. Joseph et al., NASA PDS Small Bodies Node (2018); Cassini ISS",
+   "content": "triangular plate model, body-fixed km, ~13.4–14.6 k vertices / ~27–29 k plates (uncertainties typically < 0.5 km)",
+   "projection": "3-D mesh",
+   "coverage": "global (resolution varies with Cassini coverage)",
+   "truth": "OBSERVED shape (surface markings in SOL remain procedural, labelled)",
+   "retrieved": "2026-10-12"
   },
   {
    "path": "assets/models/kleopatra.glb",
@@ -1726,6 +1831,36 @@
    "truth": "observed shape (radar models: inverted from radar)"
   },
   {
+   "path": "assets/models/pan.glb",
+   "bytes": 495156,
+   "sha256": "82c9245c1828a9998d05a11603f338970b152f840a6559defbf6d2d013ad3b5c",
+   "source": "Thomas, P., Joseph, J. et al., Saturn Small Moon Shape Models, urn:nasa:pds:saturn_satellite_shape_models::1.0 (Cassini ISS stereogrammetry + limbs; *_30k_plt.tab), converted by tools/ingest/pds_shape_to_glb.py",
+   "url": "https://sbn.psi.edu/pds/resource/saturnsatshapes.html",
+   "licence": "NASA/PDS public domain",
+   "commercial": "yes",
+   "attribution": "P. Thomas, J. Joseph et al., NASA PDS Small Bodies Node (2018); Cassini ISS",
+   "content": "triangular plate model, body-fixed km, ~13.4–14.6 k vertices / ~27–29 k plates (uncertainties typically < 0.5 km)",
+   "projection": "3-D mesh",
+   "coverage": "global (resolution varies with Cassini coverage)",
+   "truth": "OBSERVED shape (surface markings in SOL remain procedural, labelled)",
+   "retrieved": "2026-10-12"
+  },
+  {
+   "path": "assets/models/pandora.glb",
+   "bytes": 488968,
+   "sha256": "4d6734aac66555789e6de33de80d66cda1828dadd471baf5716095b685658dae",
+   "source": "Thomas, P., Joseph, J. et al., Saturn Small Moon Shape Models, urn:nasa:pds:saturn_satellite_shape_models::1.0 (Cassini ISS stereogrammetry + limbs; *_30k_plt.tab), converted by tools/ingest/pds_shape_to_glb.py",
+   "url": "https://sbn.psi.edu/pds/resource/saturnsatshapes.html",
+   "licence": "NASA/PDS public domain",
+   "commercial": "yes",
+   "attribution": "P. Thomas, J. Joseph et al., NASA PDS Small Bodies Node (2018); Cassini ISS",
+   "content": "triangular plate model, body-fixed km, ~13.4–14.6 k vertices / ~27–29 k plates (uncertainties typically < 0.5 km)",
+   "projection": "3-D mesh",
+   "coverage": "global (resolution varies with Cassini coverage)",
+   "truth": "OBSERVED shape (surface markings in SOL remain procedural, labelled)",
+   "retrieved": "2026-10-12"
+  },
+  {
    "path": "assets/models/phobos.glb",
    "bytes": 3855016,
    "sha256": "757712101e4fbcf9527942ee664a3bc6dfe3ab460466b760f4bf51ee85dbd8d3",
@@ -1752,6 +1887,36 @@
    "projection": "3-D mesh",
    "coverage": "global (stereophotoclinometry; Phoebe: Cassini 2004 coverage)",
    "truth": "OBSERVED shape"
+  },
+  {
+   "path": "assets/models/prometheus.glb",
+   "bytes": 511248,
+   "sha256": "cb70f69d4bcf6d4337854d48ea79624926d9bdfdc7d5efd8b5ba01b0c58c634f",
+   "source": "Thomas, P., Joseph, J. et al., Saturn Small Moon Shape Models, urn:nasa:pds:saturn_satellite_shape_models::1.0 (Cassini ISS stereogrammetry + limbs; *_30k_plt.tab), converted by tools/ingest/pds_shape_to_glb.py",
+   "url": "https://sbn.psi.edu/pds/resource/saturnsatshapes.html",
+   "licence": "NASA/PDS public domain",
+   "commercial": "yes",
+   "attribution": "P. Thomas, J. Joseph et al., NASA PDS Small Bodies Node (2018); Cassini ISS",
+   "content": "triangular plate model, body-fixed km, ~13.4–14.6 k vertices / ~27–29 k plates (uncertainties typically < 0.5 km)",
+   "projection": "3-D mesh",
+   "coverage": "global (resolution varies with Cassini coverage)",
+   "truth": "OBSERVED shape (surface markings in SOL remain procedural, labelled)",
+   "retrieved": "2026-10-12"
+  },
+  {
+   "path": "assets/models/telesto.glb",
+   "bytes": 497608,
+   "sha256": "b75a690ea1fcdeecdf10c814fa97cae44c518279193c839f33597801cde6c9f9",
+   "source": "Thomas, P., Joseph, J. et al., Saturn Small Moon Shape Models, urn:nasa:pds:saturn_satellite_shape_models::1.0 (Cassini ISS stereogrammetry + limbs; *_30k_plt.tab), converted by tools/ingest/pds_shape_to_glb.py",
+   "url": "https://sbn.psi.edu/pds/resource/saturnsatshapes.html",
+   "licence": "NASA/PDS public domain",
+   "commercial": "yes",
+   "attribution": "P. Thomas, J. Joseph et al., NASA PDS Small Bodies Node (2018); Cassini ISS",
+   "content": "triangular plate model, body-fixed km, ~13.4–14.6 k vertices / ~27–29 k plates (uncertainties typically < 0.5 km)",
+   "projection": "3-D mesh",
+   "coverage": "global (resolution varies with Cassini coverage)",
+   "truth": "OBSERVED shape (surface markings in SOL remain procedural, labelled)",
+   "retrieved": "2026-10-12"
   },
   {
    "path": "assets/models/toutatis.glb",

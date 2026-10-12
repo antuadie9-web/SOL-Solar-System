@@ -152,7 +152,7 @@ export const CATALOG: BodyDef[] = [
     atmo: { height: 600, rayleigh: [1.2e-3, 2.4e-3, 4.5e-3], rayleighH: 40, mie: 0.072, mieH: 65, mieG: 0.65, mieColor: [0.607, 0.843, 1.0],
       phys: { mieAlbedo: [0.95, 0.88, 0.72], mieG: [0.65, 0.65, 0.65], groundAlbedo: [0.15, 0.12, 0.08], source: 'Tomasko et al. 2008 (PSS 56) — approximate' } },
     subtitle: 'A moon with rain, rivers and seas', desc: 'Wrapped in a nitrogen atmosphere 1.5 times Earth’s surface pressure, Titan has methane rain, rivers and seas — the only other world with stable surface liquids. NASA’s Dragonfly rotorcraft launches in 2028 to fly over its dunes.' },
-  { id: 'hyperion', name: 'Hyperion', kind: 'moon', parent: 'saturn', radius: 135, radii: [180, 133, 103], albedo: 0.3, color: [0.6, 0.55, 0.48], procedural: { seed: 7, craters: 1.0, rough: 0.9, tint: [0.62, 0.55, 0.46] }, priority: 45,
+  { id: 'hyperion', name: 'Hyperion', kind: 'moon', parent: 'saturn', radius: 135, radii: [170.6, 133.6, 126.2], model: 'hyperion', albedo: 0.3, color: [0.6, 0.55, 0.48], procedural: { seed: 7, craters: 1.0, rough: 0.9, tint: [0.62, 0.55, 0.46] }, priority: 45,
     subtitle: 'The sponge moon', desc: 'A porous, chaotically tumbling body whose deep, sharp-rimmed craters give it a sponge-like look. Its rotation is genuinely chaotic, impossible to predict for long.' },
   { id: 'iapetus', name: 'Iapetus', kind: 'moon', parent: 'saturn', radius: 734.4, albedo: 0.6, color: [0.6, 0.55, 0.5], tex: 'iapetus', texHi: true, rot: 'iapetus', priority: 66,
     subtitle: 'The two-faced moon', desc: 'One hemisphere is dark as coal, the other bright as snow, and a ridge up to 20 km high runs along its equator like a walnut seam.' },

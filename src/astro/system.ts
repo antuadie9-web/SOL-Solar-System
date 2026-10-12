@@ -1,5 +1,5 @@
 // The Solar System model: every resolved body with its ephemeris source, rotation and physical data.
-import { resolveSmallMoon, classifyMoon, CLASS_PRIORS, SMALL_MOONS } from '../data/smallMoons';
+import { resolveSmallMoon, classifyMoon, CLASS_PRIORS, SMALL_MOONS, OBSERVED_SHAPES } from '../data/smallMoons';
 import SAT_SIZES from '../data/satSizes.json';
 import { AU, DEG, GAUSS_K, GM_SUN, J2000, TAU } from './constants';
 import { V3, M3, add, sub, scale, len, cross, norm, dot, mulMV, mulMM, fromCols, rotZ } from './vec';
@@ -281,7 +281,10 @@ export class SolarSystem {
       const M = resolveSmallMoon(s.name.replace(/_/g, ' '), s.planet, s.a, s.i ?? 0, r0);
       const r = M.radius;
       const shapeParams = M.shape === 'ridged' ? { ridge: 0.12 } : undefined;
-      const b = new Body({ id, name: s.name.replace(/_/g, ' '), kind: 'moon', parent: pid, radius: r, radii: M.radii, albedo: M.albedo, color: M.tint,
+      const OS = OBSERVED_SHAPES[s.name.replace(/_/g, ' ')];
+      const obsRadii = OS ? OS.extentKm.map(x => x / 2) as [number, number, number] : null;
+      const b = new Body({ id, name: s.name.replace(/_/g, ' '), kind: 'moon', parent: pid, radius: r, radii: obsRadii ?? M.radii,   // v3.8.1: mesh scaled by the model's own bounding box; mean radius stays the published value albedo: M.albedo, color: M.tint,
+        ...(OS ? { model: OS.model, ...(OS.bodyFixed ? { modelFrame: 'body-fixed' } : {}) } : {}),
         procedural: { seed: s.code % 997, craters: M.craters, rough: M.rough, tint: M.tint },
         identity: { tier: M.status.startsWith('MEASURED') ? 'C' : 'D', shape: M.shape === 'ridged' ? 'cratered' : M.shape, surface: M.surface, craterDensity: M.craters, roughness: M.rough, shapeParams,
           basis: `${M.basis} Properties: ${M.status}.`, sources: M.sources },
@@ -290,6 +293,7 @@ export class SolarSystem {
       if ((b.def as any).periodH) b.rotModel = simpleRot(0, 90, (b.def as any).periodH);
       b.parent = parent; parent.children.push(b); b.synchronous = !b.rotModel;
       b.info.properties = M.status; b.info.moonClass = M.cls;
+      if (OS) b.info.shape = 'OBSERVED — Cassini ISS stereo/limb shape model (Thomas et al., PDS SBN 2018); surface markings procedural (labelled)';
       { const z = (SAT_SIZES as any)[String(s.code)];
         b.info.sizeSource = s.R ? 'JPL physical table' : M.radii ? 'Published triaxial dimensions' : !z ? 'ESTIMATED by orbit class (no data)'
           : (z.rJPL && !z.rJPLapprox) ? 'JPL Horizons radius' : z.H != null ? `ESTIMATED from H = ${z.H} (${z.src.replace('H: ', '')}) and albedo ${M.albedo.toFixed(3)}` : 'Cassini/list diameter'; }
