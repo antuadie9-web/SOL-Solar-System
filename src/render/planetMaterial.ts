@@ -323,6 +323,12 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
       col = albedo.mul(f).mul(sunL).mul(smoothstep(-0.02, 0.01, mu0g));
     }
     if (AT && kind !== 'gas' && kind !== 'venus' && kind !== 'haze') col = col.add(shineAlb.mul(skyE).mul(U.irr).mul(dot(n, dirLocal).mul(0.5).add(0.5)).mul(vis));
+    // v3.8.1 ATM-381-01 (owner review REV2-04): twilight on thick-atmosphere cloud/haze tops. The deck sits INSIDE the
+    // scattering haze (Venus: upper haze 70–90 km above the cloud top; Titan: the main haze), so it keeps receiving
+    // diffuse light from the sunlit atmosphere above for several degrees past the geometric terminator. v3.6–cp2 gave
+    // Venus/Titan no skylight at all, so the lit side ended in a cliff. The diffuse-irradiance LUT of the same physical
+    // atmosphere (which already extends to μ0 = −0.2) supplies it — no new tuning constant.
+    if (AT && (kind === 'venus' || kind === 'haze')) col = col.add(shineAlb.mul(skyE).mul(U.irr).mul(vis));
     // ── v3.5 secondary illumination: planetshine (physical, unshadowed approximation of a disc source) ──────────
     const ls = normalize(U.shineDir);
     const mus0 = dot(n, ls), musg = dot(ng, ls);
@@ -341,7 +347,9 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
     const lf = normalize(v.add(vec3(0, 0, 0.45)));
     const muf = dot(n, lf);
     const fillF = (kind === 'gas' || kind === 'venus' || kind === 'haze') ? minnaert({ mu0: muf, mu, k: float(0.8) }).mul(0.6) : max(muf, 0).mul(0.75).add(0.25).mul(max(mu, 0).mul(0.5).add(0.5));
-    const night = smoothstep(0.06, -0.22, mu0g);
+    // ATM-381-01: on thick atmospheres the labelled fill starts well past the twilight zone, so the natural twilight
+    // fall-off is visible and the fill no longer leaves a dark trough right at the terminator ("hard terminator")
+    const night = (kind === 'gas' || kind === 'venus' || kind === 'haze') ? smoothstep(-0.12, -0.45, mu0g) : smoothstep(0.06, -0.22, mu0g);
     col = col.add(shineAlb.mul(U.inspect).mul(fillF).mul(night));
     // QA diagnostic (?qa-tdbg=1): terrain patches show R = direct-light visibility, G = μ0, B = 10 × skylight
     if (opts.terrainAttr && TDBG) return vec4(vis, max(mu0g, 0), skyE.r.mul(10), 1);
