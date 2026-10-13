@@ -39,3 +39,6 @@ export const PARTIAL381 = [['partial-triton-north', 'triton', { bf: { r: 1353 * 
   ['partial-pluto-south-1988', 'pluto', { jdOff: EQ1988, bf: { r: 1188 * 3.2, el: -32, abs: true, az: 0, fov: 50 } }],
   ['partial-charon-south-1988', 'charon', { jdOff: EQ1988, bf: { r: 606 * 3.2, el: -32, abs: true, az: 0, fov: 50 } }]];
 V381.push(...PARTIAL381);
+// SUN-381-07 point-regime law probe: unresolved Sun at 10–1000 AU (50° FOV, auto) to measure the star-law glare G(F)
+export const GLAREFAR = [10, 30, 100, 1000].map(a => [`glare-${pad(a)}AU-f50-auto`, 'sun', { sunAt: { km: a * AU, fov: 50 } }]);
+V381.push(...GLAREFAR);
