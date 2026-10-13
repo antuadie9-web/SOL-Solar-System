@@ -61,7 +61,7 @@ for (const seq of seqs) {
       }
     }, { seq, i, N });
     // software screenshots cost ~30 s: every step is rendered and logged (continuous motion), every SHOT-th step is imaged
-    const SHOT = seq === 'rings-pan' ? 4 : 5;
+    const SHOT = seq === 'rings-pan' ? 6 : 10;
     if (i % SHOT === 0 || i === N - 1) await page.screenshot({ path: `${out}/${seq}/${String(i).padStart(3, '0')}.png`, timeout: 180000 });
     rows.push(info);
   }
