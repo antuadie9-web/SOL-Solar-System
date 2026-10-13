@@ -466,7 +466,7 @@ export class Engine {
     for (const l of [this.constLines!, this.eclipticGrid!]) l.U.viewport.value.set(this.W, this.H);
     // bodies
     const sun = sys.sun;
-    let nPts = 0; let avgLum = 0; let subject = 0; let nearest = 1e12; const meterBodies: MeterBody[] = []; let nightView = 0;
+    let nPts = 0; let avgLum = 0; let subject = 0; let sunSubj = 0, sunSubjA = 0; let nearest = 1e12; const meterBodies: MeterBody[] = []; let nightView = 0;
     // v3.8 DEF-38-005: enhancement labels are rebuilt every frame from the views actually drawn. v3.7.1 cleared a ring /
     // plume enhancement only when that same body updated again, so after leaving Jupiter the HUD/metadata kept reporting
     // "Jupiter rings ×43" while the camera was at Enceladus.
@@ -594,7 +594,10 @@ export class Engine {
       // v3.5: the resolved disc's meter weight is a presentation choice per mode (Scientific keeps v3.4's 0.25 → centre ≈ 0.81
       // display white; Exploration/Cinematic expose ≈ +0.3/+0.5 EV so the centre sits in the tone curve's shoulder and reads
       // luminous cream-white with a warm limb instead of flat beige). Radiometry and lighting are unchanged.
-      if (resolved && b.kind === 'star') { const mk = mode === 'scientific' ? 1 : mode === 'exploration' ? 0.8 : 0.7; subject = Math.max(subject, SUN_L_MEAN * sunMeterWeight(rpx) * mk * sunVis * frameFrac); this.sunRpx = rpx; }
+      if (resolved && b.kind === 'star') { const mk = mode === 'scientific' ? 1 : mode === 'exploration' ? 0.8 : 0.7; sunSubj = SUN_L_MEAN * sunMeterWeight(Math.max(rpx, 8)) * mk * sunVis * frameFrac; sunSubjA = smooth(3.5, 8, rpx); this.sunRpx = rpx; }
+      // v3.8.1 EXP-381-03 (CONT-01/03, continuous-travel finding): the solar meter weight is blended in LOG space between the
+      // sky target (3.5 px) and the disc target (8 px). Until now subject = max(…, L☉·w(rpx)): L☉ exceeds the sky by ~10⁹,
+      // so the whole ≈25 EV switch happened within ≈0.3 px of the 4-px end of the ramp (12 EV in one travel step at 2 AU).
       // total/partial eclipse: meter for the inner corona (≈1e-7 of the disc after the Baumbach profile) like an eclipse photographer
       if (resolved && b.kind === 'star') subject = Math.max(subject, SUN_L_MEAN * 1e-7 * smooth(8, 120, rpx) * (1 - sunVis) * Math.min(1, frameFrac * 4));
       // during an eclipse the occluded disc no longer sets the exposure: the camera opens up and the corona emerges
@@ -741,7 +744,9 @@ export class Engine {
     const met = meterLuminance(meterBodies, key, hlT, sunVis < 0.98 ? 40 : P.nightCapEV, avgLum);
     subject = Math.max(subject, met.subject, met.highlight);   // `subject` still carries the Sun / eclipse metering
     this.meter = { subject: met.subject, highlight: met.highlight, bodies: meterBodies.length };
-    const targetLog = st.get('autoExposure') ? Math.min(dark, Math.log(key / Math.max(avgLum, subject, 1e-12))) : Math.log(st.get('manualExposure') as number);
+    const tl0 = Math.min(dark, Math.log(key / Math.max(avgLum, subject, 1e-12)));
+    const tlS = sunSubjA > 0 ? Math.min(dark, Math.log(key / Math.max(avgLum, subject, sunSubj, 1e-12))) : tl0;
+    const targetLog = st.get('autoExposure') ? tl0 + (tlS - tl0) * sunSubjA : Math.log(st.get('manualExposure') as number);
     const speed = targetLog < this.expLog ? 3.5 : 1.1;
     this.expDebug = { avgLum, subject, sunVis, targetLog };
     if (Number.isFinite(targetLog)) this.expLog += this.expSettle ? targetLog - this.expLog : (targetLog - this.expLog) * (1 - Math.exp(-speed * dt));
