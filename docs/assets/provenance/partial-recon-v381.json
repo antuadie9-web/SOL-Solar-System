@@ -5,6 +5,11 @@
    0.15232,
    0.15232
   ],
+  "boundaryZoneMeanLinRGB": [
+   0.15264,
+   0.15264,
+   0.15264
+  ],
   "smallScaleRelContrast": 0.1163,
   "midScaleRelContrast_1to6deg": 0.1157,
   "feather_deg": 5.0,
@@ -12,13 +17,22 @@
   "relax_deg": 35.0,
   "rimExcluded_deg": 2.0,
   "unobservedFraction_at_1024": 0.6197,
-  "maxWeightOnObserved": 0.0118
+  "maxWeightOnObserved": 0.0118,
+  "mask": [
+   720,
+   1440
+  ]
  },
  "titania": {
   "observedMeanLinRGB": [
    0.29706,
    0.29209,
    0.27809
+  ],
+  "boundaryZoneMeanLinRGB": [
+   0.29684,
+   0.29186,
+   0.27785
   ],
   "smallScaleRelContrast": 0.1291,
   "midScaleRelContrast_1to6deg": 0.2303,
@@ -27,13 +41,22 @@
   "relax_deg": 35.0,
   "rimExcluded_deg": 2.0,
   "unobservedFraction_at_1024": 0.6335,
-  "maxWeightOnObserved": 0.0118
+  "maxWeightOnObserved": 0.0118,
+  "mask": [
+   720,
+   1440
+  ]
  },
  "oberon": {
   "observedMeanLinRGB": [
    0.24165,
    0.2236,
    0.21268
+  ],
+  "boundaryZoneMeanLinRGB": [
+   0.24081,
+   0.22276,
+   0.21182
   ],
   "smallScaleRelContrast": 0.1194,
   "midScaleRelContrast_1to6deg": 0.3963,
@@ -42,13 +65,22 @@
   "relax_deg": 35.0,
   "rimExcluded_deg": 2.0,
   "unobservedFraction_at_1024": 0.6233,
-  "maxWeightOnObserved": 0.0078
+  "maxWeightOnObserved": 0.0078,
+  "mask": [
+   720,
+   1440
+  ]
  },
  "triton": {
   "observedMeanLinRGB": [
    0.33538,
    0.32757,
    0.31983
+  ],
+  "boundaryZoneMeanLinRGB": [
+   0.27854,
+   0.27353,
+   0.26582
   ],
   "smallScaleRelContrast": 0.1054,
   "midScaleRelContrast_1to6deg": 0.1318,
@@ -57,13 +89,26 @@
   "relax_deg": 35.0,
   "rimExcluded_deg": 2.0,
   "unobservedFraction_at_1024": 0.3898,
-  "maxWeightOnObserved": 0.0078
+  "maxWeightOnObserved": 0.0078,
+  "mask": [
+   1024,
+   2048
+  ],
+  "mask_hi": [
+   4096,
+   8192
+  ]
  },
  "pluto": {
   "observedMeanLinRGB": [
    0.19211,
    0.16455,
    0.1438
+  ],
+  "boundaryZoneMeanLinRGB": [
+   0.18591,
+   0.1596,
+   0.13971
   ],
   "smallScaleRelContrast": 0.2532,
   "midScaleRelContrast_1to6deg": 0.1638,
@@ -72,13 +117,26 @@
   "relax_deg": 35.0,
   "rimExcluded_deg": 2.0,
   "unobservedFraction_at_1024": 0.3259,
-  "maxWeightOnObserved": 0.0078
+  "maxWeightOnObserved": 0.0078,
+  "mask": [
+   1024,
+   2048
+  ],
+  "mask_hi": [
+   4096,
+   8192
+  ]
  },
  "charon": {
   "observedMeanLinRGB": [
    0.22169,
    0.19858,
    0.18772
+  ],
+  "boundaryZoneMeanLinRGB": [
+   0.2051,
+   0.18453,
+   0.17469
   ],
   "smallScaleRelContrast": 0.2623,
   "midScaleRelContrast_1to6deg": 0.3625,
@@ -87,6 +145,14 @@
   "relax_deg": 35.0,
   "rimExcluded_deg": 2.0,
   "unobservedFraction_at_1024": 0.3449,
-  "maxWeightOnObserved": 0.0078
+  "maxWeightOnObserved": 0.0078,
+  "mask": [
+   1024,
+   2048
+  ],
+  "mask_hi": [
+   4096,
+   8192
+  ]
  }
 }

@@ -43,7 +43,9 @@ for name, thr in BODIES.items():
     core = obs & (din > RIM_DEG)
     sig = SIGMA_DEG * H / 180.0
     den = gauss_wrap(core.astype(float), sig)
-    gm = rgb[core].mean(0)
+    gm_global = rgb[core].mean(0)
+    zone = core & (din < 20.0)                    # observed core within 20° of the gap: the relax target (iteration 4)
+    gm = rgb[zone].mean(0) if zone.sum() > 100 else gm_global
     guide = np.zeros_like(rgb); relax = np.clip(d / RELAX_DEG, 0, 1)
     for k in range(3):
         ext = np.where(den > 1e-3, gauss_wrap(np.where(core, rgb[..., k], 0.0), sig) / np.maximum(den, 1e-6), gm[k])
@@ -58,11 +60,22 @@ for name, thr in BODIES.items():
     rel = float(np.std(hp[core]) / mY); mid = float(np.std((b1 - b6)[core]) / mY)
     Image.fromarray((np.clip(enc(np.clip(guide, 0, 1)), 0, 1) * 255 + 0.5).astype(np.uint8)).save(os.path.join(ROOT, f'public/assets/tex/{name}_recon.jpg'), quality=95, subsampling=0)
     Image.fromarray((np.clip(w, 0, 1) * 255 + 0.5).astype(np.uint8)).save(os.path.join(ROOT, f'public/assets/tex/{name}_reconw.jpg'), quality=95)
-    stats[name] = {'observedMeanLinRGB': [round(float(x), 5) for x in gm], 'smallScaleRelContrast': round(rel, 4), 'midScaleRelContrast_1to6deg': round(mid, 4),
+    stats[name] = {'observedMeanLinRGB': [round(float(x), 5) for x in gm_global], 'boundaryZoneMeanLinRGB': [round(float(x), 5) for x in gm], 'smallScaleRelContrast': round(rel, 4), 'midScaleRelContrast_1to6deg': round(mid, 4),
                    'feather_deg': FEATHER_DEG, 'sigma_deg': SIGMA_DEG, 'relax_deg': RELAX_DEG, 'rimExcluded_deg': RIM_DEG, 'unobservedFraction_at_1024': round(float((~obs).mean()), 4)}
     # non-fabrication check on the WRITTEN file: the weight must be ~0 wherever the source map has data
     wr = np.asarray(Image.open(os.path.join(ROOT, f'public/assets/tex/{name}_reconw.jpg')).convert('L'), float) / 255.0
     stats[name]['maxWeightOnObserved'] = round(float(wr[ndimage.binary_erosion(obs, iterations=2)].max()), 4)
     assert stats[name]['maxWeightOnObserved'] < 0.03, name
     print(name, stats[name])
+# iteration 4: data masks at EXACTLY the colour map's resolution (base, and hi tier where it exists). The shader divides the
+# filtered colour by the identically filtered mask (normalised bilinear/trilinear), so observed edge texels are no longer
+# darkened by their black no-data neighbours (the thin dark outline) — observed pixels are never re-encoded.
+for name, thr in BODIES.items():
+    for suf in ['', '_hi']:
+        src = os.path.join(ROOT, f'public/assets/tex/{name}{suf}.jpg')
+        if not os.path.exists(src): continue
+        g = np.asarray(Image.open(src).convert('L'), float) / 255.0
+        m = ndimage.binary_opening(g > max(thr, 1.5 / 255), iterations=1)
+        Image.fromarray((m * 255).astype(np.uint8)).save(os.path.join(ROOT, f'public/assets/tex/{name}_mask{suf}.jpg'), quality=98)
+        stats[name]['mask' + suf] = list(g.shape)
 json.dump(stats, open(os.path.join(ROOT, 'docs/assets/provenance/partial-recon-v381.json'), 'w'), indent=1)

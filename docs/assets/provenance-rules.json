@@ -2,8 +2,8 @@
  "_doc": "Per-asset provenance & licence rules (spec §5 asset/licence contract). The FIRST rule whose regex matches a path under public/ applies. tools/validate/assets.mjs expands these into asset-manifest.json with size and SHA-256; tests/assets/manifest.test.ts fails if any shipped file is unmatched. 'commercial' is our reading of the stated terms, not legal advice. Retrieval dates are those recorded in v3.2 (2026-10-08) unless stated.",
  "rules": [
   {
-   "match": "^assets/tex/(ariel|titania|oberon|triton|pluto|charon)_recon(w)?\\.jpg$",
-   "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels)",
+   "match": "^assets/tex/(ariel|titania|oberon|triton|pluto|charon)_(recon|reconw|mask|mask_hi)\\.jpg$",
+   "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels); _mask(_hi) = binary data mask at the colour map's own resolution (normalised filtering)",
    "url": "(derived)",
    "licence": "inherits the source map's licence (USGS/NASA public domain; JPL Image Use Policy for the Uranian moons)",
    "commercial": "yes",

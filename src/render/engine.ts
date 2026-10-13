@@ -254,11 +254,11 @@ export class Engine {
     const hi = !!d.texHi;
     if (d.tex) maps.color = TS.get(d.tex, { srgb: true, hiAvailable: hi, color: d.color, priority: true });
     if (d.normal) maps.normal = TS.get(d.normal, { srgb: false, hiAvailable: hi });
-    if (d.noData?.recon && d.tex) { maps.recon = TS.get(`${d.tex}_recon`, { srgb: true }); maps.reconW = TS.get(`${d.tex}_reconw`, { srgb: false }); }   // v3.8.1 AST-381-03 reconstruction guide (colour + weight)
+    if (d.noData?.recon && d.tex) { maps.recon = TS.get(`${d.tex}_recon`, { srgb: true }); maps.reconW = TS.get(`${d.tex}_reconw`, { srgb: false }); maps.mask = TS.get(`${d.tex}_mask`, { srgb: false, hiAvailable: hi, color: [1, 1, 1] }); }   // v3.8.1 AST-381-03 reconstruction guide (colour + weight)
     if (d.night) maps.night = TS.get(d.night, { srgb: false, hiAvailable: hi });
     if (d.clouds) maps.clouds = TS.get(d.clouds, { srgb: false, hiAvailable: hi });
     if (d.ocean) maps.ocean = TS.get(d.ocean, { srgb: false });
-    v.texNames = [d.tex, d.normal, d.night, d.clouds, d.ocean, ...(d.noData?.recon && d.tex ? [`${d.tex}_recon`, `${d.tex}_reconw`] : [])].filter(Boolean) as string[];
+    v.texNames = [d.tex, d.normal, d.night, d.clouds, d.ocean, ...(d.noData?.recon && d.tex ? [`${d.tex}_recon`, `${d.tex}_reconw`, `${d.tex}_mask`] : [])].filter(Boolean) as string[];
     // v3.7 ring systems (src/data/rings.ts): the shadow the rings cast on the body uses the system's total-τ texture
     const RS = RING_SYSTEMS[b.id];
     let ringSys: ReturnType<typeof makeRingSystem> | null = null;

@@ -157,7 +157,7 @@ fn familySurface(p: vec3<f32>, tint: vec3<f32>, spot: vec3<f32>, seed: f32, crat
   return vec4<f32>(max(c, vec3<f32>(0.0)), h);
 }`, [fbm, craters, vnoise]);
 
-export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { color?: THREE.Texture; normal?: THREE.Texture; night?: THREE.Texture; clouds?: THREE.Texture; ocean?: THREE.Texture; ring?: THREE.Texture; recon?: THREE.Texture; reconW?: THREE.Texture }, profile?: BodyVisualProfile,
+export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { color?: THREE.Texture; normal?: THREE.Texture; night?: THREE.Texture; clouds?: THREE.Texture; ocean?: THREE.Texture; ring?: THREE.Texture; recon?: THREE.Texture; reconW?: THREE.Texture; mask?: THREE.Texture }, profile?: BodyVisualProfile,
   /** v3.6: `terrainAttr` = geometry is patch-local (terrain tiles); shading reads the body-fixed `bodyPos` attribute.
    *  `U` = share the uniforms of the body's sphere material (one set of lighting state per body). */
   /** `atmo` (v3.6): transmittance LUT + ground skylight table of the body's atmosphere (render/atmoModel.ts) */
@@ -204,6 +204,14 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
         const m0 = smoothstep(th * 1.6, th, Y(c0));
         const mk = (dx: number, dy: number) => smoothstep(th * 1.6, th, Y(texture(maps.color, uvA.add(vec2(tw.mul(dx), tht.mul(dy)))).grad(gx, gy).rgb));
         noData = max(max(m0, max(mk(0.6, 0), mk(-0.6, 0))), max(mk(0, 0.6), mk(0, -0.6)));
+        if (maps.mask) {
+          // v3.8.1 AST-381-03 iteration 4: data mask at the colour map's own resolution, filtered identically — normalised
+          // filtering c/m recovers the true observed colour at edge texels (no dark outline from black neighbours) and m
+          // itself is the exact fractional coverage, so the observed→reconstruction hand-over spans one filtered texel
+          const mm = samp(maps.mask).r;
+          albedo = c0.div(max(mm, 0.02)).mul(U.albedoScale);
+          noData = max(smoothstep(0.98, 0.5, mm), m0);   // m0: true black while the mask is still its white placeholder
+        }
         if (maps.recon) {
           // v3.8.1 AST-381-03 (owner review REV2-02): guide field — R = smooth reconstruction weight (0 on every observed
           // pixel), G = low-frequency observed albedo carried into the gap (tools/ingest/partial_recon.py)

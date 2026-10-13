@@ -5,16 +5,22 @@
   "source": "USGS Voyager 2 mosaics distributed by NASA/JPL Solar System Simulator (ura1vuu2/ura3vuu2/ura4vuu2.tif, 1440×720), processed by SOL v3.8.1 tools/ingest/uranian_jpl.py",
   "commercial": "yes (credit \"Courtesy NASA/JPL-Caltech; USGS\")"
  },
+ "ariel_mask": {
+  "truth": "RECONSTRUCTION GUIDE (not observation)",
+  "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels); _mask(_hi) = binary data mask at the colour map's own resolution (normalised filtering)",
+  "commercial": "yes"
+ },
  "ariel_recon": {
   "truth": "RECONSTRUCTION GUIDE (not observation)",
   "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
-  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels)",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels); _mask(_hi) = binary data mask at the colour map's own resolution (normalised filtering)",
   "commercial": "yes"
  },
  "ariel_reconw": {
   "truth": "RECONSTRUCTION GUIDE (not observation)",
   "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
-  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels)",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels); _mask(_hi) = binary data mask at the colour map's own resolution (normalised filtering)",
   "commercial": "yes"
  },
  "callisto": {
@@ -35,16 +41,22 @@
   "source": "USGS Astrogeology global mosaic — Charon_NewHorizons_Global_Mosaic_300m_Jul2017_8bit.tif",
   "commercial": "yes"
  },
+ "charon_mask": {
+  "truth": "RECONSTRUCTION GUIDE (not observation)",
+  "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels); _mask(_hi) = binary data mask at the colour map's own resolution (normalised filtering)",
+  "commercial": "yes"
+ },
  "charon_recon": {
   "truth": "RECONSTRUCTION GUIDE (not observation)",
   "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
-  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels)",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels); _mask(_hi) = binary data mask at the colour map's own resolution (normalised filtering)",
   "commercial": "yes"
  },
  "charon_reconw": {
   "truth": "RECONSTRUCTION GUIDE (not observation)",
   "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
-  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels)",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels); _mask(_hi) = binary data mask at the colour map's own resolution (normalised filtering)",
   "commercial": "yes"
  },
  "dione": {
@@ -137,16 +149,22 @@
   "source": "USGS Voyager 2 mosaics distributed by NASA/JPL Solar System Simulator (ura1vuu2/ura3vuu2/ura4vuu2.tif, 1440×720), processed by SOL v3.8.1 tools/ingest/uranian_jpl.py",
   "commercial": "yes (credit \"Courtesy NASA/JPL-Caltech; USGS\")"
  },
+ "oberon_mask": {
+  "truth": "RECONSTRUCTION GUIDE (not observation)",
+  "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels); _mask(_hi) = binary data mask at the colour map's own resolution (normalised filtering)",
+  "commercial": "yes"
+ },
  "oberon_recon": {
   "truth": "RECONSTRUCTION GUIDE (not observation)",
   "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
-  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels)",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels); _mask(_hi) = binary data mask at the colour map's own resolution (normalised filtering)",
   "commercial": "yes"
  },
  "oberon_reconw": {
   "truth": "RECONSTRUCTION GUIDE (not observation)",
   "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
-  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels)",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels); _mask(_hi) = binary data mask at the colour map's own resolution (normalised filtering)",
   "commercial": "yes"
  },
  "pluto": {
@@ -155,16 +173,22 @@
   "source": "USGS Astrogeology global mosaic — Pluto_NewHorizons_Global_Mosaic_300m_Jul2017_8bit.tif",
   "commercial": "yes"
  },
+ "pluto_mask": {
+  "truth": "RECONSTRUCTION GUIDE (not observation)",
+  "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels); _mask(_hi) = binary data mask at the colour map's own resolution (normalised filtering)",
+  "commercial": "yes"
+ },
  "pluto_recon": {
   "truth": "RECONSTRUCTION GUIDE (not observation)",
   "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
-  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels)",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels); _mask(_hi) = binary data mask at the colour map's own resolution (normalised filtering)",
   "commercial": "yes"
  },
  "pluto_reconw": {
   "truth": "RECONSTRUCTION GUIDE (not observation)",
   "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
-  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels)",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels); _mask(_hi) = binary data mask at the colour map's own resolution (normalised filtering)",
   "commercial": "yes"
  },
  "rhea": {
@@ -203,16 +227,22 @@
   "source": "USGS Voyager 2 mosaics distributed by NASA/JPL Solar System Simulator (ura1vuu2/ura3vuu2/ura4vuu2.tif, 1440×720), processed by SOL v3.8.1 tools/ingest/uranian_jpl.py",
   "commercial": "yes (credit \"Courtesy NASA/JPL-Caltech; USGS\")"
  },
+ "titania_mask": {
+  "truth": "RECONSTRUCTION GUIDE (not observation)",
+  "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels); _mask(_hi) = binary data mask at the colour map's own resolution (normalised filtering)",
+  "commercial": "yes"
+ },
  "titania_recon": {
   "truth": "RECONSTRUCTION GUIDE (not observation)",
   "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
-  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels)",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels); _mask(_hi) = binary data mask at the colour map's own resolution (normalised filtering)",
   "commercial": "yes"
  },
  "titania_reconw": {
   "truth": "RECONSTRUCTION GUIDE (not observation)",
   "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
-  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels)",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels); _mask(_hi) = binary data mask at the colour map's own resolution (normalised filtering)",
   "commercial": "yes"
  },
  "triton": {
@@ -221,16 +251,22 @@
   "source": "USGS Astrogeology global mosaic — Triton_Voyager2_ClrMosaic_GlobalFill_600m.tif",
   "commercial": "yes"
  },
+ "triton_mask": {
+  "truth": "RECONSTRUCTION GUIDE (not observation)",
+  "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels); _mask(_hi) = binary data mask at the colour map's own resolution (normalised filtering)",
+  "commercial": "yes"
+ },
  "triton_recon": {
   "truth": "RECONSTRUCTION GUIDE (not observation)",
   "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
-  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels)",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels); _mask(_hi) = binary data mask at the colour map's own resolution (normalised filtering)",
   "commercial": "yes"
  },
  "triton_reconw": {
   "truth": "RECONSTRUCTION GUIDE (not observation)",
   "content": "guide field for the labelled reconstruction; contains no imagery beyond 6° Gaussian-smoothed regional albedo",
-  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels)",
+  "source": "SOL-derived (tools/ingest/partial_recon.py) from the body's own colour map: _recon = low-frequency observed colour carried into the unobserved region (rim excluded), _reconw = reconstruction weight (0 on observed pixels); _mask(_hi) = binary data mask at the colour map's own resolution (normalised filtering)",
   "commercial": "yes"
  },
  "uranus": {
