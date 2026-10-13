@@ -293,7 +293,14 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
     // v3.6: sunlight reaching the ground from the transmittance LUT (exact spherical path through every layer, ozone in its
     // own layer); v3.5 used exp(−τ_vertical / μ0), which over-darkened and over-reddened grazing sunlight
     const AT = opts.atmo;
-    const T = AT ? texture(AT.T, transmittanceUVw({ r: float(AT.Rg + 0.01), mu: mu0g, Rg: float(AT.Rg), Rt: float(AT.Rt) })).rgb : sunTransmit({ mu0: mu0g, tau: U.tau });
+    const T0 = AT ? texture(AT.T, transmittanceUVw({ r: float(AT.Rg + 0.01), mu: mu0g, Rg: float(AT.Rg), Rt: float(AT.Rt) })).rgb : sunTransmit({ mu0: mu0g, tau: U.tau });
+    // v3.8.1 ATM-381-02 (REV2-04, CONT-08): Venus' deck reflectance (albedo 0.689, Minnaert k 0.86) is a DISC-INTEGRATED
+    // observation that already contains the upper haze. Attenuating sun and view paths by the haze's full extinction
+    // double-counted it: the strongly forward-scattering haze (g ≈ 0.7) sends most of the light it "removes" on to the
+    // deck, and the deck went dark at μ0 ≈ 0.5 — a terminator at mid-disc. Delta-M scaling (forward peak f = g² ≈ 0.49 kept
+    // in the beam) gives the effective transmittance T^(1−f).
+    const DM = kind === 'venus' ? 0.51 : 1;
+    const T = DM !== 1 ? pow(T0, vec3(DM, DM, DM)) : T0;
     // v3.6 diffuse skylight on the ground (∫ L_sky cos θ dω, per unit solar irradiance, vs solar zenith cosine), with the
     // sky-view factor of the tilted surface ½(1 + n·up); eclipses/ring shadow dim it with the direct light
     const skyE = AT ? texture(AT.sky, vec2(clamp(mu0g.add(0.2).div(1.2), 0, 1).mul(31 / 32).add(0.5 / 32), 0.5)).rgb : vec3(0, 0, 0);
@@ -375,7 +382,8 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
     // over the disc) — red Martian ground stays red behind dust, Titan's surface is obscured per channel
     if (AT) {
       const rr = def.radii ?? [def.radius, def.radius, def.radius], nv = vec3(1, rr[0] / rr[1], rr[0] / rr[2]);
-      col = col.mul(viewTransmittance({ p: p.mul(nv), c: U.cam.mul(nv), Rg: float(AT.Rg), Rt: float(AT.Rt), tT: texture(AT.T), tS: sampler(AT.T) }));
+      const vT = viewTransmittance({ p: p.mul(nv), c: U.cam.mul(nv), Rg: float(AT.Rg), Rt: float(AT.Rt), tT: texture(AT.T), tS: sampler(AT.T) });
+      col = col.mul(DM !== 1 ? pow(vT, vec3(DM, DM, DM)) : vT);
     }
     return vec4(col, 1);
   })();
