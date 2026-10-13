@@ -242,11 +242,15 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
         const dD = fam === 9 ? 0.04 : fam === 3 ? 0.10 : 0.12;
         height = crs.mul(dD / 0.3);
       }
-      if (def.noData) height = height.mul(noData);     // procedural relief only where the map has no data (soft weight with a guide field)
       // screen-derivative bump, limited so that no normal tilts by more than ~35° from the geometric normal (v3.3: the
       // unbounded version produced black pixel speckles on crater rims at 2×2-quad derivative granularity)
       const nb = bumpNormal({ n: ng, dpx: dFdx(dirLocal), dpy: dFdy(dirLocal), dhx: dFdx(height), dhy: dFdy(height) });
-      n = normalize(mix(ng, nb, float(0.65).mul(smoothstep(0.55, 0.85, dot(nb, ng)).mul(0.6).add(0.4))));
+      let bw: any = float(0.65).mul(smoothstep(0.55, 0.85, dot(nb, ng)).mul(0.6).add(0.4));
+      // v3.8.1 AST-381-03 (CONT-07): procedural relief only where the map has no data — the NORMAL is blended by the
+      // weight. Until cp2 the height itself was multiplied by the weight, and the derivative of (h·w) across the narrow
+      // weight transition is a ridge that shaded as a dark/bright line exactly on the observed boundary (all six bodies).
+      if (def.noData) bw = bw.mul(noData);
+      n = normalize(mix(ng, nb, bw));
     }
     if (def.noData && proc) {
       // labelled reconstruction: procedural terrain at the body's mean albedo, with a faint 10° graticule so the
