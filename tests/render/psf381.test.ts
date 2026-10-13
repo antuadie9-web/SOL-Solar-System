@@ -112,10 +112,12 @@ test('SUN-381-06: resolved-Sun glare hands over continuously and its footprint (
 });
 
 test('SUN-381-08: unresolved-Sun glare meets the resolved-disc glare at the hand-over and is monotone in flux', async () => {
-  const { pointGlareFromHandover, resolvedGlare } = await import('../../src/render/sun.ts');
+  const { pointGlareFromHandover, resolvedGlare, resolvedGlareWeight } = await import('../../src/render/sun.ts');
   for (const m of ['exploration', 'cinematic'] as const) {
     const h = resolvedGlare(2.4, m), p = pointGlareFromHandover(3.5, m);
     assert.ok(Math.abs(p.halo - h.halo) < 1e-12 && Math.abs(p.veil - h.veil) < 1e-12);
     let prev = 0; for (let r = 0; r <= 3.5; r += 0.01) { const a = pointGlareFromHandover(r, m).halo; assert.ok(a >= prev - 1e-15); prev = a; }
+    // continuous-travel finding: the blended glare must never exceed the resolved-disc glare above the hand-over
+    for (let r = 3.5; r <= 20; r += 0.01) { const w = resolvedGlareWeight(r), b = pointGlareFromHandover(r, m).halo * (1 - w) + h.halo * w; assert.ok(b <= h.halo + 1e-12, `overshoot at ${r}`); }
   }
 });

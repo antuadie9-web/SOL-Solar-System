@@ -766,14 +766,17 @@ export class Engine {
       // v3.8.1 cp2 SUN-381-06: point-like glare (physical display flux at the point exposure) handed over smoothly to the
       // resolved-disc glare (a fixed fraction of the displayed disc radiance whose footprint grows with the disc), so the
       // glare's integrated light keeps rising as the Sun is approached instead of collapsing at the resolution threshold.
-      const amp = mode === 'scientific' ? glareAmplitudes(F * (this.sunPointExposure || LS)) : pointGlareFromHandover(this.sunRpx, mode);
+      // angular radius from geometry EVERY frame — this.sunRpx is only refreshed while the disc is resolved, so a stale value
+      // (or 0) switched the point glare off between ≈ 9 and 13 AU in the continuous-travel test (CONT-01 acceptance)
+      const rpxNow = Math.atan(R_SUN / dist) / this.pxAng; this.sunRpxNow = rpxNow;
+      const amp = mode === 'scientific' ? glareAmplitudes(F * (this.sunPointExposure || LS)) : pointGlareFromHandover(rpxNow, mode);
       if (mode !== 'scientific') { amp.halo *= visFrac; amp.veil *= visFrac; }
-      const wR = resolvedGlareWeight(this.sunRpx);
+      const wR = resolvedGlareWeight(rpxNow);
       if (wR > 0) {
         const discDisp = SUN_L0 * LS * (this.views.get('sun')?.discWeight ?? 1) * (this.sunDiscScaleNow || 1), rg = resolvedGlare(discDisp, mode);
         amp.halo = amp.halo * (1 - wR) + rg.halo * wR; amp.veil = amp.veil * (1 - wR) + rg.veil * wR;
       }
-      const on = front && st.get('glare') ? glareWeight(this.sunRpx, this.H) * P.glare : 0;
+      const on = front && st.get('glare') ? glareWeight(rpxNow, this.H) * P.glare : 0;
       const angR = Math.atan(R_SUN / dist), th1 = Math.max(angR * 2.2, this.pxAng * 2.5);
       const G = this.glare.U;
       G.halo.value = amp.halo * on; G.veil.value = amp.veil * on * (mode === 'scientific' ? 0.6 : 1);
@@ -833,7 +836,7 @@ export class Engine {
     this.cpuMs = performance.now() - tFrame0;
     this.frameTimes[this.frameNo % this.frameTimes.length] = dt * 1000;
   }
-  expDebug: any = null; sunRpx = 0; sunVisNow = 1; granT = 0; lastSunJd: number | null = null; frameDt = 1 / 60;
+  expDebug: any = null; sunRpx = 0; sunRpxNow = 0; sunVisNow = 1; granT = 0; lastSunJd: number | null = null; frameDt = 1 / 60;
   frameNo = 0; cpuMs = 0; frameTimes = new Float32Array(240);
   /** Jump exposure to its current target (deterministic captures / QA); normal play adapts smoothly. */
   settleExposure() { this.expSettle = true; }
@@ -849,7 +852,7 @@ export class Engine {
       textures: this.assets.textures.stats(), terrain: this.terrainStats, net: { ...netStats }, exposureEV: +Math.log2(this.displayExposure).toFixed(2),
       detail: this.targetDetail(),
       // v3.5 exposure/visibility state
-      sunGlare: { rpx: +this.sunRpx.toFixed(2), halo: +this.glareDisplay.toFixed(4), veil: +(this.glare?.U.veil.value ?? 0).toFixed(4), discScale: +(this.sunDiscScaleNow || 1).toFixed(4), pointEV: this.sunPointExposure ? +Math.log2(this.sunPointExposure).toFixed(2) : null, flux: +(this.glareFlux || 0).toFixed(4) },
+      sunGlare: { rpx: +(this.sunRpxNow ?? this.sunRpx).toFixed(2), halo: +this.glareDisplay.toFixed(4), veil: +(this.glare?.U.veil.value ?? 0).toFixed(4), discScale: +(this.sunDiscScaleNow || 1).toFixed(4), pointEV: this.sunPointExposure ? +Math.log2(this.sunPointExposure).toFixed(2) : null, flux: +(this.glareFlux || 0).toFixed(4) },
       view: { mode: this.enhancement.mode, sceneEV: +Math.log2(this.displayExposure).toFixed(2), skyEV: +Math.log2(this.skyExp).toFixed(2), veil: +this.veil.toFixed(3), sunVeil: +this.sunVeil.toFixed(3),
         meter: this.meter, inspect: this.enhancement.inspect, skyDecoupled: this.enhancement.skyDecoupled },
       tiers: [...this.views.values()].reduce((o: Record<string, number>, v) => { if (v.group.visible) o['D' + v.tier] = (o['D' + v.tier] ?? 0) + 1; return o; }, {}),

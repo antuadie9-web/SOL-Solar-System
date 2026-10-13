@@ -229,7 +229,7 @@ export function resolvedGlare(discDisplay: number, mode: 'scientific' | 'explora
  *  shared transfer amplitude ∝ (F/F_h)^0.25. One law for all distances, continuous at the hand-over and monotone in F
  *  (replaces the cp2 F·E law, whose exposure swing of ≈20 EV across the hand-over made the point out-glow the disc). */
 export function pointGlareFromHandover(rpx: number, mode: 'scientific' | 'exploration' | 'cinematic') {
-  const h = resolvedGlare(2.4, mode), f = Math.pow(Math.max(rpx, 0) / 3.5, 0.5);
+  const h = resolvedGlare(2.4, mode), f = Math.min(1, Math.pow(Math.max(rpx, 0) / 3.5, 0.5));   // = h at and above the hand-over
   return { halo: h.halo * f, veil: h.veil * f };
 }
 export function resolvedGlareWeight(rpx: number) { const t = Math.max(0, Math.min(1, (rpx - 3.5) / 4.5)); return t * t * (3 - 2 * t); }
