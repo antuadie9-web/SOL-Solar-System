@@ -18,7 +18,7 @@ const page = await browser.newPage({ viewport: { width: W, height: H }, deviceSc
 await page.addInitScript({ path: 'tools/qa/gpu-errors.js' });
 await page.goto(url);
 await page.waitForFunction(() => window.__sol && window.__frames > 3, null, { timeout: 240000 });
-await page.evaluate(() => { const b = document.querySelector('#loader .ld-go, #loader button'); b && b.click(); document.body.classList.add('cine'); });
+await page.evaluate(() => { const s = window.__sol; s.settings.set('onboarded', true); document.querySelector('#loader .enter, #loader .ld-enter')?.dispatchEvent(new MouseEvent('click', { bubbles: true })); document.body.classList.add('cine'); document.querySelectorAll('.coach').forEach(e => e.remove()); });
 for (const seq of seqs) {
   fs.mkdirSync(`${out}/${seq}`, { recursive: true });
   const rows = [];
@@ -42,18 +42,23 @@ for (const seq of seqs) {
         return { i, au, fov, fixed, ev: d.exposureEV, skyEV: d.view?.skyEV, sunGlare: d.sunGlare };
       } else {
         if (i === 0) s.settings.set('autoExposure', true);
-        // camera 8.5 Saturn radii out, 18° above the lit ring face; view direction sweeps 0 → 150° from Saturn's centre,
-        // crossing the lit rings, the planet's shadow on the rings and finally empty sky
+        // camera 8.5 Saturn radii out on the sunward side of the terminator plane, 18° above the lit ring face; the view
+        // direction sweeps 0 → 40° from Saturn's centre TOWARD THE ANTI-SUN side: planet → lit rings → planet shadow on
+        // the rings → ring ansa → empty sky (v1 swept 150° the other way and left the rings within 8°)
         const sat = s.sys.get('saturn'), sun = s.sys.sun, R = 60268;
         const toSun = nrm([sun.pos[0] - sat.pos[0], sun.pos[1] - sat.pos[1], sun.pos[2] - sat.pos[2]]);
         const M = sat.rot, pole = [M[2], M[5], M[8]], side = nrm([pole[1] * toSun[2] - pole[2] * toSun[1], pole[2] * toSun[0] - pole[0] * toSun[2], pole[0] * toSun[1] - pole[1] * toSun[0]]);
         const sgn = Math.sign(toSun[0] * pole[0] + toSun[1] * pole[1] + toSun[2] * pole[2]) || 1, e = 18 * Math.PI / 180;
-        const off = [side[0] * Math.cos(e) + pole[0] * sgn * Math.sin(e), side[1] * Math.cos(e) + pole[1] * sgn * Math.sin(e), side[2] * Math.cos(e) + pole[2] * sgn * Math.sin(e)];
+        const az = 35 * Math.PI / 180;   // 35° toward the Sun from the terminator plane: day side and the shadow both in view
+        const hz = [side[0] * Math.cos(az) + toSun[0] * Math.sin(az), side[1] * Math.cos(az) + toSun[1] * Math.sin(az), side[2] * Math.cos(az) + toSun[2] * Math.sin(az)];
+        const off = nrm([hz[0] * Math.cos(e) + pole[0] * sgn * Math.sin(e), hz[1] * Math.cos(e) + pole[1] * sgn * Math.sin(e), hz[2] * Math.cos(e) + pole[2] * sgn * Math.sin(e)]);
         const pos = [sat.pos[0] + off[0] * 8.5 * R, sat.pos[1] + off[1] * 8.5 * R, sat.pos[2] + off[2] * 8.5 * R];
-        const a = (i / (N - 1)) * 150 * Math.PI / 180, toC = nrm([sat.pos[0] - pos[0], sat.pos[1] - pos[1], sat.pos[2] - pos[2]]);
-        const u = nrm([toC[1] * pole[2] - toC[2] * pole[1], toC[2] * pole[0] - toC[0] * pole[2], toC[0] * pole[1] - toC[1] * pole[0]]);
+        const a = (i / (N - 1)) * 40 * Math.PI / 180, toC = nrm([sat.pos[0] - pos[0], sat.pos[1] - pos[1], sat.pos[2] - pos[2]]);
+        const as = [-toSun[0], -toSun[1], -toSun[2]], dd = as[0] * toC[0] + as[1] * toC[1] + as[2] * toC[2];
+        const u = nrm([as[0] - dd * toC[0], as[1] - dd * toC[1], as[2] - dd * toC[2]]);   // anti-sun direction ⟂ line of sight
         const dir = [toC[0] * Math.cos(a) + u[0] * Math.sin(a), toC[1] * Math.cos(a) + u[1] * Math.sin(a), toC[2] * Math.cos(a) + u[2] * Math.sin(a)];
         const tgt = [pos[0] + dir[0] * 1e7, pos[1] + dir[1] * 1e7, pos[2] + dir[2] * 1e7];
+        if (i === 0) { r.pos = pos; r.quat.copy(r.lookQuat(pos, tgt, pole)); s.engine.settleExposure(); await frames(2); s.engine.settleExposure(); }   // a cut: start settled (exposure carried over from the previous sequence otherwise)
         r.tFov = r.fov = 50; r.target = sat; r.pos = pos; r.quat.copy(r.lookQuat(pos, tgt, pole));
         await frames(3); r.pos = pos; r.quat.copy(r.lookQuat(pos, tgt, pole));
         const d = s.engine.diagnostics();
