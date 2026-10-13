@@ -10,7 +10,7 @@ const arg = (k, d) => { const i = process.argv.indexOf('--' + k); return i > 0 ?
 const exe = fs.existsSync('/usr/lib/chromium/chromium') ? '/usr/lib/chromium/chromium' : 'chromium';
 const url = arg('url', 'http://localhost:4175/') + '?qa-off=small,smallcompute&qa-software-gpu=1';
 const out = arg('out', 'qa-travel'); fs.mkdirSync(out, { recursive: true });
-const ALL = ['sun-f20-auto', 'sun-f50-auto', 'sun-f20-fixed', 'sun-f50-fixed', 'rings-pan'];
+const ALL = ['sun-f20-auto', 'sun-f20-fixed', 'sun-f50-auto', 'rings-pan'];
 const seqs = (arg('seq', ALL.join(','))).split(',');
 const W = 960, H = 540;
 const browser = await chromium.launch({ executablePath: exe, headless: true, args: ['--enable-unsafe-webgpu', '--ignore-gpu-blocklist', '--enable-features=Vulkan', '--use-vulkan=swiftshader', '--use-angle=vulkan', '--enable-unsafe-swiftshader', '--disable-gpu-watchdog', '--disable-features=DawnSIRepsUseClientProvidedSemaphores'] });
@@ -60,7 +60,9 @@ for (const seq of seqs) {
         return { i, angDeg: a * 180 / Math.PI, ev: d.exposureEV, meter: s.engine.meter ?? null, exp: s.engine.expDebug ?? null };
       }
     }, { seq, i, N });
-    await page.screenshot({ path: `${out}/${seq}/${String(i).padStart(3, '0')}.png` });
+    // software screenshots cost ~30 s: every step is rendered and logged (continuous motion), every SHOT-th step is imaged
+    const SHOT = seq === 'rings-pan' ? 4 : 5;
+    if (i % SHOT === 0 || i === N - 1) await page.screenshot({ path: `${out}/${seq}/${String(i).padStart(3, '0')}.png`, timeout: 180000 });
     rows.push(info);
   }
   fs.writeFileSync(`${out}/${seq}.json`, JSON.stringify(rows, null, 1));
