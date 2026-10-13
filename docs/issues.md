@@ -181,3 +181,11 @@ Classification: **D** = confirmed defect, **P** = visual preference / presentati
 | CONT-01 Sun point↔disc | P1 | CONFIRMED (=SUN-381-07), fixed in shared laws, verifying |
 | CONT-08 thick-atmosphere twilight/fill | P1 | CONFIRMED, fixed (ATM-381-01 iter 2), verifying |
 | CONT-02…07, 09…13 | — | risks under investigation (not confirmed) |
+
+### REV2/CONT status update (2026-10-13 evening session)
+| ID | Finding | Status |
+|---|---|---|
+| SUN-381-07b/c (CONT-01) | point regime on sky exposure: sprite+bloom G 1.5–2.8k vs resolved 0.6–0.75k at hand-over; far law G(100 AU) ≈ 0.69k | FIX: displayed irradiance of unresolved Sun capped at the 100 AU value (non-Scientific); verifying glare-t3 |
+| AST-381-03 iter 4/5 (CONT-07) | dark outline = bilinear/mip filtering of black no-data texels into observed edge texels; band = guide switching to a constant mean ~10° from data | FIX: native-resolution data masks + normalised filtering; multi-scale normalised-convolution guide; verifying partial-new5 |
+| RING-381-01 (CONT-09) | **CONFIRMED systemic**: ring systems were not exposure-meter subjects → Saturn off-frame close ring views metered to dark sky (+14.6 EV, white frames: sat-A-close, sat-nearfield-A, sat-cassini-division) | FIX: view-ray/ring-plane meter subject; Cassini Division verified (6.76 EV); close-ups verifying rings-t2 |
+| ATM-381-02 (CONT-08) | Venus deck reflectance is disc-integrated (contains haze) but sun/view paths were attenuated by full haze extinction (double count) | FIX: delta-M effective transmittance T^(1−g²); Venus terminator now a gradual Minnaert fall-off ending at the geometric terminator (venus-t1) |
