@@ -200,7 +200,10 @@ export function sunDiscScale(centreDisplay: number, rpx: number, mode: 'scientif
   // v3.8.1 REV2-01 (SUN-381-07): full local presentation from ≈5 px radius (was 12 px). Between the resolution threshold and
   // the full metering size (≈40 px) the auto-exposure is still far above the disc's own level, so a disc compressed only
   // partially was displayed at 10–100× white: a bloom/glare blob that made the Mars-distance Sun at 20° FOV the largest.
-  const t = Math.max(0, Math.min(1, (rpx - 3) / 2)), w = t * t * (3 - 2 * t);
+  // SUN-381-08 (shared solar display transfer): compression is full whenever the disc is drawn at all (≥ 1 px, i.e. through
+  // the whole disc→point cross-fade 1.2–3.5 px), so no representation of the Sun is ever shown above the presented
+  // photosphere level; the unresolved point obeys the same cap (PX.sunPeakCap) and the glare law below meets it at 3.5 px
+  const t = Math.max(0, Math.min(1, (rpx - 0.6) / 0.4)), w = t * t * (3 - 2 * t);
   return Math.exp(w * Math.log(target / centreDisplay));
 }
 /** v3.8.1 (SUN-381-01) glare amplitude (display-linear) from the Sun's display flux x = F·E. Logarithmic in brightness,
@@ -221,6 +224,14 @@ export function resolvedGlare(discDisplay: number, mode: 'scientific' | 'explora
   return { halo: k * D, veil: (mode === 'scientific' ? 0.05 : 0.12) * D };
 }
 /** Smooth hand-over between point-like and resolved glare (sun radius in device px). */
+/** v3.8.1 SUN-381-08: glare of the UNRESOLVED Sun outside Scientific — the resolved-disc glare at the hand-over (disc shown at
+ *  the presented level D = 2.4, radius 3.5 px) continued with the physical flux, F/F_h = (r/3.5)² at fixed FOV, through the
+ *  shared transfer amplitude ∝ (F/F_h)^0.25. One law for all distances, continuous at the hand-over and monotone in F
+ *  (replaces the cp2 F·E law, whose exposure swing of ≈20 EV across the hand-over made the point out-glow the disc). */
+export function pointGlareFromHandover(rpx: number, mode: 'scientific' | 'exploration' | 'cinematic') {
+  const h = resolvedGlare(2.4, mode), f = Math.pow(Math.max(rpx, 0) / 3.5, 0.5);
+  return { halo: h.halo * f, veil: h.veil * f };
+}
 export function resolvedGlareWeight(rpx: number) { const t = Math.max(0, Math.min(1, (rpx - 3.5) / 4.5)); return t * t * (3 - 2 * t); }
 /** Angular radius (rad) beyond which the glare profile is below `thr` display-linear (sizes the glare quad). */
 export function glareExtentRad(halo: number, veil: number, th1: number, th0: number, thr = 0.002) {

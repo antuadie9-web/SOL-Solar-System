@@ -76,9 +76,10 @@ test('EXP-381-01: Exploration/Cinematic sky darkens by at most sunVeilEV under t
 import { sunDiscScale, glareAmplitudes, glareExtentRad, SUN_LOOKS } from '../../src/render/sun';
 test('SUN-381-02: local disc presentation is identity in Scientific, continuous in disc size, and lands the centre at the target once resolved', () => {
   assert.equal(sunDiscScale(1e6, 50, 'scientific'), 1);
-  assert.equal(sunDiscScale(1e6, 2, 'exploration'), 1, 'unresolved/tiny discs are not compressed (point regime)');
+  assert.equal(sunDiscScale(1e6, 0.5, 'exploration'), 1, 'sub-pixel discs (not drawn) are not compressed');
+  assert.ok(Math.abs(sunDiscScale(1e6, 1.2, 'exploration') * 1e6 - 2.4) < 1e-6, 'SUN-381-08: full presentation through the disc→point cross-fade');
   assert.ok(Math.abs(sunDiscScale(1e6, 20, 'exploration') * 1e6 - 2.4) < 1e-6);
-  let prev = 1; for (let r = 2; r < 20; r += 0.002) { const s = sunDiscScale(1e6, r, 'cinematic'); assert.ok(s <= prev + 1e-12); assert.ok(Math.abs(Math.log(s) - Math.log(prev)) < 0.05, `jump at ${r}`); prev = s; }   // REV2-01: ramp 3→5 px (was 3→12), so the continuity probe is finer
+  let prev = 1; for (let r = 0.3; r < 20; r += 0.0005) { const s = sunDiscScale(1e6, r, 'cinematic'); assert.ok(s <= prev + 1e-12); assert.ok(Math.abs(Math.log(s) - Math.log(prev)) < 0.05, `jump at ${r}`); prev = s; }   // REV2-01: ramp 3→5 px (was 3→12), so the continuity probe is finer
 });
 test('SUN-381-01: glare amplitudes are monotone, bounded and grow only logarithmically with brightness; extent shrinks with distance', () => {
   let prev = { halo: 0, veil: 0 };
@@ -108,4 +109,13 @@ test('SUN-381-06: resolved-Sun glare hands over continuously and its footprint (
     assert.ok(energy > prev, `${au} AU`); prev = energy;
   }
   assert.ok(resolvedGlare(2.4, 'scientific').halo < resolvedGlare(2.4, 'exploration').halo && resolvedGlare(2.4, 'exploration').halo < resolvedGlare(2.4, 'cinematic').halo);
+});
+
+test('SUN-381-08: unresolved-Sun glare meets the resolved-disc glare at the hand-over and is monotone in flux', async () => {
+  const { pointGlareFromHandover, resolvedGlare } = await import('../../src/render/sun.ts');
+  for (const m of ['exploration', 'cinematic'] as const) {
+    const h = resolvedGlare(2.4, m), p = pointGlareFromHandover(3.5, m);
+    assert.ok(Math.abs(p.halo - h.halo) < 1e-12 && Math.abs(p.veil - h.veil) < 1e-12);
+    let prev = 0; for (let r = 0; r <= 3.5; r += 0.01) { const a = pointGlareFromHandover(r, m).halo; assert.ok(a >= prev - 1e-15); prev = a; }
+  }
 });

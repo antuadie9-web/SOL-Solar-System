@@ -25,7 +25,7 @@ import { RING_SYSTEMS, ringLabels } from '../data/rings';
 import { makePlumes, plumePeakIF } from './plumes';
 import { makeStarDisc } from './starDisc';
 import { limbDarkeningRGB, surfaceBrightnessRelSun, R_SUN_KM } from '../galaxy/stellarRadii';
-import { makeSun, makeGlare, SUN_L0, SUN_L_MEAN, SUN_LOOKS, sunMeterWeight, glareWeight, sunDiscScale, glareAmplitudes, glareExtentRad, resolvedGlare, resolvedGlareWeight, type SunLook } from './sun';
+import { makeSun, makeGlare, SUN_L0, SUN_L_MEAN, SUN_LOOKS, sunMeterWeight, glareWeight, sunDiscScale, glareAmplitudes, glareExtentRad, resolvedGlare, resolvedGlareWeight, pointGlareFromHandover, type SunLook } from './sun';
 import { makeCorona } from './corona';
 import { Stars3D, PC_KM, Star3DCatalog } from '../galaxy/stars3d';
 import { TerrainBody } from '../terrain/terrain';
@@ -87,8 +87,6 @@ function buildFamilyShape(id: string, profile: any, seg: number) {
   });
   shapeCache.set(key, p); return p;
 }
-/** SUN-381-07c: displayed irradiance cap of the unresolved Sun outside Scientific (= its irradiance at 100 AU). */
-const SUN_POINT_IRR_CAP = Math.PI * 1e-4;
 const toLocal = (b: Body, v: V3): THREE.Vector3 => { const l = mulMtV(b.rot, v); return new THREE.Vector3(l[0], l[1], l[2]); };
 
 class BodyView {
@@ -445,6 +443,7 @@ export class Engine {
     // v3.8.1 EXP-381-01: daylit-air veil re-couples (physical); the Sun's glare veil is a bounded, continuous EV reduction
     const skyE = this.skyExp = skyExposureV381(exposure, P, this.veil, this.sunVeil, st.get('skyEV') as number);
     PX.starKnee.value = P.starKnee; PX.starGamma.value = P.starGamma;
+    PX.sunPeakCap.value = this.enhancement.mode === 'scientific' ? 1e30 : 2.4;   // SUN-381-08: same level as sunDiscScale's target
     this.grade.contrast.value = P.contrast; this.grade.saturation.value = P.saturation; this.grade.vignette.value = P.vignette;
     this.enhancement.mode = mode; this.enhancement.skyDecoupled = skyE > exposure * 1.5;
     this.exposure.value = 1; this.displayExposure = exposure; PX.exposure.value = 1;
@@ -559,12 +558,13 @@ export class Engine {
         // (G ≈ 1.5–2.8 k) out-shone the resolved disc at the hand-over (G ≈ 0.6–0.75 k) although it is 3–10× fainter; at
         // 100 AU the same law gives G ≈ 0.69 k. Capping gives a plateau from the hand-over to 100 AU and the unchanged
         // star law beyond, so displayed solar brightness never increases with distance. Scientific stays physical.
-        const irr = Math.PI * Math.pow(AU / Math.max(dist, 1), 2), irrShown = mode === 'scientific' ? irr : Math.min(irr, SUN_POINT_IRR_CAP);
-        const F = irrShown * fade * Esun * sunVis;
+        // SUN-381-08: physical flux (distance-exact); the display contract is applied in the PSF shader (sunPeakCap) — the
+        // interim 100 AU irradiance cap (SUN-381-07c) is withdrawn (owner review: it hid rather than solved the mismatch)
+        const F = Math.PI * Math.pow(AU / Math.max(dist, 1), 2) * fade * Esun * sunVis;
         const c = b.def.color, cy = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
         this.points.pos.set([relS.x, relS.y, relS.z], nPts * 3);
         this.points.flux.set([F * c[0] / cy, F * c[1] / cy, F * c[2] / cy], nPts * 3);
-        this.points.comp[nPts] = fade;                    // v3.8: compressed like the stars once unresolved (was 0)
+        this.points.comp[nPts] = 2 + fade;                // v3.8: compressed like the stars once unresolved; 2+ = Sun flag (SUN-381-08 peak cap)
         nPts++;
         scr.bright = Math.max(scr.bright, 1);
       }
@@ -766,8 +766,8 @@ export class Engine {
       // v3.8.1 cp2 SUN-381-06: point-like glare (physical display flux at the point exposure) handed over smoothly to the
       // resolved-disc glare (a fixed fraction of the displayed disc radiance whose footprint grows with the disc), so the
       // glare's integrated light keeps rising as the Sun is approached instead of collapsing at the resolution threshold.
-      const ptIrr = mode === 'scientific' ? F : Math.min(F, SUN_POINT_IRR_CAP * visFrac);   // same cap as the point sprite (SUN-381-07c)
-      const amp = glareAmplitudes(ptIrr * (this.sunPointExposure || LS));
+      const amp = mode === 'scientific' ? glareAmplitudes(F * (this.sunPointExposure || LS)) : pointGlareFromHandover(this.sunRpx, mode);
+      if (mode !== 'scientific') { amp.halo *= visFrac; amp.veil *= visFrac; }
       const wR = resolvedGlareWeight(this.sunRpx);
       if (wR > 0) {
         const discDisp = SUN_L0 * LS * (this.views.get('sun')?.discWeight ?? 1) * (this.sunDiscScaleNow || 1), rg = resolvedGlare(discDisp, mode);

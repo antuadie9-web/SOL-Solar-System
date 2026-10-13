@@ -15,6 +15,8 @@ export const PX = { // shared per-frame uniforms
   // knee·(peak/knee)^γ. Scientific: γ = 1 (identity). Keeps magnitude ORDER, stops bright stars ballooning into discs
   // when the sky has its own dark-adapted exposure.
   starKnee: uniform(1e9), starGamma: uniform(1),
+  /** v3.8.1 SUN-381-08: displayed peak cap of the unresolved Sun (= the resolved disc's presented centre, 2.4); 1e30 = off (Scientific) */
+  sunPeakCap: uniform(1e30),
 };
 function quad() {
   const g = new THREE.InstancedBufferGeometry();
@@ -51,10 +53,13 @@ export function psfMaterial(centerNode: any, fluxNode: any, opts: { gain: any; m
     const s2eff = PX.sigma.mul(PX.sigma).add(0.0833333);
     const peak0 = lum0.mul(float(1).sub(wingF)).div(pixSAdev.mul(6.2831853).mul(s2eff)).mul(PX.exposure);
     // v3.5: optional highlight compression (per-instance weight `compress` ∈ [0,1]; 1 = compress)
-    const cw = opts.compress ?? float(0);
+    // v3.8.1 SUN-381-08: compress ≥ 2 flags the Sun (weight = compress − 2): its displayed peak is additionally limited to
+    // the presented-photosphere level PX.sunPeakCap, the same display contract as the resolved disc (sunDiscScale)
+    const cRaw = opts.compress ?? float(0), isSun = cRaw.greaterThan(1.5), cw = select(isSun, cRaw.sub(2), cRaw);
     const knee = PX.starKnee, kneeHit = peak0.greaterThan(knee).and(PX.starGamma.lessThan(0.999));
     const ratio = select(kneeHit, knee.mul(pow(peak0.div(knee).max(1), PX.starGamma)).div(peak0.max(1e-30)), float(1));
-    const scale = mix(float(1), ratio, cw);
+    const scale0 = mix(float(1), ratio, cw);
+    const scale = select(isSun, scale0.mul(min(float(1), PX.sunPeakCap.div(peak0.mul(scale0).max(1e-30)))), scale0);
     const flux = flux0.mul(scale), peak = peak0.mul(scale);
     // visible extent (device px): Gaussian core above `thresh`, and the wing (peak_w = wing·L/(2πa²)) above `thresh`
     const sEff = sqrt(s2eff), aW = PX.sigma.mul(3).max(1.2);
