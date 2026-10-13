@@ -19,7 +19,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 export interface ModelInfo { meshes: number; triangles: number; hasUV: boolean; hasNormals: boolean; textured: boolean; extentKm: number | null }
 import { makeSurfaceMaterial, SurfaceKind } from './planetMaterial';
 import { makeAtmosphere, verticalTau, atmosphereLUTs } from './atmosphere';
-import { makeRingSystem, smoothRingColour, buildProfileLOD, decodeProfile, peakIF, peakIFAt, ringTau, type ProfileLOD } from './ringSystem';
+import { makeRingSystem, smoothRingColour, buildProfileLOD, decodeProfile, peakIF, peakIFAt, ringTau, ringShadeIF, type ProfileLOD } from './ringSystem';
 const RS_PROF = (e: any, id: string, def: any) => (def.profile ? e.ringProfiles[id] ?? null : null);
 import { RING_SYSTEMS, ringLabels } from '../data/rings';
 import { makePlumes, plumePeakIF } from './plumes';
@@ -636,6 +636,35 @@ export class Engine {
         if (vv?.plumePeakIF && this.settings.get('plumes') !== false) hr = Math.max(hr, vv.plumePeakIF * 0.5 / (rS * rS));
         meterBodies.push({ subjectFull: Ls * 0.26 * tmK, litWeight: Math.pow(lit, 0.6), highlightRadiance: hr, weight: w });
         if (b === this.rig.target) nightView = 1 - lit;
+      }
+      // v3.8.1 RING-381-01 (CONT-09): the ring system is a meter subject of its own. Until cp2 only the planet's disc was
+      // metered, so with Saturn off-frame (A-ring close-ups, Cassini Division, near-field particles) the meter found
+      // nothing and fell back to the dark-sky exposure (+14.6 EV): white frames. A 16×8 polar grid of ring points gives
+      // the in-frame fraction of the view the rings cover and their brightest I/F in the actual Sun/camera geometry.
+      const rv = (this.views.get(b.id) as any)?.rings;
+      if (rv && this.settings.get('rings') !== false && dist < rv.def.outer * 60) {
+        const RD = rv.def, Mrot = b.rot, rSun = len(sub(sun.pos, b.pos)) / AU, lB = toLocal(b, norm(sub(sun.pos, b.pos)));
+        const halfY = rig.fov * DEG / 2, cosLim = Math.cos(Math.atan(Math.hypot(Math.tan(halfY), Math.tan(halfY) * this.W / this.H)));
+        let omega = 0, ifMax = 0, litAny = 0;
+        for (let i = 0; i < 8; i++) {
+          const r = RD.inner + (RD.outer - RD.inner) * (i + 0.5) / 8, dA = 2 * Math.PI * r * (RD.outer - RD.inner) / 8 / 16;
+          const [tm, td] = ringTau(RD, r, (RD.outer - RD.inner) / 8, rv.def.profile ? this.ringProfiles[b.id] ?? null : null);
+          if (tm + td < 1e-4) continue;
+          for (let j = 0; j < 16; j++) {
+            const ph = (j + 0.5) / 16 * 2 * Math.PI, pl: V3 = [r * Math.cos(ph), r * Math.sin(ph), 0];
+            const pw: V3 = add(b.pos, [Mrot[0] * pl[0] + Mrot[1] * pl[1], Mrot[3] * pl[0] + Mrot[4] * pl[1], Mrot[6] * pl[0] + Mrot[7] * pl[1]]);
+            const toC = sub(cam, pw), dC = len(toC), dirS = sceneVec(scale(toC, -1 / dC));
+            if (dirS.dot(fwd) < cosLim) continue;
+            const vL = toLocal(b, scale(toC, 1 / dC)), mu = Math.max(Math.abs(vL.z), 1e-3);
+            omega += dA * mu / (dC * dC);
+            const I = ringShadeIF(tm, td, [lB.x, lB.y, lB.z], [vL.x, vL.y, vL.z], RD);
+            if (I > ifMax) ifMax = I;
+            if (lB.z * vL.z > 0) litAny = 1;
+          }
+        }
+        const frameOmega = 4 * Math.tan(halfY) * Math.tan(halfY) * this.W / this.H, cov = Math.min(1, omega / frameOmega);
+        const wR = smooth(0.01, 0.15, cov);
+        if (wR > 0 && ifMax > 0) meterBodies.push({ subjectFull: ifMax * 0.55 / (rSun * rSun), litWeight: litAny ? 1 : 0.5, highlightRadiance: ifMax / (rSun * rSun), weight: wR });
       }
     }
     this.points.commit(nPts);
