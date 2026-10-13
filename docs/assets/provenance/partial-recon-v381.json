@@ -6,9 +6,9 @@
    0.15232
   ],
   "boundaryZoneMeanLinRGB": [
-   0.15264,
-   0.15264,
-   0.15264
+   0.15197,
+   0.15197,
+   0.15197
   ],
   "smallScaleRelContrast": 0.1163,
   "midScaleRelContrast_1to6deg": 0.1157,
@@ -30,9 +30,9 @@
    0.27809
   ],
   "boundaryZoneMeanLinRGB": [
-   0.29684,
-   0.29186,
-   0.27785
+   0.30574,
+   0.30054,
+   0.28602
   ],
   "smallScaleRelContrast": 0.1291,
   "midScaleRelContrast_1to6deg": 0.2303,
@@ -54,9 +54,9 @@
    0.21268
   ],
   "boundaryZoneMeanLinRGB": [
-   0.24081,
-   0.22276,
-   0.21182
+   0.23504,
+   0.21729,
+   0.2066
   ],
   "smallScaleRelContrast": 0.1194,
   "midScaleRelContrast_1to6deg": 0.3963,
@@ -78,9 +78,9 @@
    0.31983
   ],
   "boundaryZoneMeanLinRGB": [
-   0.27854,
-   0.27353,
-   0.26582
+   0.27036,
+   0.2656,
+   0.25582
   ],
   "smallScaleRelContrast": 0.1054,
   "midScaleRelContrast_1to6deg": 0.1318,
@@ -106,9 +106,9 @@
    0.1438
   ],
   "boundaryZoneMeanLinRGB": [
-   0.18591,
-   0.1596,
-   0.13971
+   0.18087,
+   0.15472,
+   0.1353
   ],
   "smallScaleRelContrast": 0.2532,
   "midScaleRelContrast_1to6deg": 0.1638,
@@ -134,9 +134,9 @@
    0.18772
   ],
   "boundaryZoneMeanLinRGB": [
-   0.2051,
-   0.18453,
-   0.17469
+   0.20225,
+   0.18225,
+   0.17265
   ],
   "smallScaleRelContrast": 0.2623,
   "midScaleRelContrast_1to6deg": 0.3625,

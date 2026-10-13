@@ -41,15 +41,19 @@ for name, thr in BODIES.items():
     din = ndimage.distance_transform_edt(tiledo)[:, W:2 * W] * (180.0 / H)                 # deg from the gap (inside data)
     w = np.clip(d / FEATHER_DEG, 0, 1); w = w * w * (3 - 2 * w); w[obs] = 0
     core = obs & (din > RIM_DEG)
-    sig = SIGMA_DEG * H / 180.0
-    den = gauss_wrap(core.astype(float), sig)
+    # iteration 5: multi-scale normalised convolution (3.5°, 10°, 25°; weights 1, 0.05, 0.0025) so the guide decays
+    # smoothly from the local regional colour into a wide-area continuation — iteration 4 switched to a constant mean
+    # ≈10° from the data, which drew a band; the far value is the observed colour near the boundary, not the global mean
+    band = core & (din < RIM_DEG + 12.0)
+    gm = rgb[band].mean(0) if band.sum() > 100 else rgb[core].mean(0)
     gm_global = rgb[core].mean(0)
-    zone = core & (din < 20.0)                    # observed core within 20° of the gap: the relax target (iteration 4)
-    gm = rgb[zone].mean(0) if zone.sum() > 100 else gm_global
-    guide = np.zeros_like(rgb); relax = np.clip(d / RELAX_DEG, 0, 1)
-    for k in range(3):
-        ext = np.where(den > 1e-3, gauss_wrap(np.where(core, rgb[..., k], 0.0), sig) / np.maximum(den, 1e-6), gm[k])
-        guide[..., k] = ext * (1 - relax) + gm[k] * relax
+    num = np.zeros_like(rgb); den = np.zeros(Y.shape)
+    for sdeg, wgt in [(SIGMA_DEG, 1.0), (10.0, 0.05), (25.0, 0.0025)]:
+        sg = sdeg * H / 180.0; src = band if sdeg > SIGMA_DEG else core
+        den += wgt * gauss_wrap(src.astype(float), sg)
+        for k in range(3): num[..., k] += wgt * gauss_wrap(np.where(src, rgb[..., k], 0.0), sg)
+    eps = 1e-6
+    guide = (num + gm * eps) / (den + eps)[..., None]
     guide[obs] = rgb[obs]                                      # never used on observed pixels (w = 0); keeps the JPEG smooth
     # contrast statistics of the observed core: fine (≲2 px) and mid (1°–6° band, difference of Gaussians), relative
     hp = Y - gauss_wrap(np.where(obs, Y, 0.0), 2.0) / np.maximum(gauss_wrap(obs.astype(float), 2.0), 1e-6)
