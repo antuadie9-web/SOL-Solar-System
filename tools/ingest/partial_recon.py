@@ -79,7 +79,11 @@ for name, thr in BODIES.items():
         src = os.path.join(ROOT, f'public/assets/tex/{name}{suf}.jpg')
         if not os.path.exists(src): continue
         g = np.asarray(Image.open(src).convert('L'), float) / 255.0
-        m = ndimage.binary_opening(g > max(thr, 1.5 / 255), iterations=1)
+        # rim pixels of the source mosaics are darkened (low-Sun / terminator photometry, JPEG ringing against the black
+        # fill): rendered as a thin dark line along every boundary in iteration 5 even with normalised filtering. The data
+        # mask therefore excludes a 0.4° rim (iteration 6) — those pixels are treated as unobserved, never altered.
+        rim_px = max(1, int(round(0.4 * g.shape[0] / 180)))
+        m = ndimage.binary_erosion(ndimage.binary_opening(g > max(thr, 1.5 / 255), iterations=1), iterations=rim_px)
         Image.fromarray((m * 255).astype(np.uint8)).save(os.path.join(ROOT, f'public/assets/tex/{name}_mask{suf}.jpg'), quality=98)
         stats[name]['mask' + suf] = list(g.shape)
 json.dump(stats, open(os.path.join(ROOT, 'docs/assets/provenance/partial-recon-v381.json'), 'w'), indent=1)
