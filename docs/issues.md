@@ -189,3 +189,10 @@ Classification: **D** = confirmed defect, **P** = visual preference / presentati
 | AST-381-03 iter 4/5 (CONT-07) | dark outline = bilinear/mip filtering of black no-data texels into observed edge texels; band = guide switching to a constant mean ~10° from data | FIX: native-resolution data masks + normalised filtering; multi-scale normalised-convolution guide; verifying partial-new5 |
 | RING-381-01 (CONT-09) | **CONFIRMED systemic**: ring systems were not exposure-meter subjects → Saturn off-frame close ring views metered to dark sky (+14.6 EV, white frames: sat-A-close, sat-nearfield-A, sat-cassini-division) | FIX: view-ray/ring-plane meter subject; Cassini Division verified (6.76 EV); close-ups verifying rings-t2 |
 | ATM-381-02 (CONT-08) | Venus deck reflectance is disc-integrated (contains haze) but sun/view paths were attenuated by full haze extinction (double count) | FIX: delta-M effective transmittance T^(1−g²); Venus terminator now a gradual Minnaert fall-off ending at the geometric terminator (venus-t1) |
+
+### Focused acceptance checks (owner 2026-10-13 23:00) — results
+| Check | Result (software WebGPU) |
+|---|---|
+| CONT-01 continuous Sun travel 0.25→300 AU, 20° auto / 20° fixed / 50° auto | PASS after SUN-381-08/08b + EXP-381-03: halo monotone, continuous at the 3.5 px hand-over (≈F^0.25 beyond); EV max 5.6–6.1 per 8 % step (meter ramp, Sun display level constant). Interim 100 AU cap withdrawn. |
+| RING-381-01 continuous pan Saturn→lit rings→ring shadow→ansa→sky (3.2 R) | PASS after RING-381-02: EV 6.2–6.95 on rings, smooth rise to 14.6 EV, max 0.96 EV/step; exit-sliver over-exposure fixed. Residual: a few-px ring corner may clip at the very edge (minor). |
+| AST-381-03 boundaries (iter 6) | IMPROVED, OPEN: dark outline largely removed; residual faint dotted edge (Triton) and a lighter band inside the reconstruction; procedural crater rims alias as dotted rings at Voyager-epoch scale. |
