@@ -677,7 +677,10 @@ export class Engine {
           if (lB.z * vv3[2] > 0) litAny = 1;
         }
         const cov = hitW / n, wR = smooth(0.02, 0.25, cov);
-        if (wR > 0 && ifMax > 0) meterBodies.push({ subjectFull: ifMax * 0.55 / (rSun * rSun), litWeight: litAny ? 1 : 0.5, highlightRadiance: ifMax / (rSun * rSun), weight: wR });
+        // RING-381-02 (continuous pan finding): highlights stay protected while ANY ring area is in frame — with the subject
+        // ramp alone, a ring sliver leaving the frame was over-exposed by ≈2.4 EV and bloomed into a white corner glare
+        const wH = smooth(0.0, 0.03, cov);
+        if ((wR > 0 || wH > 0) && ifMax > 0) meterBodies.push({ subjectFull: ifMax * 0.55 / (rSun * rSun), litWeight: litAny ? 1 : 0.5, highlightRadiance: ifMax / (rSun * rSun), weight: wR, hiWeight: wH });
       }
     }
     this.points.commit(nPts);

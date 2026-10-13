@@ -209,6 +209,8 @@ export interface MeterBody {
   highlightRadiance: number;
   /** metering weight from apparent size (0 for sub-pixel discs) */
   weight: number;
+  /** v3.8.1 RING-381-02: explicit highlight-protection weight (default smooth(0.25, 1, weight)) */
+  hiWeight?: number;
 }
 /**
  * Scene metering (EXP-002 fix). Returns the luminance the key is divided by.
@@ -223,10 +225,10 @@ export function meterLuminance(bodies: MeterBody[], key: number, highlightTarget
   let subject = 0, hi = 0;
   const cap = Math.pow(2, -Math.max(0, nightCapEV));
   for (const b of bodies) {
-    if (!(b.weight > 0)) continue;
+    if (!(b.weight > 0) && !(b.hiWeight! > 0)) continue;
     const s = b.subjectFull * Math.max(b.litWeight, cap) * b.weight;
     if (s > subject) subject = s;
-    const h = key * b.highlightRadiance / highlightTarget * smooth(0.25, 1, b.weight);
+    const h = key * b.highlightRadiance / highlightTarget * (b.hiWeight ?? smooth(0.25, 1, b.weight));
     if (h > hi) hi = h;
   }
   return { subject, highlight: hi, luminance: Math.max(subject, hi, ambient) };
