@@ -638,32 +638,34 @@ export class Engine {
         if (b === this.rig.target) nightView = 1 - lit;
       }
       // v3.8.1 RING-381-01 (CONT-09): the ring system is a meter subject of its own. Until cp2 only the planet's disc was
-      // metered, so with Saturn off-frame (A-ring close-ups, Cassini Division, near-field particles) the meter found
-      // nothing and fell back to the dark-sky exposure (+14.6 EV): white frames. A 16×8 polar grid of ring points gives
-      // the in-frame fraction of the view the rings cover and their brightest I/F in the actual Sun/camera geometry.
+      // metered, so with Saturn off-frame (A-ring close-ups, near-field particles) the meter found nothing and fell back to
+      // the dark-sky exposure (+14.6 EV): white frames. A 7×5 grid of view rays is intersected with the ring plane; each hit
+      // gives the ring's opacity 1 − e^(−τ/μ) (its share of the frame) and its I/F in the actual Sun/camera geometry.
+      // (A first version sampled a fixed polar grid on the rings; it missed close-ups, where the visible patch is ≪ grid step.)
       const rv = (this.views.get(b.id) as any)?.rings;
       if (rv && this.settings.get('rings') !== false && dist < rv.def.outer * 60) {
-        const RD = rv.def, Mrot = b.rot, rSun = len(sub(sun.pos, b.pos)) / AU, lB = toLocal(b, norm(sub(sun.pos, b.pos)));
-        const halfY = rig.fov * DEG / 2, cosLim = Math.cos(Math.atan(Math.hypot(Math.tan(halfY), Math.tan(halfY) * this.W / this.H)));
-        let omega = 0, ifMax = 0, litAny = 0;
-        for (let i = 0; i < 8; i++) {
-          const r = RD.inner + (RD.outer - RD.inner) * (i + 0.5) / 8, dA = 2 * Math.PI * r * (RD.outer - RD.inner) / 8 / 16;
-          const [tm, td] = ringTau(RD, r, (RD.outer - RD.inner) / 8, rv.def.profile ? this.ringProfiles[b.id] ?? null : null);
-          if (tm + td < 1e-4) continue;
-          for (let j = 0; j < 16; j++) {
-            const ph = (j + 0.5) / 16 * 2 * Math.PI, pl: V3 = [r * Math.cos(ph), r * Math.sin(ph), 0];
-            const pw: V3 = add(b.pos, [Mrot[0] * pl[0] + Mrot[1] * pl[1], Mrot[3] * pl[0] + Mrot[4] * pl[1], Mrot[6] * pl[0] + Mrot[7] * pl[1]]);
-            const toC = sub(cam, pw), dC = len(toC), dirS = sceneVec(scale(toC, -1 / dC));
-            if (dirS.dot(fwd) < cosLim) continue;
-            const vL = toLocal(b, scale(toC, 1 / dC)), mu = Math.max(Math.abs(vL.z), 1e-3);
-            omega += dA * mu / (dC * dC);
-            const I = ringShadeIF(tm, td, [lB.x, lB.y, lB.z], [vL.x, vL.y, vL.z], RD);
-            if (I > ifMax) ifMax = I;
-            if (lB.z * vL.z > 0) litAny = 1;
-          }
+        const RD = rv.def, prof = RD.profile ? this.ringProfiles[b.id] ?? null : null, rSun = len(sub(sun.pos, b.pos)) / AU;
+        const lB = toLocal(b, norm(sub(sun.pos, b.pos))), cL = toLocal(b, scale(rel, -1));   // camera in the ring frame
+        const tY = Math.tan(rig.fov * DEG / 2), tX = tY * this.W / this.H;
+        const qR = new THREE.Vector3(1, 0, 0).applyQuaternion(rig.quat), qU = new THREE.Vector3(0, 1, 0).applyQuaternion(rig.quat);
+        let hitW = 0, ifMax = 0, litAny = 0, n = 0;
+        for (let iy = 0; iy < 5; iy++) for (let ix = 0; ix < 7; ix++) {
+          n++;
+          const sx = ((ix + 0.5) / 7 * 2 - 1) * tX, sy = ((iy + 0.5) / 5 * 2 - 1) * tY;
+          const dS = fwd.clone().addScaledVector(qR, sx).addScaledVector(qU, sy).normalize();
+          const dL = toLocal(b, [dS.x, -dS.z, dS.y]);                                      // scene → helio → ring frame
+          if (Math.abs(dL.z) < 1e-6) continue;
+          const t = -cL.z / dL.z; if (t <= 0) continue;
+          const px = cL.x + dL.x * t, py = cL.y + dL.y * t, r = Math.hypot(px, py);
+          if (r < RD.inner || r > RD.outer) continue;
+          const [tm, td] = ringTau(RD, r, Math.max(1, t * this.pxAng * 40), prof);
+          const vv3: [number, number, number] = [-dL.x, -dL.y, -dL.z], mu = Math.max(Math.abs(dL.z), 1e-3);
+          hitW += 1 - Math.exp(-(tm + td) / mu);
+          const I = ringShadeIF(tm, td, [lB.x, lB.y, lB.z], vv3, RD);
+          if (I > ifMax) ifMax = I;
+          if (lB.z * vv3[2] > 0) litAny = 1;
         }
-        const frameOmega = 4 * Math.tan(halfY) * Math.tan(halfY) * this.W / this.H, cov = Math.min(1, omega / frameOmega);
-        const wR = smooth(0.01, 0.15, cov);
+        const cov = hitW / n, wR = smooth(0.02, 0.25, cov);
         if (wR > 0 && ifMax > 0) meterBodies.push({ subjectFull: ifMax * 0.55 / (rSun * rSun), litWeight: litAny ? 1 : 0.5, highlightRadiance: ifMax / (rSun * rSun), weight: wR });
       }
     }
