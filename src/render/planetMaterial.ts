@@ -249,7 +249,10 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
       // v3.8.1 AST-381-03 (CONT-07): procedural relief only where the map has no data — the NORMAL is blended by the
       // weight. Until cp2 the height itself was multiplied by the weight, and the derivative of (h·w) across the narrow
       // weight transition is a ridge that shaded as a dark/bright line exactly on the observed boundary (all six bodies).
-      if (def.noData) bw = bw.mul(noData);
+      // iteration 8: synthetic relief is introduced with the reconstruction weight (0 at the data edge → 1 at the 5° feather),
+      // not at full strength on the mask edge — the step in detail frequency (blurred observed rim → sharp craters) was
+      // itself drawing the boundary. Bodies without a guide field keep the mask-only behaviour.
+      if (def.noData) bw = bw.mul(maps.recon ? noData.mul(reconW) : noData);
       n = normalize(mix(ng, nb, bw));
     }
     if (def.noData && proc) {
@@ -270,7 +273,8 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
         const kF = def.noData!.detail ?? 0.4, kM = def.noData!.mid ?? 0.3;
         const pn = dot(pr, vec3(0.2126, 0.7152, 0.0722));
         const mid = fbm({ p: dirLocal.mul(8.0).add(vec3(proc.seed * 0.01, 0, 0)), oct: int(4) }).mul(2).sub(1);
-        rec = reconC.mul(U.albedoScale).mul(float(1).add(mid.mul(kM))).mul(float(1).add(pn.sub(1).mul(kF)));
+        // iteration 8: procedural albedo structure fades in with the same weight (none on the edge itself)
+        rec = reconC.mul(U.albedoScale).mul(float(1).add(mid.mul(kM).mul(reconW))).mul(float(1).add(pn.sub(1).mul(kF).mul(reconW)));
         grid = grid.mul(smoothstep(0.5, 0.95, reconW));
       }
       albedo = mix(albedo, mix(rec, vec3(0.55, 0.62, 0.75).mul(U.recAlbedo), grid), noData);
