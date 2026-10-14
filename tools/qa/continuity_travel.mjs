@@ -10,7 +10,7 @@ const arg = (k, d) => { const i = process.argv.indexOf('--' + k); return i > 0 ?
 const exe = fs.existsSync('/usr/lib/chromium/chromium') ? '/usr/lib/chromium/chromium' : 'chromium';
 const url = arg('url', 'http://localhost:4175/') + '?qa-off=small,smallcompute&qa-software-gpu=1';
 const out = arg('out', 'qa-travel'); fs.mkdirSync(out, { recursive: true });
-const ALL = ['sun-f20-auto', 'sun-f20-fixed', 'sun-f50-auto', 'rings-pan'];
+const ALL = ['sun-f20-auto', 'sun-f20-fixed', 'sun-f50-auto', 'rings-pan', 'sun-far-auto'];   // sun-far: 100 AU → 1 pc (point regime)
 const seqs = (arg('seq', ALL.join(','))).split(',');
 const W = 960, H = 540;
 const browser = await chromium.launch({ executablePath: exe, headless: true, args: ['--enable-unsafe-webgpu', '--ignore-gpu-blocklist', '--enable-features=Vulkan', '--use-vulkan=swiftshader', '--use-angle=vulkan', '--enable-unsafe-swiftshader', '--disable-gpu-watchdog', '--disable-features=DawnSIRepsUseClientProvidedSemaphores'] });
@@ -22,7 +22,7 @@ await page.evaluate(() => { const s = window.__sol; s.settings.set('onboarded', 
 for (const seq of seqs) {
   fs.mkdirSync(`${out}/${seq}`, { recursive: true });
   const rows = [];
-  const N = seq === 'rings-pan' ? 60 : 90;
+  const N = seq === 'rings-pan' ? 60 : seq === 'sun-far-auto' ? 48 : 90;
   for (let i = 0; i < N; i++) {
     const info = await page.evaluate(async ({ seq, i, N }) => {
       const s = window.__sol, r = s.engine.rig, AU = 149597870.7;
@@ -30,11 +30,11 @@ for (const seq of seqs) {
       const nrm = (v) => { const l = Math.hypot(...v); return v.map(x => x / l); };
       s.ui.following = false; r.mode = 'free'; r.freeVel = [0, 0, 0]; r.lookYaw = r.lookPitch = 0;
       if (seq.startsWith('sun')) {
-        const fov = seq.includes('f20') ? 20 : 50, fixed = seq.endsWith('fixed');
+        const fov = seq.includes('f50') ? 50 : 20, fixed = seq.endsWith('fixed'), far = seq.startsWith('sun-far');
         if (i === 0) { s.settings.set('autoExposure', !fixed); if (fixed) s.settings.set('manualExposure', Math.pow(2, -10.26)); }
         const sun = s.sys.sun, e = s.sys.get('earth');
         const h = nrm([e.pos[0] - sun.pos[0], e.pos[1] - sun.pos[1], 0]), el = 20 * Math.PI / 180, dir = [h[0] * Math.cos(el), h[1] * Math.cos(el), Math.sin(el)];
-        const au = 0.25 * Math.pow(300 / 0.25, i / (N - 1)), km = au * AU;
+        const au = far ? 100 * Math.pow(206264.8 / 100, i / (N - 1)) : 0.25 * Math.pow(300 / 0.25, i / (N - 1)), km = au * AU;
         const pos = [sun.pos[0] + dir[0] * km, sun.pos[1] + dir[1] * km, sun.pos[2] + dir[2] * km];
         r.tFov = r.fov = fov; r.target = sun; r.pos = pos; r.quat.copy(r.lookQuat(pos, sun.pos, [0, 0, 1]));
         await frames(3); r.pos = pos; r.quat.copy(r.lookQuat(pos, sun.pos, [0, 0, 1]));
@@ -67,6 +67,8 @@ for (const seq of seqs) {
     }, { seq, i, N });
     // software screenshots cost ~30 s: every step is rendered and logged (continuous motion), every SHOT-th step is imaged
     const SHOT = seq === 'rings-pan' ? 6 : 10;
+    // point regime: a 33×33 centre clip every step (cheap) — integrated and peak displayed Sun signal vs distance
+    if (seq === 'sun-far-auto') await page.screenshot({ path: `${out}/${seq}/c${String(i).padStart(3, '0')}.png`, clip: { x: W / 2 - 16, y: H / 2 - 16, width: 33, height: 33 }, timeout: 180000 });
     if (i % SHOT === 0 || i === N - 1) await page.screenshot({ path: `${out}/${seq}/${String(i).padStart(3, '0')}.png`, timeout: 180000 });
     rows.push(info);
   }
