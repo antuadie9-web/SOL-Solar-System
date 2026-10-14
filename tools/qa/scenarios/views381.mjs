@@ -42,3 +42,11 @@ V381.push(...PARTIAL381);
 // SUN-381-07 point-regime law probe: unresolved Sun at 10–1000 AU (50° FOV, auto) to measure the star-law glare G(F)
 export const GLAREFAR = [10, 30, 100, 1000].map(a => [`glare-${pad(a)}AU-f50-auto`, 'sun', { sunAt: { km: a * AU, fov: 50 } }]);
 V381.push(...GLAREFAR);
+// AST-381-03 final acceptance: every partial-mosaic body at 1.7 R with the observed/unobserved boundary crossing the
+// disc (camera at the boundary latitude, body-fixed), two lighting azimuths (az = camera longitude from the sub-solar
+// longitude: 20° ≈ low phase, 70° = oblique light across the boundary). Epochs as PARTIAL381/URANIAN1986.
+const PB = { ariel: [579, 0, VOYAGER_JD - NOW_JD], titania: [789, 0, VOYAGER_JD - NOW_JD], oberon: [761, 0, VOYAGER_JD - NOW_JD],
+  triton: [1353, 22, 0], pluto: [1188, -36, 2447200.5 - NOW_JD], charon: [606, -36, 2447200.5 - NOW_JD] };
+export const PARTIALNEAR = Object.entries(PB).flatMap(([n, [R, lat, jo]]) => [20, 70].map(az =>
+  [`pnear-${n}-az${az}`, n, { ...(jo ? { jdOff: jo } : {}), bf: { r: R * 1.7, el: lat, abs: true, az, fov: 50 } }]));
+V381.push(...PARTIALNEAR);
