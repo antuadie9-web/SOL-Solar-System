@@ -209,7 +209,7 @@ Classification: **D** = confirmed defect, **P** = visual preference / presentati
 | GA-ARCH-01 | U | WebGPU-only depends on private `_getFallback` | CONTROLLED: three pinned 0.186.1, post-init GPUDevice assertion, test pins the field |
 | GA-TEX-01 | D | linear-texture placeholders ignored their colour (masks = 0.5 "half no-data" while streaming / after demotion; demoted normal maps grey) | FIXED 1d889aa |
 | GA-RES-01 | U (perf) | body views never released in long sessions | OPEN (needs HW long-session data) |
-| CONT-14 | U | unresolved planets/moons on SKY exposure vs resolved disc on SCENE exposure; ×1.6 point colour factor | TEST PENDING (titan-handover travel) |
+| CONT-14 | D | unresolved planets/moons on SKY exposure vs resolved disc on SCENE exposure; ×1.6 point colour factor | CONFIRMED (SW): ≈1.9× integrated-signal step at 1.9 px handover; fix in shared contract next |
 | AST-381-03 iter 8c–10 | D | residual beaded boundary line: 8c–9 (ramp, luminance test, speck holes, signed-distance mask) were not the cause; ROOT CAUSE (iter 10): the excluded 0.4° rim is drawn from the guide, which held raw Lanczos-ringed rim pixels | FIXED 4e3d06f (quick matched capture Triton/Charon); six-body acceptance running |
 | AST-381-03 | D | partial-mosaic boundary artefacts | CLOSED 4e3d06f (SW; six bodies near az20/70 + far, immutable-snapshot A/B vs cp2) — docs/v3.8.1/AST-381-03_ACCEPTANCE.md |
 | AST-381-04 | D/U (science) | reconstruction tone neutral grey vs warm observed terrain (Triton, Pluto); crater-dominated procedural morphology wrong for Triton; faint procedural rim circles | OPEN |
