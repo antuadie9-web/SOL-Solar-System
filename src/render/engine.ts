@@ -4,7 +4,7 @@ import * as THREE from 'three/webgpu';
 import { pass, uniform, vec4, vec3, float, mrt, output, Fn, screenUV } from 'three/tsl';
 import * as TSL from 'three/tsl';
 import { MODE_PARAMS, approachParams, skyExposure, skyExposureV381, sunGlareVeil, meterLuminance, photometricPeak, HIGHLIGHT_TARGET, type ViewMode, type PresentationParams, type MeterBody, type PhotometricKind } from './presentation';
-import { radianceFromSB } from './presentation';
+import { radianceFromSB, visibilityGain, pointFloor } from './presentation';
 import { airglowPeakPerKm } from './atmosphere';
 import { limbLuminance } from './atmoModel';
 import { bloom } from 'three/addons/tsl/display/BloomNode.js';
@@ -184,7 +184,7 @@ export class Engine {
   sunPointExposure = 0; glareDisplay = 0; sunDiscScaleNow = 1; coronaScale = 1;
   /** v3.8 performance counters: views prepared ahead of time vs built on the frame they first became visible */
   perf = { prepared: 0, lateViews: 0, preparedThisFrame: 0 };
-  enhancement = { inspect: false, skyDecoupled: false, mode: 'exploration' as ViewMode, rings: null as null | { body: string; gain: number }, plumes: null as null | string, plumeGain: 1 };
+  enhancement = { inspect: false, skyDecoupled: false, mode: 'exploration' as ViewMode, rings: null as null | { body: string; gain: number }, plumes: null as null | string, plumeGain: 1, pointFloor: 0 };
   stars3d: Stars3D | null = null; dirStarFade = uniform(1);
   /** v3.4: catalogue streams by name (diagnostics overlay reads their per-shard state) */
   catalogStreams: Record<string, { counts(): Record<string, number> }> = {};
@@ -470,7 +470,7 @@ export class Engine {
     // v3.8 DEF-38-005: enhancement labels are rebuilt every frame from the views actually drawn. v3.7.1 cleared a ring /
     // plume enhancement only when that same body updated again, so after leaving Jupiter the HUD/metadata kept reporting
     // "Jupiter rings ×43" while the camera was at Enceladus.
-    this.enhancement.rings = null; this.enhancement.plumes = null; this.enhancement.plumeGain = 1;
+    this.enhancement.rings = null; this.enhancement.plumes = null; this.enhancement.plumeGain = 1; this.enhancement.pointFloor = 0;
     const sunVis = this.sunVisibility(cam); this.sunRpx = 0; this.sunVisNow = sunVis; this.sunPointExposure = 0; this.perf.preparedThisFrame = 0;
     const fwd = new THREE.Vector3(0, 0, -1).applyQuaternion(rig.quat);
     const occAll = (v: BodyView) => v.occluders;
@@ -576,10 +576,10 @@ export class Engine {
           const alpha = Math.acos(Math.max(-1, Math.min(1, cosA)));
           const phase = (Math.sin(alpha) + (Math.PI - alpha) * Math.cos(alpha)) / Math.PI;
           // v3.5: unresolved worlds belong to the sky domain (they sit among the stars) → sky exposure + compression
-          let F = b.albedo * Math.min(1.3, 1.0) * (2 / 3) * Math.PI * Math.pow(b.radius / dist, 2) / (rS * rS) * phase * fade * (st.get('bodyBoost') as number) * skyE;
-          // keep planets findable as points: a display-referred floor (≈ a 2nd-magnitude star) when they would vanish
-          const floor = (b.kind === 'planet' ? 0.22 : b.kind === 'dwarf' ? 0.1 : (b.kind === 'moon' && b.radius > 500) ? 0.06 : 0) * this.pxAng * this.pxAng * 4.54 * fade;
-          if (F < floor) F = floor;
+          let F = b.albedo * (2 / 3) * Math.PI * Math.pow(b.radius / dist, 2) / (rS * rS) * phase * fade * visibilityGain(mode, st.get('bodyBoost') as number) * skyE;
+          // keep planets findable as points (presentation only — GA-SCI-01: Scientific draws the physical flux, floor 0)
+          const floor = pointFloor(mode, b.kind, b.radius, this.pxAng, fade);
+          if (F < floor) { F = floor; this.enhancement.pointFloor++; }
           const c = b.def.color;
           scr.bright = Math.max(scr.bright, F / (this.pxAng * this.pxAng * 6.283 * 0.56));
           this.points.pos.set([relS.x, relS.y, relS.z], nPts * 3);
@@ -830,7 +830,7 @@ export class Engine {
     if (this.small.mesh.visible) {
       this.small.U.days.value = sys.jd - 2451545;
       this.small.U.cam.value.copy(sceneVec(cam));
-      this.small.U.gain.value = LS * (st.get('asteroidBoost') as number);
+      this.small.U.gain.value = LS * visibilityGain(mode, st.get('asteroidBoost') as number);   // GA-SCI-01
       this.small.U.colorMode.value = st.get('asteroidColors') ? 1 : 0;
       if (!qaOff('smallcompute')) this.renderer.compute(this.small.compute);
     }
@@ -1115,11 +1115,11 @@ export class Engine {
     // total visual magnitude m = M1 + 5 log Δ + 10 log r  (Halley-type M1 ≈ 5.5; size-scaled)
     const M1 = 11 - 5 * Math.log10(Math.max(0.5, b.radius * 2));   // Halley (11 km) → 5.8, Hale–Bopp (60 km) → 2.1
     const delta = len(rel) / AU;
-    const Ftot = Math.PI * Math.pow(10, -0.4 * (M1 + 10 * Math.log10(Math.max(rAU, 0.05)) + 26.74)) * Math.pow(AU / Math.max(len(rel), 1), 2) * (st(this, 'cometBoost'));
+    const Ftot = Math.PI * Math.pow(10, -0.4 * (M1 + 10 * Math.log10(Math.max(rAU, 0.05)) + 26.74)) * Math.pow(AU / Math.max(len(rel), 1), 2) * visibilityGain(this.enhancement.mode, st(this, 'cometBoost'));
     // v3.5: the cometBoost visibility exaggeration (default 3000×) is meant for comets seen from afar; v3.4 kept it at
     // the nucleus too, so a camera a few km from 67P sat inside a 3000× coma and the frame clipped to white (80 % of
     // pixels in the v3.4 cg67p capture). The boost now fades to the physical ×1 within ~2×10⁵ km of the nucleus.
-    const near = smooth(2e3, 2e5, len(rel)); const fNear = (1 + (st(this, 'cometBoost') - 1) * near) / st(this, 'cometBoost');
+    const cb = visibilityGain(this.enhancement.mode, st(this, 'cometBoost')), near = smooth(2e3, 2e5, len(rel)); const fNear = (1 + (cb - 1) * near) / cb;
     t.U.dustFlux.value = LS * Ftot * 0.62 * act * fNear; t.U.ionFlux.value = LS * Ftot * 0.38 * act * fNear;
     t.U.size.value = Math.max(0.6, Math.min(3, b.radius / 3));
     void delta;

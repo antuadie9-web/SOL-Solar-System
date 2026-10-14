@@ -50,7 +50,7 @@ export interface PresentationParams {
   sunVeilEV: number;
 }
 export const MODE_INFO: Record<ViewMode, { label: string; short: string; note: string }> = {
-  scientific: { label: 'Scientific', short: 'SCI', note: 'One physical camera for the whole scene. Unlit surfaces stay dark; faint stars and the Milky Way disappear when a sunlit world dominates the exposure, as in real spacecraft imagery. Exposure compensation never changes the simulation.' },
+  scientific: { label: 'Scientific', short: 'SCI', note: 'One physical camera for the whole scene. Unlit surfaces stay dark; faint stars and the Milky Way disappear when a sunlit world dominates the exposure, as in real spacecraft imagery. Unresolved planets, moons, asteroids and comets are drawn at their true brightness (no findability floor or visibility boosts — use labels to find them). Exposure compensation never changes the simulation.' },
   exploration: { label: 'Exploration', short: 'EXP', note: 'Recommended. True positions, sizes, phases and sunlight. The night sky is shown with its own dark-adapted exposure, highlights are protected, and unlit hemispheres receive a faint, labelled inspection light (not sunlight) so the whole surface can be read.' },
   cinematic: { label: 'Cinematic', short: 'CIN', note: 'Art-directed presentation of the same physical scene: slightly richer contrast and sky, softer glare, a gentle vignette. Positions, sizes, phases and light directions are unchanged.' },
 };
@@ -232,4 +232,23 @@ export function meterLuminance(bodies: MeterBody[], key: number, highlightTarget
     if (h > hi) hi = h;
   }
   return { subject, highlight: hi, luminance: Math.max(subject, hi, ambient) };
+}
+
+/**
+ * v3.8.1 GA-SCI-01 (Gate A audit): findability contract. Visibility exaggerations for unresolved bodies — the per-kind
+ * minimum point brightness and the user boosts (bodyBoost, asteroidBoost, cometBoost) — are PRESENTATION transforms.
+ * Until now they were applied in every mode, so Scientific mode silently drew a 1 000 AU-distant Neptune as a 2nd-magnitude
+ * star and asteroids 4·10⁶× (default) too bright. Scientific now uses the physical value (gain 1, floor 0) everywhere;
+ * Exploration/Cinematic keep the labelled enhancement. One function so no renderer can implement its own rule.
+ */
+export type FindabilityKind = 'planet' | 'dwarf' | 'moon' | 'other';
+export const POINT_FLOOR: Record<FindabilityKind, number> = { planet: 0.22, dwarf: 0.1, moon: 0.06, other: 0 };
+export function visibilityGain(mode: ViewMode, userBoost: number): number {
+  return mode === 'scientific' ? 1 : Math.max(1, userBoost || 1);
+}
+/** display-referred minimum point flux (≈ a 2nd-magnitude star for planets); 0 in Scientific. Moons only above 500 km. */
+export function pointFloor(mode: ViewMode, kind: string, radiusKm: number, pxAng: number, fade: number): number {
+  if (mode === 'scientific') return 0;
+  const k: FindabilityKind = kind === 'planet' ? 'planet' : kind === 'dwarf' ? 'dwarf' : kind === 'moon' && radiusKm > 500 ? 'moon' : 'other';
+  return POINT_FLOOR[k] * pxAng * pxAng * 4.54 * fade;
 }
