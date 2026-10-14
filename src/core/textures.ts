@@ -13,7 +13,7 @@ import * as THREE from 'three/webgpu';
 import { decodeImage, configureMapTexture } from './assets';
 
 type Level = 'placeholder' | 'base' | 'hi';
-interface Entry { name: string; tex: THREE.Texture; srgb: boolean; level: Level; loading: Level | null; bmp: ImageBitmap | null; baseBmp: ImageBitmap | null; bytes: number; lastUse: number; hiAvailable: boolean; failed: Set<Level>; ready: Promise<void>; resolveReady: () => void }
+interface Entry { name: string; tex: THREE.Texture; srgb: boolean; level: Level; loading: Level | null; bmp: ImageBitmap | null; baseBmp: ImageBitmap | null; bytes: number; lastUse: number; hiAvailable: boolean; phColor: [number, number, number]; failed: Set<Level>; ready: Promise<void>; resolveReady: () => void }
 const MiB = 1024 * 1024;
 const estBytes = (w: number, h: number) => Math.round(w * h * 4 * 4 / 3);
 
@@ -35,10 +35,12 @@ export class TextureStore {
     let e = this.map.get(name);
     if (!e) {
       const tex = new THREE.Texture(); configureMapTexture(tex, opts.srgb);
-      (tex as any).image = this.placeholder(opts.srgb ? (opts.color ?? [0.5, 0.5, 0.5]) : [0.5, 0.5, 1.0], opts.srgb);
+      // GA-TEX-01: a linear texture with an explicit placeholder colour (data masks: white = observed) keeps it; only
+      // colourless linear maps default to the flat tangent-space normal (0.5, 0.5, 1)
+      (tex as any).image = this.placeholder(opts.color ?? (opts.srgb ? [0.5, 0.5, 0.5] : [0.5, 0.5, 1.0]), opts.srgb);
       tex.generateMipmaps = false; tex.minFilter = THREE.LinearFilter;
       let resolveReady!: () => void; const ready = new Promise<void>(r => (resolveReady = r));
-      e = { name, tex, srgb: opts.srgb, level: 'placeholder', loading: null, bmp: null, baseBmp: null, bytes: 4, lastUse: this.frame, hiAvailable: !!opts.hiAvailable, failed: new Set(), ready, resolveReady };
+      e = { name, tex, srgb: opts.srgb, level: 'placeholder', loading: null, bmp: null, baseBmp: null, bytes: 4, lastUse: this.frame, hiAvailable: !!opts.hiAvailable, phColor: opts.color ?? (opts.srgb ? [0.5, 0.5, 0.5] : [0.5, 0.5, 1.0]), failed: new Set(), ready, resolveReady };
       this.map.set(name, e);
     }
     e.lastUse = this.frame;
@@ -68,11 +70,13 @@ export class TextureStore {
       if (level === 'base') e.resolveReady();
     } finally { if (e.loading === level) e.loading = null; }
   }
+  // GA-TEX-01: demotion to placeholder keeps the entry's own placeholder colour (was grey for every map: a flat-normal map
+  // became tilted, a data mask became 50 % "no data")
   private swap(e: Entry, bmp: ImageBitmap | null, level: Level) {
     e.tex.dispose();                                   // free the GPU texture; three re-creates it at the new size
     const old = e.bmp;
     if (bmp) { (e.tex as any).image = bmp; e.tex.generateMipmaps = true; e.tex.minFilter = THREE.LinearMipmapLinearFilter; e.bytes = estBytes(bmp.width, bmp.height); }
-    else { const keep = e.baseBmp; e.baseBmp = null; keep?.close(); (e.tex as any).image = this.placeholder([0.5, 0.5, 0.5], e.srgb); e.tex.generateMipmaps = false; e.tex.minFilter = THREE.LinearFilter; e.bytes = 4; }
+    else { const keep = e.baseBmp; e.baseBmp = null; keep?.close(); (e.tex as any).image = this.placeholder(e.phColor, e.srgb); e.tex.generateMipmaps = false; e.tex.minFilter = THREE.LinearFilter; e.bytes = 4; }
     e.bmp = bmp; e.level = level; e.tex.needsUpdate = true;
     if (old && old !== e.baseBmp) old.close();          // the base bitmap is kept on the CPU side for instant demotion
     if (level === 'placeholder' && e.baseBmp) { e.baseBmp.close(); e.baseBmp = null; }
