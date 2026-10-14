@@ -209,7 +209,10 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
           // filtering c/m recovers the true observed colour at edge texels (no dark outline from black neighbours) and m
           // itself is the exact fractional coverage, so the observed→reconstruction hand-over spans one filtered texel
           const mm = samp(maps.mask).r;
-          albedo = c0.div(max(mm, 0.02)).mul(U.albedoScale);
+          // iteration 8: NO normalisation any more. Since iteration 6 the mask excludes a 0.4° rim of real (darkened) source
+          // pixels, so the texels beyond the mask edge are data, not zeros; dividing by the filtered mask assumed zeros and
+          // amplified them — (m·obs + (1−m)·rim)/m — into a 1-px light/dark hairline along the boundary (pnear probes, tier 5).
+          // The plain filtered colour mixes the observed edge with the adjacent observed rim, which is what the source holds.
           noData = max(smoothstep(0.98, 0.5, mm), m0);   // m0: true black while the mask is still its white placeholder
         }
         if (maps.recon) {
