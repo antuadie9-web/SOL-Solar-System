@@ -101,7 +101,22 @@ for name, thr in BODIES.items():
         # fill): rendered as a thin dark line along every boundary in iteration 5 even with normalised filtering. The data
         # mask therefore excludes a 0.4° rim (iteration 6) — those pixels are treated as unobserved, never altered.
         rim_px = max(1, int(round(0.4 * g.shape[0] / 180)))
-        m = ndimage.binary_erosion(ndimage.binary_opening(g > max(thr, 1.5 / 255), iterations=1), iterations=rim_px)
+        valid = ndimage.binary_opening(g > max(thr, 1.5 / 255), iterations=1)
+        # iteration 8d (ast3 acceptance): isolated sub-threshold pixels INSIDE the observed area (Voyager reseau/dropout
+        # specks, a few genuinely near-black texels) were holes in the mask, and the 0.4° rim erosion grew each speck into a
+        # ~0.8° disc of reconstruction colour — the dotted lines seen on Triton/Charon/Oberon. Holes enclosed by data and
+        # smaller than 0.3° across are part of the observed area (their few source pixels stay as they are; they are
+        # sub-pixel at every view where the hi map is resident). The large unobserved region is unaffected.
+        lab, nl = ndimage.label(~valid)
+        if nl:
+            area = ndimage.sum(np.ones_like(g), lab, index=np.arange(1, nl + 1))
+            dmax = 0.3 * g.shape[0] / 180
+            small = np.zeros(nl + 1, bool); small[1:] = area < np.pi * (dmax / 2) ** 2
+            # never fill a component touching the top/bottom rows (the polar unobserved caps)
+            edge = np.unique(np.concatenate([lab[0], lab[-1]])); small[edge] = False
+            filled = small[lab]; valid = valid | filled
+            stats[name]['specksFilled' + suf] = int(small.sum()); stats[name]['speckPixels' + suf] = int(filled.sum())
+        m = ndimage.binary_erosion(valid, iterations=rim_px)
         Image.fromarray((m * 255).astype(np.uint8)).save(os.path.join(ROOT, f'public/assets/tex/{name}_mask{suf}.jpg'), quality=98)
         stats[name]['mask' + suf] = list(g.shape)
 json.dump(stats, open(os.path.join(ROOT, 'docs/assets/provenance/partial-recon-v381.json'), 'w'), indent=1)

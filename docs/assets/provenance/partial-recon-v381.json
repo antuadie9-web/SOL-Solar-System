@@ -19,6 +19,8 @@
   "edgeRelax_deg": 4.0,
   "unobservedFraction_at_1024": 0.6197,
   "maxWeightOnObserved": 0.0118,
+  "specksFilled": 12,
+  "speckPixels": 12,
   "mask": [
    720,
    1440
@@ -44,6 +46,8 @@
   "edgeRelax_deg": 4.0,
   "unobservedFraction_at_1024": 0.6335,
   "maxWeightOnObserved": 0.0118,
+  "specksFilled": 33,
+  "speckPixels": 33,
   "mask": [
    720,
    1440
@@ -69,6 +73,8 @@
   "edgeRelax_deg": 4.0,
   "unobservedFraction_at_1024": 0.6233,
   "maxWeightOnObserved": 0.0078,
+  "specksFilled": 20,
+  "speckPixels": 20,
   "mask": [
    720,
    1440
@@ -94,10 +100,14 @@
   "edgeRelax_deg": 4.0,
   "unobservedFraction_at_1024": 0.3898,
   "maxWeightOnObserved": 0.0078,
+  "specksFilled": 1,
+  "speckPixels": 1,
   "mask": [
    1024,
    2048
   ],
+  "specksFilled_hi": 31,
+  "speckPixels_hi": 50,
   "mask_hi": [
    4096,
    8192
@@ -123,10 +133,14 @@
   "edgeRelax_deg": 4.0,
   "unobservedFraction_at_1024": 0.3259,
   "maxWeightOnObserved": 0.0078,
+  "specksFilled": 272,
+  "speckPixels": 273,
   "mask": [
    1024,
    2048
   ],
+  "specksFilled_hi": 3850,
+  "speckPixels_hi": 3875,
   "mask_hi": [
    4096,
    8192
@@ -152,10 +166,14 @@
   "edgeRelax_deg": 4.0,
   "unobservedFraction_at_1024": 0.3449,
   "maxWeightOnObserved": 0.0078,
+  "specksFilled": 30,
+  "speckPixels": 30,
   "mask": [
    1024,
    2048
   ],
+  "specksFilled_hi": 153,
+  "speckPixels_hi": 176,
   "mask_hi": [
    4096,
    8192
