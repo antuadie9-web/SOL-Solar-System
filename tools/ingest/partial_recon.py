@@ -72,7 +72,12 @@ for name, thr in BODIES.items():
     edge = edge[iy, ix]
     t = np.clip(d / EDGE_RELAX_DEG, 0, 1); t = (t * t * (3 - 2 * t))[..., None]
     guide = edge * (1 - t) + guide * t
-    guide[obs] = rgb[obs]                                      # never used on observed pixels (w = 0); keeps the JPEG smooth
+    # iteration 10 (ast3 1d889aa, texLevels: colour + mask at hi): ONLY the pixels the renderer shows as observed keep their
+    # own colour. The 0.4° rim excluded from the data mask is drawn from this guide (noData = 1, reconW ≈ 0 there), and it
+    # used to hold the raw rim pixels of the 1024-px resample — terminator-darkened and Lanczos-ringed against the black fill —
+    # i.e. a one-texel beaded line along every boundary at 1/8 of the hi map's resolution. The rim now carries the smooth
+    # edge field (normalised convolution of the shown pixels), like the gap beside it.
+    guide[shown] = rgb[shown]
     # contrast statistics of the observed core: fine (≲2 px) and mid (1°–6° band, difference of Gaussians), relative
     hp = Y - gauss_wrap(np.where(obs, Y, 0.0), 2.0) / np.maximum(gauss_wrap(obs.astype(float), 2.0), 1e-6)
     s1, s6 = H / 180.0, 6 * H / 180.0
