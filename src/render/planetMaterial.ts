@@ -213,7 +213,10 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
           // pixels, so the texels beyond the mask edge are data, not zeros; dividing by the filtered mask assumed zeros and
           // amplified them — (m·obs + (1−m)·rim)/m — into a 1-px light/dark hairline along the boundary (pnear probes, tier 5).
           // The plain filtered colour mixes the observed edge with the adjacent observed rim, which is what the source holds.
-          noData = max(smoothstep(0.98, 0.5, mm), m0);   // m0: true black while the mask is still its white placeholder
+          // iteration 8c: the hand-over completes while the filtered mask is still ≥ 0.85, so at most ~15 % of an observed
+          // sample comes from the excluded (darkened, sometimes near-black JPEG-rim) texels — with the old 0.98→0.5 ramp
+          // up to half of it did, which drew a dotted dark line along the Oberon/Triton boundaries (ast3 acceptance run).
+          noData = max(smoothstep(0.995, 0.85, mm), m0);   // m0: true black while the mask is still its white placeholder
         }
         if (maps.recon) {
           // v3.8.1 AST-381-03 (owner review REV2-02): guide field — R = smooth reconstruction weight (0 on every observed
