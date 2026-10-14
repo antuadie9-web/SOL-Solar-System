@@ -151,10 +151,21 @@ export class SolarSystem {
     pluto.ephemTier = () => SAMPLED.validity('pluto-bary', this.jd) === 'sampled' ? 'JPL Horizons sampled (interpolated)' : 'two-body barycentre orbit (approximate)';
     charon.ephemTier = () => SAMPLED.validity('charon', this.jd) === 'sampled' ? 'JPL Horizons sampled (interpolated)' : 'mean elements (approximate)';
     // Nix & Hydra are sampled about the Pluto–Charon barycentre: convert to Pluto-centred
-    for (const [id, sid] of [['sat902', 'nix'], ['sat903', 'hydra']]) {
-      const b = this.byId.get(id); if (!b || !SAMPLED.has(sid)) continue;
-      const fb = b.ephem;
-      b.ephem = (jd) => { const p = SAMPLED.pos(sid, jd); return p ? add(p, scale(chRel(jd), q)) : fb(jd); };
+    // v3.8.1 GA-EPH-03: the small moons orbit the Pluto–Charon BARYCENTRE. Their fallback was a two-body orbit about Pluto's
+    // centre (μ = Pluto + moon) from the Pluto-centred Horizons state, which ignores Pluto's ~2,100 km reflex wobble and
+    // Charon's mass: Nix was 37,000 km (0.78 orbital radii) off one week after the state epoch (docs/qa/ephem-activation.json).
+    // Now: state → barycentric, two-body about the barycentre with μ = Pluto + Charon, then back to Pluto-centred.
+    const ep = this.osc?.epochJdTdb;
+    for (const code of [902, 903, 904, 905]) {
+      const b = this.byId.get(`sat${code}`), st = this.osc?.states[code]; if (!b || !st || ep === undefined) continue;
+      const c0 = chRel(ep), cp = chRel(ep + 0.01), cm = chRel(ep - 0.01), vc = scale(sub(cp, cm), 1 / (0.02 * 86400));
+      const rB = sub(st.r as V3, scale(c0, q)), vB = sub(st.v as V3, scale(vc, q)), muB = pluto.GM + charon.GM;
+      const fbB = (jd: number) => add(propagate(rB, vB, muB, (jd - ep) * 86400)[0], scale(chRel(jd), q));
+      const sid = code === 902 ? 'nix' : code === 903 ? 'hydra' : '';
+      const tierB = `osculating state @ JD ${ep} (Horizons, two-body about the Pluto–Charon barycentre)`;
+      if (!sid || !SAMPLED.has(sid)) { b.ephem = fbB; b.ephemTier = () => tierB; continue; }
+      b.ephemTier = () => SAMPLED.validity(sid, this.jd) === 'sampled' ? 'JPL Horizons sampled (interpolated)' : SAMPLED.validity(sid, this.jd) === 'extrapolated' ? 'two-body extrapolation from Horizons window edge' : tierB;
+      b.ephem = (jd) => { const p = SAMPLED.pos(sid, jd); return p ? add(p, scale(chRel(jd), q)) : fbB(jd); };
     }
     for (const id of ['io', 'europa', 'ganymede', 'callisto']) {
       const b = this.byId.get(id)!; const t = b.ephemTier;
@@ -234,8 +245,12 @@ export class SolarSystem {
     let F: M3 = [1, 0, 0, 0, 1, 0, 0, 0, 1];
     if (s.frame === 'laplace' && s.lra !== undefined) F = mulMM(EQ2ECL, poleFrameEq(s.lra, s.ldec!));
     else if (s.frame === 'equatorial' && parent.rotModel) {
-      const [a, de] = parent.rotModel(s.epoch - J2000, (s.epoch - J2000) / 36525);
-      F = mulMM(EQ2ECL, poleFrameEq(a, de));
+      const d0 = s.epoch - J2000, [a, de, w0] = parent.rotModel(d0, d0 / 36525), w1 = parent.rotModel(d0 + 1, (d0 + 1) / 36525)[2];
+      // v3.8.1 GA-EPH-02: for a RETROGRADE rotator (IAU W decreasing: Uranus, Pluto) the IAU "north" pole is on the ecliptic-
+      // north side, opposite to the rotation/orbit angular momentum. The equatorial satellite elements describe motion about
+      // the right-hand-rule pole, so the frame uses that pole (antipode). Measured against the Horizons-sampled tracks, the
+      // anchored mean-element fallback for Ariel and Miranda otherwise ran BACKWARDS: 74° / 149° off after one day.
+      F = mulMM(EQ2ECL, (w1 ?? 0) < (w0 ?? 0) ? poleFrameEq((a + 180) % 360, -de) : poleFrameEq(a, de));
     }
     const n = 360 / s.P, ci = Math.cos(deg(s.i));
     const wd = s.Pw ? 360 / (s.Pw * 365.25) : 0, Od = s.Pn ? -Math.sign(ci || 1) * 360 / (s.Pn * 365.25) : 0;

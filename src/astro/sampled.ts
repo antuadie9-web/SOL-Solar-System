@@ -45,10 +45,15 @@ export class SampledEphemeris {
   private covering(id: string, jd: number): Track | undefined {
     return this.tracks.get(id)?.find(t => t.P && jd >= t.meta.t0 && jd <= t.meta.t0 + (t.meta.n - 1) * t.meta.step);
   }
+  /** a window covering jd exists but its payload has not streamed in yet */
+  pending(id: string, jd: number): boolean {
+    return !!this.tracks.get(id)?.some(t => !t.P && jd >= t.meta.t0 && jd <= t.meta.t0 + (t.meta.n - 1) * t.meta.step);
+  }
   /** which tier answers at jd: 'sampled' (primary), 'sampled-ext' (secondary long window), 'extrapolated', 'unavailable' */
   tier(id: string, jd: number): Validity | 'sampled-ext' {
     const list = this.tracks.get(id); if (!list) return 'unavailable';
     const c = this.covering(id, jd); if (c) return c === list[0] ? 'sampled' : 'sampled-ext';
+    if (this.pending(id, jd)) return 'unavailable';   // GA-EPH-01: caller's fallback answers (and labels itself) until the payload lands
     return list.some(t => t.meta.edge) ? 'extrapolated' : 'unavailable';
   }
   validity(id: string, jd: number): Validity { const t = this.tier(id, jd); return t === 'sampled-ext' ? 'sampled' : t; }
@@ -56,6 +61,11 @@ export class SampledEphemeris {
   pos(id: string, jd: number): V3 | null {
     const list = this.tracks.get(id); if (!list) return null;
     const t = this.covering(id, jd);
+    // v3.8.1 GA-EPH-01: while the payload of a window that CONTAINS jd is still streaming, answer null so the caller's own
+    // fallback model (Lieske E5, ELP, J2 mean elements anchored to Horizons, VSOP87, …) is used. Previously the edge state of
+    // that same window was two-body-propagated across up to ~25 years (2000 → 2026), putting moons up to 2–4 orbital radii
+    // (and Charon's system barycentre millions of km) away until the payload arrived — then they jumped (docs/qa/ephem-activation.json).
+    if (!t && this.pending(id, jd)) return null;
     if (!t) {
       // nearest edge over all windows that carry edge states
       let best: { r: V3; v: V3; dt: number; mu: number } | null = null;
