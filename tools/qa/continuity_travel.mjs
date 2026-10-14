@@ -10,7 +10,7 @@ const arg = (k, d) => { const i = process.argv.indexOf('--' + k); return i > 0 ?
 const exe = fs.existsSync('/usr/lib/chromium/chromium') ? '/usr/lib/chromium/chromium' : 'chromium';
 const url = arg('url', 'http://localhost:4175/') + '?qa-off=small,smallcompute&qa-software-gpu=1';
 const out = arg('out', 'qa-travel'); fs.mkdirSync(out, { recursive: true });
-const ALL = ['sun-f20-auto', 'sun-f20-fixed', 'sun-f50-auto', 'rings-pan', 'sun-far-auto'];   // sun-far: 100 AU → 1 pc (point regime)
+const ALL = ['sun-f20-auto', 'sun-f20-fixed', 'sun-f50-auto', 'rings-pan', 'sun-far-auto', 'titan-handover', 'titan-handover-sci'];   // titan: planet/moon point↔disc hand-over next to a bright Saturn (CONT-14)   // sun-far: 100 AU → 1 pc (point regime)
 const seqs = (arg('seq', ALL.join(','))).split(',');
 const W = 960, H = 540;
 const browser = await chromium.launch({ executablePath: exe, headless: true, args: ['--enable-unsafe-webgpu', '--ignore-gpu-blocklist', '--enable-features=Vulkan', '--use-vulkan=swiftshader', '--use-angle=vulkan', '--enable-unsafe-swiftshader', '--disable-gpu-watchdog', '--disable-features=DawnSIRepsUseClientProvidedSemaphores'] });
@@ -22,7 +22,7 @@ await page.evaluate(() => { const s = window.__sol; s.settings.set('onboarded', 
 for (const seq of seqs) {
   fs.mkdirSync(`${out}/${seq}`, { recursive: true });
   const rows = [];
-  const N = seq === 'rings-pan' ? 60 : seq === 'sun-far-auto' ? 48 : 90;
+  const N = seq === 'rings-pan' ? 60 : seq === 'sun-far-auto' ? 48 : seq.startsWith('titan') ? 40 : 90;
   for (let i = 0; i < N; i++) {
     const info = await page.evaluate(async ({ seq, i, N }) => {
       const s = window.__sol, r = s.engine.rig, AU = 149597870.7;
@@ -40,6 +40,23 @@ for (const seq of seqs) {
         await frames(3); r.pos = pos; r.quat.copy(r.lookQuat(pos, sun.pos, [0, 0, 1]));
         const d = s.engine.diagnostics();
         return { i, au, fov, fixed, ev: d.exposureEV, skyEV: d.view?.skyEV, sunGlare: d.sunGlare };
+      } else if (seq.startsWith('titan')) {
+        // CONT-14: Titan recedes from 9 px to 0.5 px radius (log-uniform, 20° FOV, 540 px high) while sunlit Saturn stays in
+        // frame 1.5–4° away, so the scene exposure is set by Saturn and the sky exposure differs — the point/disc hand-over
+        // (1.2–3.5 px) must not change Titan's integrated displayed signal by more than its distance law.
+        if (i === 0) { s.settings.set('autoExposure', true); s.settings.set('viewMode', seq.endsWith('sci') ? 'scientific' : 'exploration'); }
+        const ti = s.sys.get('titan'), sat = s.sys.get('saturn'), sun = s.sys.sun;
+        const u = nrm([ti.pos[0] - sat.pos[0], ti.pos[1] - sat.pos[1], ti.pos[2] - sat.pos[2]]);
+        const ts = nrm([sun.pos[0] - ti.pos[0], sun.pos[1] - ti.pos[1], sun.pos[2] - ti.pos[2]]), dd = ts[0] * u[0] + ts[1] * u[1] + ts[2] * u[2];
+        const w = nrm([ts[0] - dd * u[0], ts[1] - dd * u[1], ts[2] - dd * u[2]]), c = Math.cos(25 * Math.PI / 180), sn = Math.sin(25 * Math.PI / 180);
+        const dir = [u[0] * c + w[0] * sn, u[1] * c + w[1] * sn, u[2] * c + w[2] * sn];
+        const pxAng = (20 * Math.PI / 180) / 540, rpx = 9 * Math.pow(0.5 / 9, i / (N - 1)), km = 2574.7 / (rpx * pxAng);
+        const pos = [ti.pos[0] + dir[0] * km, ti.pos[1] + dir[1] * km, ti.pos[2] + dir[2] * km];
+        r.tFov = r.fov = 20; r.target = ti; r.pos = pos; r.quat.copy(r.lookQuat(pos, ti.pos, [0, 0, 1]));
+        if (i === 0) for (let k = 0; k < 4; k++) { s.engine.settleExposure(); await frames(2); }
+        await frames(3); r.pos = pos; r.quat.copy(r.lookQuat(pos, ti.pos, [0, 0, 1]));
+        const d = s.engine.diagnostics(), sc = s.engine.screen.get('titan');
+        return { i, rpx, km, ev: d.exposureEV, skyEV: d.view?.skyEV, mode: d.view?.mode, scr: sc ? { x: sc.x, y: sc.y, r: sc.r, bright: sc.bright } : null };
       } else {
         if (i === 0) s.settings.set('autoExposure', true);
         // camera 3.2 Saturn radii out (v2: 8.5 R left the rings small) on the sunward side of the terminator plane, 18° above the lit ring face; the view
@@ -68,7 +85,7 @@ for (const seq of seqs) {
     // software screenshots cost ~30 s: every step is rendered and logged (continuous motion), every SHOT-th step is imaged
     const SHOT = seq === 'rings-pan' ? 6 : 10;
     // point regime: a 33×33 centre clip every step (cheap) — integrated and peak displayed Sun signal vs distance
-    if (seq === 'sun-far-auto') await page.screenshot({ path: `${out}/${seq}/c${String(i).padStart(3, '0')}.png`, clip: { x: W / 2 - 16, y: H / 2 - 16, width: 33, height: 33 }, timeout: 180000 });
+    if (seq === 'sun-far-auto' || seq.startsWith('titan')) await page.screenshot({ path: `${out}/${seq}/c${String(i).padStart(3, '0')}.png`, clip: { x: W / 2 - 16, y: H / 2 - 16, width: 33, height: 33 }, timeout: 180000 });
     if (i % SHOT === 0 || i === N - 1) await page.screenshot({ path: `${out}/${seq}/${String(i).padStart(3, '0')}.png`, timeout: 180000 });
     rows.push(info);
   }

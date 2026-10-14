@@ -1,0 +1,758 @@
+{
+ "src/env.d.ts": {
+  "lines": 2,
+  "imports": [],
+  "exports": 0,
+  "numLiterals": 0,
+  "todo": 0,
+  "fanIn": 0
+ },
+ "src/main.ts": {
+  "lines": 203,
+  "imports": [
+   "src/astro/sampled.ts",
+   "src/astro/system.ts",
+   "src/astro/time.ts",
+   "src/contracts/catalog.ts",
+   "src/core/assets.ts",
+   "src/core/clock.ts",
+   "src/core/gpu.ts",
+   "src/core/settings.ts",
+   "src/core/textures.ts",
+   "src/data/deepSky.ts",
+   "src/galaxy/photometry.ts",
+   "src/galaxy/stellarRadii.ts",
+   "src/render/engine.ts",
+   "src/render/points.ts",
+   "src/ui/ui.ts"
+  ],
+  "exports": 0,
+  "numLiterals": 15,
+  "todo": 0,
+  "fanIn": 0
+ },
+ "src/astro/constants.ts": {
+  "lines": 16,
+  "imports": [],
+  "exports": 15,
+  "numLiterals": 10,
+  "todo": 0,
+  "fanIn": 10
+ },
+ "src/astro/frames.ts": {
+  "lines": 29,
+  "imports": [
+   "src/astro/constants.ts",
+   "src/astro/vec.ts"
+  ],
+  "exports": 9,
+  "numLiterals": 9,
+  "todo": 0,
+  "fanIn": 4
+ },
+ "src/astro/galilean.ts": {
+  "lines": 337,
+  "imports": [],
+  "exports": 1,
+  "numLiterals": 290,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/astro/kepler.ts": {
+  "lines": 95,
+  "imports": [
+   "src/astro/constants.ts",
+   "src/astro/vec.ts"
+  ],
+  "exports": 11,
+  "numLiterals": 7,
+  "todo": 0,
+  "fanIn": 2
+ },
+ "src/astro/moon.ts": {
+  "lines": 13,
+  "imports": [
+   "src/astro/precession.ts",
+   "src/astro/vec.ts"
+  ],
+  "exports": 1,
+  "numLiterals": 0,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/astro/planets.ts": {
+  "lines": 37,
+  "imports": [
+   "src/astro/constants.ts",
+   "src/astro/vec.ts"
+  ],
+  "exports": 3,
+  "numLiterals": 95,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/astro/precession.ts": {
+  "lines": 20,
+  "imports": [
+   "src/astro/vec.ts"
+  ],
+  "exports": 2,
+  "numLiterals": 20,
+  "todo": 0,
+  "fanIn": 2
+ },
+ "src/astro/rotation.ts": {
+  "lines": 83,
+  "imports": [
+   "src/astro/constants.ts",
+   "src/astro/frames.ts",
+   "src/astro/vec.ts"
+  ],
+  "exports": 5,
+  "numLiterals": 270,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/astro/sampled.ts": {
+  "lines": 93,
+  "imports": [
+   "src/astro/twobody.ts",
+   "src/astro/vec.ts"
+  ],
+  "exports": 6,
+  "numLiterals": 0,
+  "todo": 0,
+  "fanIn": 2
+ },
+ "src/astro/solar.ts": {
+  "lines": 3,
+  "imports": [],
+  "exports": 1,
+  "numLiterals": 4,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/astro/system.ts": {
+  "lines": 408,
+  "imports": [
+   "src/astro/constants.ts",
+   "src/astro/frames.ts",
+   "src/astro/galilean.ts",
+   "src/astro/kepler.ts",
+   "src/astro/moon.ts",
+   "src/astro/planets.ts",
+   "src/astro/precession.ts",
+   "src/astro/rotation.ts",
+   "src/astro/sampled.ts",
+   "src/astro/twobody.ts",
+   "src/astro/vec.ts",
+   "src/data/catalog.ts",
+   "src/data/smallMoons.ts"
+  ],
+  "exports": 8,
+  "numLiterals": 86,
+  "todo": 0,
+  "fanIn": 5
+ },
+ "src/astro/time.ts": {
+  "lines": 74,
+  "imports": [],
+  "exports": 15,
+  "numLiterals": 25,
+  "todo": 0,
+  "fanIn": 4
+ },
+ "src/astro/twobody.ts": {
+  "lines": 38,
+  "imports": [
+   "src/astro/vec.ts"
+  ],
+  "exports": 1,
+  "numLiterals": 1,
+  "todo": 0,
+  "fanIn": 2
+ },
+ "src/astro/vec.ts": {
+  "lines": 26,
+  "imports": [],
+  "exports": 20,
+  "numLiterals": 0,
+  "todo": 0,
+  "fanIn": 13
+ },
+ "src/contracts/astroObject.ts": {
+  "lines": 106,
+  "imports": [
+   "src/contracts/frames.ts"
+  ],
+  "exports": 12,
+  "numLiterals": 1,
+  "todo": 0,
+  "fanIn": 0
+ },
+ "src/contracts/catalog.ts": {
+  "lines": 122,
+  "imports": [],
+  "exports": 8,
+  "numLiterals": 1,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/contracts/evidence.ts": {
+  "lines": 34,
+  "imports": [],
+  "exports": 5,
+  "numLiterals": 4,
+  "todo": 0,
+  "fanIn": 0
+ },
+ "src/contracts/frames.ts": {
+  "lines": 126,
+  "imports": [
+   "src/contracts/precision.ts"
+  ],
+  "exports": 23,
+  "numLiterals": 17,
+  "todo": 0,
+  "fanIn": 4
+ },
+ "src/contracts/lod.ts": {
+  "lines": 48,
+  "imports": [],
+  "exports": 10,
+  "numLiterals": 7,
+  "todo": 0,
+  "fanIn": 2
+ },
+ "src/contracts/precision.ts": {
+  "lines": 45,
+  "imports": [],
+  "exports": 7,
+  "numLiterals": 6,
+  "todo": 0,
+  "fanIn": 3
+ },
+ "src/core/assets.ts": {
+  "lines": 53,
+  "imports": [],
+  "exports": 9,
+  "numLiterals": 0,
+  "todo": 0,
+  "fanIn": 3
+ },
+ "src/core/clock.ts": {
+  "lines": 22,
+  "imports": [
+   "src/astro/time.ts"
+  ],
+  "exports": 3,
+  "numLiterals": 0,
+  "todo": 0,
+  "fanIn": 2
+ },
+ "src/core/gpu.ts": {
+  "lines": 20,
+  "imports": [],
+  "exports": 4,
+  "numLiterals": 0,
+  "todo": 0,
+  "fanIn": 2
+ },
+ "src/core/settings.ts": {
+  "lines": 73,
+  "imports": [],
+  "exports": 7,
+  "numLiterals": 5,
+  "todo": 0,
+  "fanIn": 3
+ },
+ "src/core/textures.ts": {
+  "lines": 103,
+  "imports": [
+   "src/core/assets.ts"
+  ],
+  "exports": 1,
+  "numLiterals": 12,
+  "todo": 0,
+  "fanIn": 2
+ },
+ "src/data/atmospheres.ts": {
+  "lines": 29,
+  "imports": [],
+  "exports": 3,
+  "numLiterals": 18,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/data/catalog.ts": {
+  "lines": 268,
+  "imports": [],
+  "exports": 5,
+  "numLiterals": 898,
+  "todo": 0,
+  "fanIn": 4
+ },
+ "src/data/deepSky.ts": {
+  "lines": 27,
+  "imports": [],
+  "exports": 5,
+  "numLiterals": 31,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/data/events.ts": {
+  "lines": 22,
+  "imports": [
+   "src/astro/time.ts"
+  ],
+  "exports": 2,
+  "numLiterals": 1,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/data/mapTruth.ts": {
+  "lines": 17,
+  "imports": [],
+  "exports": 3,
+  "numLiterals": 0,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/data/rings.ts": {
+  "lines": 154,
+  "imports": [],
+  "exports": 10,
+  "numLiterals": 206,
+  "todo": 0,
+  "fanIn": 3
+ },
+ "src/data/smallMoons.ts": {
+  "lines": 145,
+  "imports": [],
+  "exports": 9,
+  "numLiterals": 221,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/galaxy/milkyWayModel.ts": {
+  "lines": 68,
+  "imports": [
+   "src/contracts/frames.ts"
+  ],
+  "exports": 9,
+  "numLiterals": 49,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/galaxy/photometry.ts": {
+  "lines": 23,
+  "imports": [],
+  "exports": 5,
+  "numLiterals": 33,
+  "todo": 0,
+  "fanIn": 2
+ },
+ "src/galaxy/starPrecision.ts": {
+  "lines": 52,
+  "imports": [],
+  "exports": 7,
+  "numLiterals": 7,
+  "todo": 0,
+  "fanIn": 0
+ },
+ "src/galaxy/stars3d.ts": {
+  "lines": 91,
+  "imports": [
+   "src/galaxy/photometry.ts",
+   "src/render/points.ts"
+  ],
+  "exports": 3,
+  "numLiterals": 18,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/galaxy/stellarRadii.ts": {
+  "lines": 29,
+  "imports": [],
+  "exports": 6,
+  "numLiterals": 26,
+  "todo": 0,
+  "fanIn": 2
+ },
+ "src/navigation/cameraState.ts": {
+  "lines": 64,
+  "imports": [],
+  "exports": 5,
+  "numLiterals": 5,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/qa/bench.ts": {
+  "lines": 86,
+  "imports": [],
+  "exports": 3,
+  "numLiterals": 16,
+  "todo": 0,
+  "fanIn": 0
+ },
+ "src/render/atmoModel.ts": {
+  "lines": 234,
+  "imports": [],
+  "exports": 27,
+  "numLiterals": 44,
+  "todo": 0,
+  "fanIn": 3
+ },
+ "src/render/atmoWorker.ts": {
+  "lines": 18,
+  "imports": [
+   "src/render/atmoModel.ts",
+   "src/render/halfFloat.ts"
+  ],
+  "exports": 0,
+  "numLiterals": 3,
+  "todo": 0,
+  "fanIn": 0
+ },
+ "src/render/atmosphere.ts": {
+  "lines": 174,
+  "imports": [
+   "src/data/catalog.ts",
+   "src/render/atmoModel.ts"
+  ],
+  "exports": 7,
+  "numLiterals": 81,
+  "todo": 0,
+  "fanIn": 2
+ },
+ "src/render/camera.ts": {
+  "lines": 248,
+  "imports": [
+   "src/astro/system.ts",
+   "src/astro/vec.ts",
+   "src/navigation/cameraState.ts"
+  ],
+  "exports": 2,
+  "numLiterals": 42,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/render/comets.ts": {
+  "lines": 69,
+  "imports": [
+   "src/render/geometry.ts",
+   "src/render/points.ts"
+  ],
+  "exports": 1,
+  "numLiterals": 33,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/render/corona.ts": {
+  "lines": 77,
+  "imports": [
+   "src/astro/solar.ts",
+   "src/render/shaderlib.ts"
+  ],
+  "exports": 3,
+  "numLiterals": 68,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/render/engine.ts": {
+  "lines": 1314,
+  "imports": [
+   "src/astro/constants.ts",
+   "src/astro/frames.ts",
+   "src/astro/kepler.ts",
+   "src/astro/system.ts",
+   "src/astro/vec.ts",
+   "src/contracts/lod.ts",
+   "src/core/assets.ts",
+   "src/core/gpu.ts",
+   "src/core/settings.ts",
+   "src/core/textures.ts",
+   "src/data/rings.ts",
+   "src/galaxy/stars3d.ts",
+   "src/galaxy/stellarRadii.ts",
+   "src/render/atmoModel.ts",
+   "src/render/atmosphere.ts",
+   "src/render/camera.ts",
+   "src/render/comets.ts",
+   "src/render/corona.ts",
+   "src/render/geometry.ts",
+   "src/render/guides.ts",
+   "src/render/identity.ts",
+   "src/render/lines.ts",
+   "src/render/planetMaterial.ts",
+   "src/render/plumes.ts",
+   "src/render/points.ts",
+   "src/render/presentation.ts",
+   "src/render/ringParticles.ts",
+   "src/render/ringSystem.ts",
+   "src/render/sky.ts",
+   "src/render/smallbodies.ts",
+   "src/render/starDisc.ts",
+   "src/render/sun.ts",
+   "src/terrain/terrain.ts",
+   "src/terrain/tiles.ts"
+  ],
+  "exports": 6,
+  "numLiterals": 347,
+  "todo": 0,
+  "fanIn": 2
+ },
+ "src/render/geometry.ts": {
+  "lines": 182,
+  "imports": [
+   "src/render/identity.ts"
+  ],
+  "exports": 6,
+  "numLiterals": 80,
+  "todo": 0,
+  "fanIn": 4
+ },
+ "src/render/guides.ts": {
+  "lines": 60,
+  "imports": [],
+  "exports": 8,
+  "numLiterals": 14,
+  "todo": 0,
+  "fanIn": 2
+ },
+ "src/render/halfFloat.ts": {
+  "lines": 16,
+  "imports": [],
+  "exports": 1,
+  "numLiterals": 0,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/render/identity.ts": {
+  "lines": 106,
+  "imports": [
+   "src/data/catalog.ts"
+  ],
+  "exports": 9,
+  "numLiterals": 111,
+  "todo": 0,
+  "fanIn": 4
+ },
+ "src/render/lines.ts": {
+  "lines": 110,
+  "imports": [
+   "src/contracts/precision.ts"
+  ],
+  "exports": 4,
+  "numLiterals": 21,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/render/planetMaterial.ts": {
+  "lines": 410,
+  "imports": [
+   "src/data/catalog.ts",
+   "src/render/atmosphere.ts",
+   "src/render/identity.ts",
+   "src/render/shaderlib.ts"
+  ],
+  "exports": 3,
+  "numLiterals": 408,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/render/plumes.ts": {
+  "lines": 124,
+  "imports": [],
+  "exports": 5,
+  "numLiterals": 44,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/render/points.ts": {
+  "lines": 145,
+  "imports": [],
+  "exports": 9,
+  "numLiterals": 91,
+  "todo": 0,
+  "fanIn": 6
+ },
+ "src/render/presentation.ts": {
+  "lines": 254,
+  "imports": [],
+  "exports": 31,
+  "numLiterals": 83,
+  "todo": 0,
+  "fanIn": 3
+ },
+ "src/render/ringParticles.ts": {
+  "lines": 103,
+  "imports": [
+   "src/render/shaderlib.ts"
+  ],
+  "exports": 4,
+  "numLiterals": 41,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/render/ringSystem.ts": {
+  "lines": 336,
+  "imports": [
+   "src/data/rings.ts",
+   "src/render/geometry.ts"
+  ],
+  "exports": 15,
+  "numLiterals": 103,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/render/shaderlib.ts": {
+  "lines": 123,
+  "imports": [],
+  "exports": 11,
+  "numLiterals": 117,
+  "todo": 0,
+  "fanIn": 4
+ },
+ "src/render/shapeWorker.ts": {
+  "lines": 11,
+  "imports": [
+   "src/render/geometry.ts"
+  ],
+  "exports": 0,
+  "numLiterals": 1,
+  "todo": 0,
+  "fanIn": 0
+ },
+ "src/render/sky.ts": {
+  "lines": 86,
+  "imports": [
+   "src/astro/frames.ts",
+   "src/astro/vec.ts",
+   "src/render/points.ts",
+   "src/render/presentation.ts"
+  ],
+  "exports": 3,
+  "numLiterals": 22,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/render/smallbodies.ts": {
+  "lines": 71,
+  "imports": [
+   "src/astro/constants.ts",
+   "src/render/points.ts"
+  ],
+  "exports": 3,
+  "numLiterals": 63,
+  "todo": 0,
+  "fanIn": 2
+ },
+ "src/render/starDisc.ts": {
+  "lines": 32,
+  "imports": [],
+  "exports": 1,
+  "numLiterals": 11,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/render/sun.ts": {
+  "lines": 364,
+  "imports": [
+   "src/astro/constants.ts",
+   "src/render/shaderlib.ts"
+  ],
+  "exports": 14,
+  "numLiterals": 387,
+  "todo": 0,
+  "fanIn": 2
+ },
+ "src/terrain/terrain.ts": {
+  "lines": 236,
+  "imports": [
+   "src/contracts/frames.ts",
+   "src/contracts/lod.ts",
+   "src/terrain/tiles.ts"
+  ],
+  "exports": 1,
+  "numLiterals": 14,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/terrain/tiles.ts": {
+  "lines": 108,
+  "imports": [],
+  "exports": 9,
+  "numLiterals": 10,
+  "todo": 0,
+  "fanIn": 2
+ },
+ "src/ui/format.ts": {
+  "lines": 36,
+  "imports": [
+   "src/astro/constants.ts",
+   "src/contracts/precision.ts"
+  ],
+  "exports": 9,
+  "numLiterals": 7,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/ui/galmap.ts": {
+  "lines": 131,
+  "imports": [
+   "src/astro/system.ts",
+   "src/contracts/frames.ts",
+   "src/galaxy/milkyWayModel.ts"
+  ],
+  "exports": 3,
+  "numLiterals": 34,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/ui/store.ts": {
+  "lines": 21,
+  "imports": [],
+  "exports": 3,
+  "numLiterals": 0,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/ui/tours.ts": {
+  "lines": 49,
+  "imports": [],
+  "exports": 3,
+  "numLiterals": 7,
+  "todo": 0,
+  "fanIn": 1
+ },
+ "src/ui/ui.ts": {
+  "lines": 1127,
+  "imports": [
+   "src/astro/constants.ts",
+   "src/astro/system.ts",
+   "src/astro/time.ts",
+   "src/astro/vec.ts",
+   "src/core/clock.ts",
+   "src/core/settings.ts",
+   "src/data/atmospheres.ts",
+   "src/data/events.ts",
+   "src/data/mapTruth.ts",
+   "src/data/rings.ts",
+   "src/render/engine.ts",
+   "src/render/guides.ts",
+   "src/render/identity.ts",
+   "src/render/presentation.ts",
+   "src/render/smallbodies.ts",
+   "src/render/sun.ts",
+   "src/ui/format.ts",
+   "src/ui/galmap.ts",
+   "src/ui/store.ts",
+   "src/ui/tours.ts"
+  ],
+  "exports": 2,
+  "numLiterals": 102,
+  "todo": 0,
+  "fanIn": 1
+ }
+}
