@@ -197,3 +197,17 @@ Classification: **D** = confirmed defect, **P** = visual preference / presentati
 | RING-381-01 continuous pan Saturn→lit rings→ring shadow→ansa→sky (3.2 R) | PASS after RING-381-02: EV 6.2–6.95 on rings, smooth rise to 14.6 EV, max 0.96 EV/step; exit-sliver over-exposure fixed. Residual: a few-px ring corner may clip at the very edge (minor). |
 | AST-381-03 boundaries (iter 6) | IMPROVED, OPEN: dark outline largely removed; residual faint dotted edge (Triton) and a lighter band inside the reconstruction; procedural crater rims alias as dotted rings at Voyager-epoch scale. |
 | AST-381-03 iter 7–8b | crater-function rim step (dotted rings, all procedural bodies); guide began at core colour beside darkened rims (Pluto −40 %, Charon −24 %); detail-frequency step at mask edge; c/m normalisation amplifying rim data | FIX: continuous crater height; edge-colour guide relaxing over 4°; detail ∝ reconW; normalisation removed. Matched cp2/current acceptance queued (ast3_queue.sh) |
+
+### Gate A (independent architecture audit, 2026-10-14) — see docs/v3.8.1/GATE_A_AUDIT.md
+| ID | Class | Finding | Status |
+|---|---|---|---|
+| GA-SCI-01 | D (science) | point brightness floor + body/asteroid/comet visibility boosts applied in Scientific mode | FIXED bdce6bd (findability contract, 3 tests) |
+| GA-EPH-01 | D (science, continuity) | pending ephemeris windows answered with a ~25-yr two-body edge extrapolation; 471 bodies jumped on payload activation | FIXED 9d1e515 (75 bodies, ≤ 0.09 orbital radii; ephem_activation.ts) |
+| GA-EPH-02 | D (science) | equatorial satellite frames of retrograde rotators (Uranus, Pluto) ran backwards (Ariel/Miranda fallback 74°/149° off after 1 d) | FIXED 9d1e515 |
+| GA-EPH-03 | D (science) | Pluto small-moon fallback orbited Pluto's centre, not the barycentre (Nix 37,000 km after 7 d) | FIXED 9d1e515 (2,800 km) |
+| GA-EPH-04 | U | comets / Pluto barycentre fallbacks still differ by 10⁶–10⁷ km until their payload lands | OPEN (P2) |
+| GA-ARCH-01 | U | WebGPU-only depends on private `_getFallback` | CONTROLLED: three pinned 0.186.1, post-init GPUDevice assertion, test pins the field |
+| GA-TEX-01 | D | linear-texture placeholders ignored their colour (masks = 0.5 "half no-data" while streaming / after demotion; demoted normal maps grey) | FIXED 1d889aa |
+| GA-RES-01 | U (perf) | body views never released in long sessions | OPEN (needs HW long-session data) |
+| CONT-14 | U | unresolved planets/moons on SKY exposure vs resolved disc on SCENE exposure; ×1.6 point colour factor | TEST PENDING (titan-handover travel) |
+| AST-381-03 iter 8c–10 | D | residual beaded boundary line: 8c–9 (ramp, luminance test, speck holes, signed-distance mask) were not the cause; ROOT CAUSE (iter 10): the excluded 0.4° rim is drawn from the guide, which held raw Lanczos-ringed rim pixels | FIXED 4e3d06f (quick matched capture Triton/Charon); six-body acceptance running |
