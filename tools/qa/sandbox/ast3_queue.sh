@@ -15,7 +15,7 @@ if ! curl -s -o /dev/null localhost:4177/; then
 fi
 /tmp/snap.sh > /dev/null; sleep 5
 FAR="moon381-ariel-1986,moon381-titania-1986,moon381-oberon-1986,partial-triton-north,partial-pluto-south-1988,partial-charon-south-1988"
-for n in ariel titania oberon triton pluto charon; do NEAR="pnear-$n-az20,pnear-$n-az70"
+for n in oberon triton charon pluto ariel titania; do NEAR="pnear-$n-az20,pnear-$n-az70"
   [ -f $Q/ast3-$H-$n.done ] || cap 4175 ast3-$H-$n "$NEAR" "current $H"
   [ -f $Q/ast3-cp2-$n.done ] || cap 4177 ast3-cp2-$n "$NEAR" "v3.8.1-cp2 f4974e8"
 done
