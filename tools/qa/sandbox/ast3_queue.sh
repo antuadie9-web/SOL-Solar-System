@@ -3,7 +3,8 @@
 # far (3.2 R, existing views) + PARTIALNEAR (1.7 R at boundary latitude, az 20/70). Resumable: one .done per stage;
 # current-build stages are keyed by commit hash so images from different builds are never mixed.
 Q=/workspace/projects/8d0bae14-e35b-4bd2-a140-a931eb700554/work/qa; R=/workspace/projects/8d0bae14-e35b-4bd2-a140-a931eb700554/work/src380/sol-solar-system-v3.8-final; cd $R
-H=$(git rev-parse --short HEAD); [ -z "$(git status --porcelain src public)" ] || { echo "dirty tree"; exit 1; }
+H=$(git log -1 --format=%h -- src public);   # last commit touching the build inputs
+ [ -z "$(git status --porcelain src public)" ] || { echo "dirty tree"; exit 1; }
 cap() { DPR=1 VIEWS="$3" timeout 4000 node tools/qa/smoke.mjs --software --url "http://localhost:$1/?qa-off=small,smallcompute" --script golden38 --out $Q/$2 --wait 180000 --w 1280 --h 720 > $Q/$2.log 2>&1 && echo "$4" > $Q/$2/BUILD && echo DONE > $Q/$2.done; }
 if ! curl -s -o /dev/null localhost:4177/; then
   rm -rf /tmp/cp2tag && mkdir -p /tmp/cp2tag && git archive v3.8.1-cp2 -- src index.html vite.config.ts package.json tsconfig.json | tar -x -C /tmp/cp2tag && ln -sfn $R/node_modules /tmp/cp2tag/node_modules
