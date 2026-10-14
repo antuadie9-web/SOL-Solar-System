@@ -113,7 +113,10 @@ fn craters(p: vec3<f32>, scale: f32) -> f32 {
     if (d < 1.6) {
       let bowl = d * d - 1.0;
       let rim = 0.35 * exp(-pow((d - 1.0) * 5.0, 2.0));
-      h += select(rim * 0.6, bowl * 0.6 + rim, d < 1.0) * rad;
+      // v3.8.1 AST-381-03/04: continuous at the rim crest (d = 1). Until v3.8.1 the outer branch was rim·0.6, a step of
+      // 0.14·rad in height exactly on the rim; screen-derivative bump mapping turned that step into the dotted crater
+      // outlines seen on every procedural surface (reconstructions, small moons). Same rim height (0.35), same bowl.
+      h += select(rim, bowl * 0.6 + rim, d < 1.0) * rad;
     }
   }}}
   return h;
