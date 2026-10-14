@@ -116,3 +116,9 @@ numerical trace or unit test, **HW** = owner-supplied real-GPU evidence (none ye
   8e ROOT CAUSE — the 0.4° rim erosion of the data mask grew every sub-threshold speck inside the observed area (reseau/dropouts) into a ~0.8° hole of
   reconstruction colour. Specks < 0.3° enclosed by data are now part of the observed area (counts in partial-recon-v381.json; Pluto hi 3,850 specks).
 - Gate A audit: docs/v3.8.1/GATE_A_AUDIT.md (inventory, dependency map, risk findings GA-SCI-01, GA-EPH-01..04, GA-ARCH-01/02, GA-RES-01, GA-PHOT-01).
+
+## 2026-10-14 (afternoon) — AST-381-03 acceptance, QA-381-01
+- Owner review: cp2 baseline linked working-tree assets → QA-381-01. ast3_queue.sh now serves cp2 and the candidate from immutable git-archive snapshots with blob manifests, re-verified before every batch; completion requires every image of the exact commit. Contaminated cp2 captures (Ariel/Oberon/Titania near, far) kept as *.contaminated-assets; Triton/Pluto cp2 kept (no loaded file differs).
+- Six-body A/B (cp2 vs 4e3d06f), near az20/70 + far, SW WebGPU: boundary artefacts gone; high-pass isolated-pixel count 2–9× lower. AST-381-03 CLOSED (SW). Report docs/v3.8.1/AST-381-03_ACCEPTANCE.md; sheet work/qa/sheets/ast3-acceptance-4e3d06f.png.
+- New AST-381-04: Triton recon neutral grey vs observed hue; crater-dominated recon morphology wrong for Triton; faint procedural rim circles.
+- Next: CONT-14 titan-handover measurement, sun-far-auto, GA-EPH-04, then WP-E atmospheres (Titan haze) / WP-F rings.

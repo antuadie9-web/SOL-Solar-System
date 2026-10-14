@@ -211,3 +211,6 @@ Classification: **D** = confirmed defect, **P** = visual preference / presentati
 | GA-RES-01 | U (perf) | body views never released in long sessions | OPEN (needs HW long-session data) |
 | CONT-14 | U | unresolved planets/moons on SKY exposure vs resolved disc on SCENE exposure; ×1.6 point colour factor | TEST PENDING (titan-handover travel) |
 | AST-381-03 iter 8c–10 | D | residual beaded boundary line: 8c–9 (ramp, luminance test, speck holes, signed-distance mask) were not the cause; ROOT CAUSE (iter 10): the excluded 0.4° rim is drawn from the guide, which held raw Lanczos-ringed rim pixels | FIXED 4e3d06f (quick matched capture Triton/Charon); six-body acceptance running |
+| AST-381-03 | D | partial-mosaic boundary artefacts | CLOSED 4e3d06f (SW; six bodies near az20/70 + far, immutable-snapshot A/B vs cp2) — docs/v3.8.1/AST-381-03_ACCEPTANCE.md |
+| AST-381-04 | D/U (science) | reconstruction tone neutral grey vs warm observed terrain (Triton, Pluto); crater-dominated procedural morphology wrong for Triton; faint procedural rim circles | OPEN |
+| QA-381-01 | D (process) | ast3 cp2 baseline linked working-tree assets (Ariel/Oberon/Titania cp2 + far contaminated) | FIXED: immutable git-object snapshots for both sides, per-batch blob verification; contaminated captures kept & labelled. REV2 cp2 sheets of Ariel/Oberon/Titania carry the same caveat |
