@@ -16,6 +16,7 @@
   "sigma_deg": 3.5,
   "relax_deg": 35.0,
   "rimExcluded_deg": 2.0,
+  "edgeRelax_deg": 4.0,
   "unobservedFraction_at_1024": 0.6197,
   "maxWeightOnObserved": 0.0118,
   "mask": [
@@ -40,6 +41,7 @@
   "sigma_deg": 3.5,
   "relax_deg": 35.0,
   "rimExcluded_deg": 2.0,
+  "edgeRelax_deg": 4.0,
   "unobservedFraction_at_1024": 0.6335,
   "maxWeightOnObserved": 0.0118,
   "mask": [
@@ -64,6 +66,7 @@
   "sigma_deg": 3.5,
   "relax_deg": 35.0,
   "rimExcluded_deg": 2.0,
+  "edgeRelax_deg": 4.0,
   "unobservedFraction_at_1024": 0.6233,
   "maxWeightOnObserved": 0.0078,
   "mask": [
@@ -88,6 +91,7 @@
   "sigma_deg": 3.5,
   "relax_deg": 35.0,
   "rimExcluded_deg": 2.0,
+  "edgeRelax_deg": 4.0,
   "unobservedFraction_at_1024": 0.3898,
   "maxWeightOnObserved": 0.0078,
   "mask": [
@@ -116,6 +120,7 @@
   "sigma_deg": 3.5,
   "relax_deg": 35.0,
   "rimExcluded_deg": 2.0,
+  "edgeRelax_deg": 4.0,
   "unobservedFraction_at_1024": 0.3259,
   "maxWeightOnObserved": 0.0078,
   "mask": [
@@ -144,6 +149,7 @@
   "sigma_deg": 3.5,
   "relax_deg": 35.0,
   "rimExcluded_deg": 2.0,
+  "edgeRelax_deg": 4.0,
   "unobservedFraction_at_1024": 0.3449,
   "maxWeightOnObserved": 0.0078,
   "mask": [

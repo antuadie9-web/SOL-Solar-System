@@ -29,6 +29,7 @@ enc = lambda a: np.where(a <= 0.0031308, a * 12.92, 1.055 * np.power(np.clip(a, 
 def gauss_wrap(a, sig_px):  # Gaussian blur, wrapping in longitude, reflecting at the poles
     return ndimage.gaussian_filter(a, sigma=sig_px, mode=('reflect', 'wrap'))
 stats = {}
+EDGE_RELAX_DEG = 4.0   # iteration 7: guide relaxes from the observed edge colour to the regional guide
 RIM_DEG = 2.0    # rim of the observed region excluded from the guide statistics (low-sun / terminator-darkened pixels)
 for name, thr in BODIES.items():
     src = os.path.join(ROOT, f'public/assets/tex/{name}.jpg')
@@ -54,6 +55,23 @@ for name, thr in BODIES.items():
         for k in range(3): num[..., k] += wgt * gauss_wrap(np.where(src, rgb[..., k], 0.0), sg)
     eps = 1e-6
     guide = (num + gm * eps) / (den + eps)[..., None]
+    # iteration 7 (boundary continuity): the regional guide is built from the observed CORE (rim > 2° excluded), but on
+    # Pluto and Charon the last ~4° of observed data are 25–40 % darker than the core (median by distance from the gap:
+    # Pluto 0.34 → 0.20, Charon 0.51 → 0.39; Triton/Titania < 3 %), so the gap started 40 % brighter than the observed
+    # pixels beside it — the "lighter band" along the boundary. The guide now STARTS at the observed edge colour (normalised
+    # convolution, 0.35°, of the pixels the renderer actually shows — mask eroded 0.4° exactly like *_mask.jpg) and relaxes
+    # to the regional guide over EDGE_RELAX_DEG. Same rule for every body; observed pixels are untouched (w = 0 there).
+    shown = ndimage.binary_erosion(obs, iterations=max(1, int(round(0.4 * H / 180))))
+    sg = 0.35 * H / 180.0
+    eden = gauss_wrap(shown.astype(float), sg)
+    edge = np.stack([gauss_wrap(np.where(shown, rgb[..., k], 0.0), sg) for k in range(3)], -1) / np.maximum(eden, 1e-6)[..., None]
+    # beyond the blur reach the edge field is undefined: propagate the nearest valid value
+    valid = eden > 1e-3
+    idx = ndimage.distance_transform_edt(np.concatenate([~valid] * 3, axis=1), return_distances=False, return_indices=True)
+    iy, ix = idx[0][:, W:2 * W], idx[1][:, W:2 * W] % W
+    edge = edge[iy, ix]
+    t = np.clip(d / EDGE_RELAX_DEG, 0, 1); t = (t * t * (3 - 2 * t))[..., None]
+    guide = edge * (1 - t) + guide * t
     guide[obs] = rgb[obs]                                      # never used on observed pixels (w = 0); keeps the JPEG smooth
     # contrast statistics of the observed core: fine (≲2 px) and mid (1°–6° band, difference of Gaussians), relative
     hp = Y - gauss_wrap(np.where(obs, Y, 0.0), 2.0) / np.maximum(gauss_wrap(obs.astype(float), 2.0), 1e-6)
@@ -65,7 +83,7 @@ for name, thr in BODIES.items():
     Image.fromarray((np.clip(enc(np.clip(guide, 0, 1)), 0, 1) * 255 + 0.5).astype(np.uint8)).save(os.path.join(ROOT, f'public/assets/tex/{name}_recon.jpg'), quality=95, subsampling=0)
     Image.fromarray((np.clip(w, 0, 1) * 255 + 0.5).astype(np.uint8)).save(os.path.join(ROOT, f'public/assets/tex/{name}_reconw.jpg'), quality=95)
     stats[name] = {'observedMeanLinRGB': [round(float(x), 5) for x in gm_global], 'boundaryZoneMeanLinRGB': [round(float(x), 5) for x in gm], 'smallScaleRelContrast': round(rel, 4), 'midScaleRelContrast_1to6deg': round(mid, 4),
-                   'feather_deg': FEATHER_DEG, 'sigma_deg': SIGMA_DEG, 'relax_deg': RELAX_DEG, 'rimExcluded_deg': RIM_DEG, 'unobservedFraction_at_1024': round(float((~obs).mean()), 4)}
+                   'feather_deg': FEATHER_DEG, 'sigma_deg': SIGMA_DEG, 'relax_deg': RELAX_DEG, 'rimExcluded_deg': RIM_DEG, 'edgeRelax_deg': EDGE_RELAX_DEG, 'unobservedFraction_at_1024': round(float((~obs).mean()), 4)}
     # non-fabrication check on the WRITTEN file: the weight must be ~0 wherever the source map has data
     wr = np.asarray(Image.open(os.path.join(ROOT, f'public/assets/tex/{name}_reconw.jpg')).convert('L'), float) / 255.0
     stats[name]['maxWeightOnObserved'] = round(float(wr[ndimage.binary_erosion(obs, iterations=2)].max()), 4)
