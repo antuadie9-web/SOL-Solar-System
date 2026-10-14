@@ -5,6 +5,8 @@
 Q=/workspace/projects/8d0bae14-e35b-4bd2-a140-a931eb700554/work/qa; R=/workspace/projects/8d0bae14-e35b-4bd2-a140-a931eb700554/work/src380/sol-solar-system-v3.8-final; cd $R
 H=$(git log -1 --format=%h -- src public);   # last commit touching the build inputs
  [ -z "$(git status --porcelain src public)" ] || { echo "dirty tree"; exit 1; }
+[ -x /tmp/snap.sh ] || bash tools/qa/sandbox/setup.sh > $Q/setup.log 2>&1   # sandbox reset wiped /tmp
+[ -x /tmp/snap.sh ] || { echo 'setup failed'; exit 1; }
 cap() { DPR=1 VIEWS="$3" timeout 4000 node tools/qa/smoke.mjs --software --url "http://localhost:$1/?qa-off=small,smallcompute" --script golden38 --out $Q/$2 --wait 180000 --w 1280 --h 720 > $Q/$2.log 2>&1 && echo "$4" > $Q/$2/BUILD && echo DONE > $Q/$2.done; }
 if ! curl -s -o /dev/null localhost:4177/; then
   rm -rf /tmp/cp2tag && mkdir -p /tmp/cp2tag && git archive v3.8.1-cp2 -- src index.html vite.config.ts package.json tsconfig.json | tar -x -C /tmp/cp2tag && ln -sfn $R/node_modules /tmp/cp2tag/node_modules
@@ -19,4 +21,4 @@ for n in ariel titania oberon triton pluto charon; do NEAR="pnear-$n-az20,pnear-
 done
 [ -f $Q/ast3-$H-far.done ] || cap 4175 ast3-$H-far "$FAR" "current $H"
 [ -f $Q/ast3-cp2-far.done ] || cap 4177 ast3-cp2-far "$FAR" "v3.8.1-cp2 f4974e8"
-echo ALL > $Q/ast3-$H.done
+n=$(ls $Q | grep -c "^ast3-.*\.done$"); [ "$n" -ge 14 ] && echo ALL > $Q/ast3-$H.done
