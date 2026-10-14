@@ -108,3 +108,11 @@ numerical trace or unit test, **HW** = owner-supplied real-GPU evidence (none ye
   the division amplified them into a 1-px light/dark hairline (tier 5). Residual: isolated ±4-level dark dots on the
   Charon boundary (source pixels), visible only in 3× crops.
 - Acceptance queue tools/qa/sandbox/ast3_queue.sh (cp2 :4177 vs current, 1280×720, keyed by last src/public commit).
+
+## 2026-10-14 (b) — GitHub remote, AST-381-03 iterations 8c–8e, Gate A audit
+- GitHub: origin = antuadie9-web/SOL-Solar-System (private), main = master, all tags pushed, cp2 untouched (f4974e8). tools/git/push.sh, docs/REPOSITORY.md.
+- AST-381-03 matched acceptance (cp2 vs ff4dbb5, PARTIALNEAR): dotted crater rims/colour steps of cp2 gone on all bodies; residual dotted lines traced
+  in three steps: 8c (hand-over ramp ≥0.85 mask) no visible effect; 8d (luminance no-data test only while the mask is a placeholder) no visible effect;
+  8e ROOT CAUSE — the 0.4° rim erosion of the data mask grew every sub-threshold speck inside the observed area (reseau/dropouts) into a ~0.8° hole of
+  reconstruction colour. Specks < 0.3° enclosed by data are now part of the observed area (counts in partial-recon-v381.json; Pluto hi 3,850 specks).
+- Gate A audit: docs/v3.8.1/GATE_A_AUDIT.md (inventory, dependency map, risk findings GA-SCI-01, GA-EPH-01..04, GA-ARCH-01/02, GA-RES-01, GA-PHOT-01).
