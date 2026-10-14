@@ -91,3 +91,20 @@ numerical trace or unit test, **HW** = owner-supplied real-GPU evidence (none ye
 - ATM-381-02: Venus delta-M haze transmittance. AST-381-03 iter 4–5 + relief blended at the normal (h·w ridge drew the
   boundary line on all six partial-mosaic bodies).
 - Sandbox resets every ~40–60 min: all queues resumable (tools/qa/sandbox/rev4_queue.sh).
+
+## 2026-10-14 — resume after usage refill (HEAD 7add52a; cp2 tag f4974e8 unchanged; 330/330, tsc clean, 1549 assets)
+- AST-381-03/04 shared crater function (shaderlib `craters`): height was discontinuous at the rim crest (inner branch
+  bowl·0.6+rim, outer rim·0.6 → step 0.14·rad at d = 1). Screen-derivative bump turned the step into the dotted crater
+  outlines on every procedural surface. Outer branch now `rim` (continuous; rim height unchanged). Commit 9d…/"shared crater".
+- New views PARTIALNEAR (views381.mjs): six bodies at 1.7 R, camera at the boundary latitude, az 20°/70°.
+- Probe (pnear-probe-4aafe1e): Pluto/Charon boundary = colour step + jagged hairline. Measured by distance from the gap
+  (/tmp/edge.py logic, lat < 60°): observed data darken over the last ~4° (Pluto 0.34→0.20, Charon 0.51→0.39 sRGB-Y;
+  Triton/Titania/Ariel < 3 %), while the guide started at the core colour → brighter band.
+- Iteration 7 (partial_recon.py): guide starts at the observed EDGE colour (0.35° normalised convolution of shown pixels,
+  nearest-propagated) and relaxes to the regional guide over 4°. Charon edge step 0.392 vs 0.400.
+- Iteration 8 (planetMaterial.ts): procedural albedo structure and relief scale with reconW (0 on the edge → 1 at 5°): the
+  detail-frequency step (blurred observed rim vs sharp synthetic craters) itself drew the boundary.
+- Iteration 8b: mask normalisation c/m removed — since it6 the texels beyond the mask edge are real rim data, not zeros, so
+  the division amplified them into a 1-px light/dark hairline (tier 5). Residual: isolated ±4-level dark dots on the
+  Charon boundary (source pixels), visible only in 3× crops.
+- Acceptance queue tools/qa/sandbox/ast3_queue.sh (cp2 :4177 vs current, 1280×720, keyed by last src/public commit).
