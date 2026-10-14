@@ -13,17 +13,21 @@ const out = arg('out', 'qa-travel'); fs.mkdirSync(out, { recursive: true });
 const ALL = ['sun-f20-auto', 'sun-f20-fixed', 'sun-f50-auto', 'rings-pan', 'sun-far-auto', 'titan-handover', 'titan-handover-sci'];   // titan: planet/moon point↔disc hand-over next to a bright Saturn (CONT-14)   // sun-far: 100 AU → 1 pc (point regime)
 const seqs = (arg('seq', ALL.join(','))).split(',');
 const W = 960, H = 540;
+// QA-381-02 cost accounting: --shots 0 skips the full-frame images (≈30 s each in software WebGPU); timings go into <seq>.json
+const SHOTS = arg('shots', '1') !== '0', T0 = Date.now(), cost = { bootMs: 0 };
 const browser = await chromium.launch({ executablePath: exe, headless: true, args: ['--enable-unsafe-webgpu', '--ignore-gpu-blocklist', '--enable-features=Vulkan', '--use-vulkan=swiftshader', '--use-angle=vulkan', '--enable-unsafe-swiftshader', '--disable-gpu-watchdog', '--disable-features=DawnSIRepsUseClientProvidedSemaphores'] });
 const page = await browser.newPage({ viewport: { width: W, height: H }, deviceScaleFactor: 1 });
 await page.addInitScript({ path: 'tools/qa/gpu-errors.js' });
 await page.goto(url);
 await page.waitForFunction(() => window.__sol && window.__frames > 3, null, { timeout: 240000 });
+cost.bootMs = Date.now() - T0; console.log('boot ms', cost.bootMs);
 await page.evaluate(() => { const s = window.__sol; s.settings.set('onboarded', true); document.querySelector('#loader .enter, #loader .ld-enter')?.dispatchEvent(new MouseEvent('click', { bubbles: true })); document.body.classList.add('cine'); document.querySelectorAll('.coach').forEach(e => e.remove()); });
 for (const seq of seqs) {
   fs.mkdirSync(`${out}/${seq}`, { recursive: true });
   const rows = [];
   const N = seq === 'rings-pan' ? 60 : seq === 'sun-far-auto' ? 48 : seq.startsWith('titan') ? 40 : 90;
   for (let i = 0; i < N; i++) {
+    const t0 = Date.now();
     const info = await page.evaluate(async ({ seq, i, N }) => {
       const s = window.__sol, r = s.engine.rig, AU = 149597870.7;
       const frames = (n) => new Promise(res => { const f0 = window.__frames; const chk = () => window.__frames - f0 >= n ? res(0) : requestAnimationFrame(chk); chk(); });
@@ -56,7 +60,8 @@ for (const seq of seqs) {
         if (i === 0) for (let k = 0; k < 4; k++) { s.engine.settleExposure(); await frames(2); }
         await frames(3); r.pos = pos; r.quat.copy(r.lookQuat(pos, ti.pos, [0, 0, 1]));
         const d = s.engine.diagnostics(), sc = s.engine.screen.get('titan');
-        return { i, rpx, km, ev: d.exposureEV, skyEV: d.view?.skyEV, mode: d.view?.mode, scr: sc ? { x: sc.x, y: sc.y, r: sc.r, bright: sc.bright } : null };
+        const ca = (ts[0] * dir[0] + ts[1] * dir[1] + ts[2] * dir[2]);   // camera on +dir side of Titan: phase angle = angle(sun, camera) at Titan
+        return { i, rpx, km, alphaDeg: Math.acos(Math.max(-1, Math.min(1, ca))) * 180 / Math.PI, ev: d.exposureEV, skyEV: d.view?.skyEV, mode: d.view?.mode, scr: sc ? { x: sc.x, y: sc.y, r: sc.r, bright: sc.bright } : null };
       } else {
         if (i === 0) s.settings.set('autoExposure', true);
         // camera 3.2 Saturn radii out (v2: 8.5 R left the rings small) on the sunward side of the terminator plane, 18° above the lit ring face; the view
@@ -85,11 +90,15 @@ for (const seq of seqs) {
     // software screenshots cost ~30 s: every step is rendered and logged (continuous motion), every SHOT-th step is imaged
     const SHOT = seq === 'rings-pan' ? 6 : 10;
     // point regime: a 33×33 centre clip every step (cheap) — integrated and peak displayed Sun signal vs distance
+    const t1 = Date.now();
     if (seq === 'sun-far-auto' || seq.startsWith('titan')) await page.screenshot({ path: `${out}/${seq}/c${String(i).padStart(3, '0')}.png`, clip: { x: W / 2 - 16, y: H / 2 - 16, width: 33, height: 33 }, timeout: 180000 });
-    if (i % SHOT === 0 || i === N - 1) await page.screenshot({ path: `${out}/${seq}/${String(i).padStart(3, '0')}.png`, timeout: 180000 });
+    const t2 = Date.now();
+    if (SHOTS && (i % SHOT === 0 || i === N - 1)) await page.screenshot({ path: `${out}/${seq}/${String(i).padStart(3, '0')}.png`, timeout: 180000 });
+    info.ms = { step: t1 - t0, clip: t2 - t1, shot: Date.now() - t2 };
     rows.push(info);
+    if (i % 10 === 0) fs.writeFileSync(`${out}/${seq}.json`, JSON.stringify(rows, null, 1));   // partial results survive a timeout
   }
   fs.writeFileSync(`${out}/${seq}.json`, JSON.stringify(rows, null, 1));
-  console.log('done', seq);
+  console.log('done', seq, 'ms', Date.now() - T0);
 }
 await browser.close();

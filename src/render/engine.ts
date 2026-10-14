@@ -4,7 +4,7 @@ import * as THREE from 'three/webgpu';
 import { pass, uniform, vec4, vec3, float, mrt, output, Fn, screenUV } from 'three/tsl';
 import * as TSL from 'three/tsl';
 import { MODE_PARAMS, approachParams, skyExposure, skyExposureV381, sunGlareVeil, meterLuminance, photometricPeak, HIGHLIGHT_TARGET, type ViewMode, type PresentationParams, type MeterBody, type PhotometricKind } from './presentation';
-import { radianceFromSB, visibilityGain, pointFloor } from './presentation';
+import { radianceFromSB, visibilityGain, pointFloor, pointExposure, pointDepthScale } from './presentation';
 import { airglowPeakPerKm } from './atmosphere';
 import { limbLuminance } from './atmoModel';
 import { bloom } from 'three/addons/tsl/display/BloomNode.js';
@@ -562,7 +562,7 @@ export class Engine {
         // interim 100 AU irradiance cap (SUN-381-07c) is withdrawn (owner review: it hid rather than solved the mismatch)
         const F = Math.PI * Math.pow(AU / Math.max(dist, 1), 2) * fade * Esun * sunVis;
         const c = b.def.color, cy = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
-        this.points.pos.set([relS.x, relS.y, relS.z], nPts * 3);
+        const pk = pointDepthScale(this.viewBound(b), dist); this.points.pos.set([relS.x * pk, relS.y * pk, relS.z * pk], nPts * 3);   // CONT-14 representation/depth contract
         this.points.flux.set([F * c[0] / cy, F * c[1] / cy, F * c[2] / cy], nPts * 3);
         this.points.comp[nPts] = 2 + fade;                // v3.8: compressed like the stars once unresolved; 2+ = Sun flag (SUN-381-08 peak cap)
         nPts++;
@@ -575,16 +575,18 @@ export class Engine {
           const cosA = dot(norm(toSun), norm(scale(rel, -1)));
           const alpha = Math.acos(Math.max(-1, Math.min(1, cosA)));
           const phase = (Math.sin(alpha) + (Math.PI - alpha) * Math.cos(alpha)) / Math.PI;
-          // v3.5: unresolved worlds belong to the sky domain (they sit among the stars) → sky exposure + compression
-          let F = b.albedo * (2 / 3) * Math.PI * Math.pow(b.radius / dist, 2) / (rS * rS) * phase * fade * visibilityGain(mode, st.get('bodyBoost') as number) * skyE;
+          // v3.5: unresolved worlds belong to the sky domain (they sit among the stars) → sky exposure + compression.
+          // v3.8.1 CONT-14: reached through the shared hand-over contract (pointExposure) instead of a jump at the disc.
+          const Ept = pointExposure(LS, skyE, rpx);
+          let F = b.albedo * (2 / 3) * Math.PI * Math.pow(b.radius / dist, 2) / (rS * rS) * phase * fade * visibilityGain(mode, st.get('bodyBoost') as number) * Ept;
           // keep planets findable as points (presentation only — GA-SCI-01: Scientific draws the physical flux, floor 0)
           const floor = pointFloor(mode, b.kind, b.radius, this.pxAng, fade);
           if (F < floor) { F = floor; this.enhancement.pointFloor++; }
           const c = b.def.color;
           scr.bright = Math.max(scr.bright, F / (this.pxAng * this.pxAng * 6.283 * 0.56));
-          this.points.pos.set([relS.x, relS.y, relS.z], nPts * 3);
+          const pk = pointDepthScale(this.viewBound(b), dist); this.points.pos.set([relS.x * pk, relS.y * pk, relS.z * pk], nPts * 3);   // CONT-14 representation/depth contract
           this.points.flux.set([F * c[0] * 1.6, F * c[1] * 1.6, F * c[2] * 1.6], nPts * 3);
-          this.points.comp[nPts] = 1;
+          this.points.comp[nPts] = fade;    // CONT-14: star highlight compression engages with the point, not at full weight under the disc
           nPts++;
         }
       }
@@ -847,6 +849,12 @@ export class Engine {
   expDebug: any = null; sunRpx = 0; sunRpxNow = 0; sunVisNow = 1; granT = 0; lastSunJd: number | null = null; frameDt = 1 / 60;
   frameNo = 0; cpuMs = 0; frameTimes = new Float32Array(240);
   /** Jump exposure to its current target (deterministic captures / QA); normal play adapts smoothly. */
+  /** CONT-14: outer radius (km) of everything a body's own view draws that can write depth or attenuate behind it — the
+   *  surface bound and the atmosphere shell (premultiplied "over" blending: its τ > 3 haze absorbs a sprite inside it). */
+  private viewBound(b: Body) {
+    const sh = this.views.get(b.id)?.atmo?.U.shell.value as THREE.Vector3 | undefined;
+    return Math.max(b.radius, ...b.radii, sh ? Math.max(sh.x, sh.y, sh.z) : 0);
+  }
   settleExposure() { this.expSettle = true; }
   private expSettle = false;
   /** Runtime diagnostics (§8.1 diagnostics overlay): backend, frame statistics, residency, network. */

@@ -148,6 +148,32 @@ export function skyExposureV381(sceneExposure: number, p: Pick<PresentationParam
   if (c >= 0.999) return e;
   return Math.max(sceneExposure * Math.pow(2, userSkyEV), e * Math.pow(2, -clamp(sunVeil, 0, 1) * Math.max(0, p.sunVeilEV)));
 }
+/** v3.8.1 CONT-14 shared point↔disc photometric contract (planets, moons, small bodies; the Sun keeps SUN-381-08).
+ *  A resolved disc is drawn on the SCENE exposure; an unresolved world sits among the stars on the SKY exposure. v3.5–3.8.1
+ *  switched an unresolved body straight to the sky exposure, so in Exploration next to sunlit Saturn (scene EV 7.4,
+ *  sky EV 20.7) Titan's point was ≈2¹³ × over-exposed relative to its own disc and the hand-over showed a step (SW
+ *  titan-handover: ≈1.9× integrated displayed signal at 1.9 px after clipping/compression).
+ *  Contract: the point's exposure leaves the scene exposure at the start of the hand-over (rpxHand) and may approach the
+ *  sky exposure no faster than the inverse-square law takes the body's flux away, |Δ ln E| ≤ 2·ln(rpxHand/rpx), so the
+ *  displayed integrated signal is continuous and never increases while the body recedes (it plateaus, then follows
+ *  the sky domain once the exposures meet). Scientific (sky = scene exposure) is the identity. */
+export const POINT_HANDOVER_PX = 3.5;
+export function pointExposure(sceneExposure: number, skyExp: number, rpx: number, rpxHand = POINT_HANDOVER_PX) {
+  const lnS = Math.log(Math.max(sceneExposure, 1e-30)), d = Math.log(Math.max(skyExp, 1e-30)) - lnS;
+  const lim = 2 * Math.max(0, Math.log(rpxHand / Math.max(rpx, 1e-9)));
+  if (lim <= 0) return sceneExposure;
+  return Math.exp(lnS + clamp(d, -lim, lim));
+}
+/** v3.8.1 CONT-14 representation/depth contract. Through the disc→point cross-fade (3.5 → 0.55 px) the body's own sphere
+ *  is still drawn (dimmed by discWeight) and writes depth, while its PSF sprite sat at the body CENTRE with depth testing:
+ *  the sphere's front surface rejected the sprite's core pixels (SW A/B with only the sphere's depth writes switched off,
+ *  same geometry/flux/exposure: +45–105 % point signal at 1.0–1.5 px). The sprite is placed on the line of sight just in
+ *  front of the body's bounding sphere (camera-relative scale), so its own disc never occludes it while geometry nearer
+ *  than the body's limb (another body, rings) still does. Depth testing is never disabled. The bound includes the
+ *  atmosphere shell: its premultiplied-over blend keeps absorbing (τ > 3 for Titan) after its emission fades with the disc. */
+export function pointDepthScale(boundRadius: number, dist: number) {
+  return Math.max(0, 1 - 1.02 * boundRadius / Math.max(dist, 1e-9));
+}
 /** Star highlight compression (matches the WGSL in points.ts). Monotonic; identity below the knee. */
 export function compressPeak(peak: number, knee: number, gamma: number) {
   if (!(peak > knee) || gamma >= 1) return peak;
