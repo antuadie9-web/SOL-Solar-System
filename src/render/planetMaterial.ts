@@ -3,7 +3,7 @@
 // with uniforms prepared in double precision on the CPU, so shading is stable at any distance.
 import * as THREE from 'three/webgpu';
 import {
-  textureSize, int,
+  textureSize, int, step,
   Fn, uniform, texture, positionLocal, normalLocal, vec2, vec3, vec4, float, normalize, dot, max, min, mix, smoothstep, clamp, exp, pow,
   dFdx, dFdy, length, cross, abs, sign, select, If, varying, wgslFn, acos, sin, cos, sqrt, fwidth, attribute,
   sampler,
@@ -216,7 +216,12 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
           // iteration 8c: the hand-over completes while the filtered mask is still ≥ 0.85, so at most ~15 % of an observed
           // sample comes from the excluded (darkened, sometimes near-black JPEG-rim) texels — with the old 0.98→0.5 ramp
           // up to half of it did, which drew a dotted dark line along the Oberon/Triton boundaries (ast3 acceptance run).
-          noData = max(smoothstep(0.995, 0.85, mm), m0);   // m0: true black while the mask is still its white placeholder
+          // iteration 8d (measured): the luminance test m0 must NOT act once the real mask is bound. Triton has ~10⁴ and Charon
+          // ~2·10⁶ OBSERVED texels darker than the no-data threshold (dark terrain, JPEG ringing); m0 flagged each as a hole
+          // and painted the reconstruction colour there, giving the dotted lines inside the observed area (ast3 c024879).
+          // The mask is authoritative; m0 only covers the instant the mask is still its 1×1 streaming placeholder.
+          const maskPh = step(float(textureSize(texture(maps.mask), int(0)).x), float(1.5));
+          noData = max(smoothstep(0.995, 0.85, mm), m0.mul(maskPh));
         }
         if (maps.recon) {
           // v3.8.1 AST-381-03 (owner review REV2-02): guide field — R = smooth reconstruction weight (0 on every observed
