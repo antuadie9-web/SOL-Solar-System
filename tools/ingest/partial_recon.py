@@ -117,6 +117,18 @@ for name, thr in BODIES.items():
             filled = small[lab]; valid = valid | filled
             stats[name]['specksFilled' + suf] = int(small.sum()); stats[name]['speckPixels' + suf] = int(filled.sum())
         m = ndimage.binary_erosion(valid, iterations=rim_px)
-        Image.fromarray((m * 255).astype(np.uint8)).save(os.path.join(ROOT, f'public/assets/tex/{name}_mask{suf}.jpg'), quality=98)
+        # iteration 9 (ast3 c25234d, diagnosis view pdiag-*-nogrid): a BINARY mask is a pixel staircase; bilinear filtering
+        # of it, thresholded by the hand-over ramp, gave a scalloped contour with the base map's texel period — seen as a
+        # beaded light/dark line along the Triton and Charon boundaries wherever the camera magnifies the 2k map. The mask
+        # now stores a clamped SIGNED DISTANCE to the (eroded) boundary, m = 0.5 + d / (2·W), W = 3 px: bilinear
+        # interpolation of a distance field gives a smooth contour at sub-texel precision. m ≥ 5/6 ⇔ ≥ 2 px inside the data.
+        Wsdf = 3.0
+        t = np.concatenate([m, m, m], axis=1)
+        din = ndimage.distance_transform_edt(t)[:, m.shape[1]:2 * m.shape[1]]
+        dout = ndimage.distance_transform_edt(~t)[:, m.shape[1]:2 * m.shape[1]]
+        sdf = np.where(m, din - 0.5, -(dout - 0.5))
+        mf = np.clip(0.5 + sdf / (2 * Wsdf), 0, 1)
+        stats[name]['maskEncoding'] = f'clamped signed distance, W = {Wsdf:g} px (0.5 = boundary)'
+        Image.fromarray((mf * 255 + 0.5).astype(np.uint8)).save(os.path.join(ROOT, f'public/assets/tex/{name}_mask{suf}.jpg'), quality=98)
         stats[name]['mask' + suf] = list(g.shape)
 json.dump(stats, open(os.path.join(ROOT, 'docs/assets/provenance/partial-recon-v381.json'), 'w'), indent=1)

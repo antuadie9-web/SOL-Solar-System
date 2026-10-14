@@ -221,7 +221,9 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
           // and painted the reconstruction colour there, giving the dotted lines inside the observed area (ast3 c024879).
           // The mask is authoritative; m0 only covers the instant the mask is still its 1×1 streaming placeholder.
           const maskPh = step(float(textureSize(texture(maps.mask), int(0)).x), float(1.5));
-          noData = max(smoothstep(0.995, 0.85, mm), m0.mul(maskPh));
+          // iteration 9: the mask is a clamped signed distance (0.5 = boundary, 1 = ≥ 3 px inside) — the hand-over runs from
+          // 2 px inside the data (m = 5/6) to the boundary, along a smooth sub-texel contour (no texel staircase / beads)
+          noData = max(smoothstep(0.833, 0.5, mm), m0.mul(maskPh));
         }
         if (maps.recon) {
           // v3.8.1 AST-381-03 (owner review REV2-02): guide field — R = smooth reconstruction weight (0 on every observed

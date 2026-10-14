@@ -50,3 +50,6 @@ const PB = { ariel: [579, 0, VOYAGER_JD - NOW_JD], titania: [789, 0, VOYAGER_JD 
 export const PARTIALNEAR = Object.entries(PB).flatMap(([n, [R, lat, jo]]) => [20, 70].map(az =>
   [`pnear-${n}-az${az}`, n, { ...(jo ? { jdOff: jo } : {}), bf: { r: R * 1.7, el: lat, abs: true, az, fov: 50 } }]));
 V381.push(...PARTIALNEAR);
+// AST-381-03 diagnosis: same PARTIALNEAR views with the reconstruction graticule label off (isolates label vs map artefacts)
+export const PNEARDIAG = ['triton', 'charon'].map(n => { const [R, lat, jo] = PB[n]; return [`pdiag-${n}-az20-nogrid`, n, { ...(jo ? { jdOff: jo } : {}), set: { markUnknown: false }, bf: { r: R * 1.7, el: lat, abs: true, az: 20, fov: 50 } }]; });
+V381.push(...PNEARDIAG);

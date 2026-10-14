@@ -21,6 +21,7 @@
   "maxWeightOnObserved": 0.0118,
   "specksFilled": 12,
   "speckPixels": 12,
+  "maskEncoding": "clamped signed distance, W = 3 px (0.5 = boundary)",
   "mask": [
    720,
    1440
@@ -48,6 +49,7 @@
   "maxWeightOnObserved": 0.0118,
   "specksFilled": 33,
   "speckPixels": 33,
+  "maskEncoding": "clamped signed distance, W = 3 px (0.5 = boundary)",
   "mask": [
    720,
    1440
@@ -75,6 +77,7 @@
   "maxWeightOnObserved": 0.0078,
   "specksFilled": 20,
   "speckPixels": 20,
+  "maskEncoding": "clamped signed distance, W = 3 px (0.5 = boundary)",
   "mask": [
    720,
    1440
@@ -102,6 +105,7 @@
   "maxWeightOnObserved": 0.0078,
   "specksFilled": 1,
   "speckPixels": 1,
+  "maskEncoding": "clamped signed distance, W = 3 px (0.5 = boundary)",
   "mask": [
    1024,
    2048
@@ -135,6 +139,7 @@
   "maxWeightOnObserved": 0.0078,
   "specksFilled": 272,
   "speckPixels": 273,
+  "maskEncoding": "clamped signed distance, W = 3 px (0.5 = boundary)",
   "mask": [
    1024,
    2048
@@ -168,6 +173,7 @@
   "maxWeightOnObserved": 0.0078,
   "specksFilled": 30,
   "speckPixels": 30,
+  "maskEncoding": "clamped signed distance, W = 3 px (0.5 = boundary)",
   "mask": [
    1024,
    2048
