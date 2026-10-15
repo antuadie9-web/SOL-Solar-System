@@ -19,11 +19,31 @@ const rows = [];
 // v3.8.1: the FIRST sample of a run was taken before streaming/ephemerides settled (titan-l2a: requested 20°, measured 84°,
 // flux ×10⁸ — another body in the read window). A discarded warm-up sample now precedes the list, and every row reports
 // the measured phase so a misplaced sample is visible.
+const JD0 = 2461314.5;
+// Quantities, kept apart: Fmeas = physical flux in engine units recovered from the scene-linear HDR target (signal × pxAng²
+// ÷ displayExposure); Fpt = the committed point flux (exposure removed); Fref = Lambert reference (geometric albedo);
+// X = DISPLAY EXPOSURE (a scale factor, never a flux); hdr.peak/median = scene-linear radiance ÷ X. No tone-mapped pixels.
+function preflight(r, req) {
+  const w = [];
+  if (r.id !== req.id || r.pre?.target !== req.id) w.push(`target ${r.pre?.target} ≠ ${req.id}`);
+  if (!(Math.abs(r.alphaDeg - req.alpha) <= 1)) w.push(`phase ${r.alphaDeg?.toFixed(2)}° vs requested ${req.alpha}°`);
+  if (r.pre?.jd != null && Math.abs(r.pre.jd - JD0) > 1e-6) w.push(`epoch ${r.pre.jd} ≠ ${JD0}`);
+  if (!(r.X > 0 && isFinite(r.X))) w.push(`display exposure ${r.X}`);
+  if (!r.pre?.evConverged) w.push('exposure not converged');
+  if (!r.pre?.lutReady) w.push('atmosphere LUTs not ready');
+  if (!r.pre?.discReady) w.push('CPU disc table not ready');
+  if (r.pre?.hasAtmo && !r.pre?.atmospheres) w.push('atmospheres disabled');
+  if (r.Fmeas == null || !isFinite(r.Fmeas)) w.push('no HDR readback');
+  if (req.rpx < 0.55 && !(r.Fpt > 0)) w.push('point entry not found');
+  if (r.Fmeas != null && r.Fref > 0 && (r.meas_ref > 1e4 || r.meas_ref < 1e-4) && req.alpha < 170) w.push(`flux ratio ${r.meas_ref} implausible (contaminated window?)`);
+  return w;
+}
 const combos = [];
 for (const id of arg('bodies', 'callisto,rhea,titan').split(','))
   for (const alpha of arg('alpha', '10,60,120').split(',').map(Number))
     for (const rpx of arg('rpx', '12,0.45').split(',').map(Number)) combos.push([id, alpha, rpx]);
-for (const [ci, [id, alpha, rpx]] of [combos[0], ...combos].entries()) {
+const queue = [[...combos[0], 0, true], ...combos.map(c => [...c, 0, false])];
+while (queue.length) { const [id, alpha, rpx, tries, warm] = queue.shift();
       const t0 = Date.now();
       const info = await page.evaluate(async ({ id, alpha, rpx }) => {
         const s = window.__sol, r = s.engine.rig, e = s.engine;
@@ -54,9 +74,18 @@ for (const [ci, [id, alpha, rpx]] of [combos[0], ...combos].entries()) {
           const c = (q[0] * fw.x + q[1] * fw.y + q[2] * fw.z) / l; if (c > best) { best = c; Fpt = (P.flux[k * 3] + P.flux[k * 3 + 1] + P.flux[k * 3 + 2]) / 3 / X; } }
         if (best < Math.cos(3 * pxAng)) Fpt = 0;
         const Fmeas = hdr ? hdr.signal * pa * pa / X : null;
-        return { id, kind: b.def?.kind, p: b.albedo, alphaDeg: al * 180 / Math.PI, rpx, ev: e.diagnostics().exposureEV, X, pxAng: pa, w, Fmeas, Fref, Fpt, meas_ref: Fmeas / Fref, pt_ref: Fpt / Fref, hdr: hdr && { peak: hdr.peak / X, median: hdr.median / X, half: hdr.half, W: hdr.W } };
+        const st = e.qaAtmoState(b), jd = s.ui.clock.jd ?? null;
+        return { pre: { ...st, jd, evConverged: Math.abs(e.diagnostics().exposureEV - evp) < 0.05, hdrFloat: !!hdr && hdr.half !== undefined, window: hdr?.w, target: s.engine.rig.target?.id }, id, kind: b.def?.kind, p: b.albedo, alphaDeg: al * 180 / Math.PI, rpx, ev: e.diagnostics().exposureEV, X, pxAng: pa, w, Fmeas, Fref, Fpt, meas_ref: Fmeas / Fref, pt_ref: Fpt / Fref, hdr: hdr && { peak: hdr.peak / X, median: hdr.median / X, half: hdr.half, W: hdr.W } };
       }, { id, alpha, rpx });
-      info.ms = Date.now() - t0; info.reqAlpha = alpha; if (ci === 0) { console.log('warm-up', JSON.stringify(info)); continue; } rows.push(info); console.log(JSON.stringify(info));
-      fs.writeFileSync(`${out}/photometry.json`, JSON.stringify({ bootMs: boot, rows }, null, 1));
+      info.ms = Date.now() - t0; info.reqAlpha = alpha;
+      // QA-381-03 preflight: a sample is used only when its measurement conditions are verified; otherwise it is retried
+      // (readiness) and finally recorded with valid:false and its reasons — never folded into a conclusion.
+      const why = preflight(info, { id, alpha, rpx });
+      info.valid = why.length === 0; info.invalid = why;
+      if (warm) { console.log('warm-up', JSON.stringify(info)); continue; }
+      info.tries = tries + 1;
+      if (!info.valid && tries < 2 && why.some(w => /ready|converg/.test(w))) { console.log('retry', why.join('; ')); queue.unshift([id, alpha, rpx, tries + 1, false]); await new Promise(r => setTimeout(r, 2000)); continue; }
+      rows.push(info); console.log(JSON.stringify(info));
+      fs.writeFileSync(`${out}/photometry.json`, JSON.stringify({ bootMs: boot, rows, valid: rows.filter(r => r.valid).length, invalid: rows.filter(r => !r.valid).map(r => ({ id: r.id, alpha: r.reqAlpha, rpx: r.rpx, why: r.invalid })) }, null, 1));
     }
 await browser.close();

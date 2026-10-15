@@ -345,7 +345,10 @@ export function limbLuminance(A: AtmoPhysical, L: AtmoLUTs, cam: V3, sun: V3, st
   if (ql < 1e-6) { q = Math.abs(u[0]) < 0.9 ? [0, -u[2], u[1]] : [-u[1], u[0], 0]; ql = Math.hypot(q[0], q[1], q[2]); }
   q = [q[0] / ql, q[1] / ql, q[2] / ql];
   let best = 0;
-  for (const f of [0.005, 0.02, 0.06, 0.15, 0.35]) {
+  // v3.8.1 TI-03: tangent heights up to 0.95 of the shell (was ≤ 0.35: Titan's backlit ring peaks at 300–550 km where the
+  // tangent optical depth falls through ~1, above every old sample — the meter missed the ring by > 5× and bloom filled the disc)
+  for (let i = 0; i < 20; i++) {
+    const f = 0.002 + (0.95 - 0.002) * Math.pow(i / 19, 2);
     const rt = A.Rg + f * (A.Rt - A.Rg), ang = Math.asin(Math.min(1, rt / d));   // tangent ray angle from the centre direction
     const w: V3 = [-u[0] * Math.cos(ang) + q[0] * Math.sin(ang), -u[1] * Math.cos(ang) + q[1] * Math.sin(ang), -u[2] * Math.cos(ang) + q[2] * Math.sin(ang)];
     const Lr = rayRadiance(A, L, cam, w, sun, steps, focusSteps); best = Math.max(best, 0.2126 * Lr[0] + 0.7152 * Lr[1] + 0.0722 * Lr[2]);

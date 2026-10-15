@@ -894,6 +894,11 @@ export class Engine {
   scenePass: any = null;
   /** QA-381-02: scene-linear (pre-exposed, before bloom/grade/tone map) readback of a centred w×w device-pixel window of the
    *  HDR scene pass — replaces 8-bit screenshot + inverse-tone-map for photometric diagnostics (cheaper, no clipping). */
+  /** QA-381-03 measurement preflight: is this body's photometry fully built (atmosphere LUTs on the GPU, CPU disc twin)? */
+  qaAtmoState(b: Body) {
+    const vv = this.views.get(b.id) as any, DS = b.def.atmo && b.id !== 'earth' ? atmosphereLUTs(b.id, b.def.atmo, b.radii[0], this.discSurf(b)) : null;
+    return { hasAtmo: !!b.def.atmo, lutReady: !b.def.atmo || !!(vv?.atmoLuts && vv.atmoLuts.ready !== false), discReady: !DS || !!DS.disc, atmospheres: this.settings.get('atmospheres') !== false };
+  }
   async qaReadHDR(w = 33) {
     const rt = this.scenePass?.renderTarget; if (!rt || !this.renderer) return null;
     const W = rt.width, H = rt.height, x0 = Math.round(W / 2 - (w - 1) / 2), y0 = Math.round(H / 2 - (w - 1) / 2);
