@@ -136,3 +136,23 @@ numerical trace or unit test, **HW** = owner-supplied real-GPU evidence (none ye
 - Evidence: photometry-a (before) / photometry-b (after); travel-c14c titan-handover-sci (α 122°): residual is CONT-14d (atmosphere-shell light), registered for WP-E. Exposure-contract verification: travel-c14c titan-handover (Exploration).
 - Gate B continued: GA-EPH-04 mitigated (stream order planets → comets → pluto → moons; labels unchanged). sun-far-auto exposed SUN-FAR-01 (findability floors stacked on the Sun) → fixed at 724d783, verified travel-sunfar2 (stride 2, 24 steps, 732 s). Travel runner gained --from/--stride.
 - Next: Gate C / WP-E Titan detached haze, together with CONT-14d (shell disc-integral contract so the point carries the atmosphere's phase behaviour).
+
+## 2026-10-15 — Gate C / WP-E start: Titan reference atmosphere + CONT-14d contract (L1 → first L2)
+- Verified start: HEAD = origin/main = c57fce9.
+- atmoModel: up to 3 aerosol populations (exp with variable H + Gaussian gap / band / Gaussian layer), each with its own
+  spectrum, ω0, g; CPU twins (aeroDensity) and WGSL (aeroD). Focus-shell march (CPU + WGSL): rays split at the thin-layer
+  shell so the 20-km detached haze is resolved on limb paths (limb radiance within 5 % of a 10× finer march).
+- Titan (src/data/titanAtmo.ts): DISR τ(λ) fits per altitude region (Tomasko 2008 / Tomasko & West 2010), 65-km scale
+  height, detached haze 510 km (2017 state, West 2018; INFERRED for 2026), gap 445 km, N₂ Rayleigh τ(550)=1.0 (DERIVED).
+  SSA/g FITTED within DISR uncertainty to p_V=0.22, B−V=1.28 and the García Muñoz 2017 phase curve. Rejected with
+  evidence: decreasing-H law above 250 km and a two-lobe diffraction peak (both weaken the 160–166° surge).
+- CONT-14d: discFlux/discTable (CPU disc integral of shell + surface with the shader's BRDF and Venus DM exponent), built in
+  the LUT worker after the LUTs; the point uses it (rgb) for atmospheric bodies except Earth (clouds not in the twin).
+- Tests: tests/render/titanAtmo381.test.ts (5) — total 349 pass.
+- L2a (SW, work/qa/titan-l2a, sheet work/qa/sheets/titan-l2a-c57fce9-vs-00e5780.jpg): sharp haze disc with a separated
+  blue-violet detached-haze ring (was a soft fuzzy edge); terminator smooth; backlit ring clipped in both builds.
+  OPEN FINDINGS: (1) titan-low-altitude (40 km) far darker than baseline — check multiple-scattering accuracy at τ≈9 and
+  exposure before accepting; (2) photometry probe: point/disc ≈ 1.0 at 60°, ≈ 1.4 at 120°, ≈ 2.1 at 150° — GPU disc below
+  the CPU twin at high phase (step budget / forward-peak sampling suspected); the α=20° rpx-12 probe sample was misplaced
+  (84°). CONT-14d stays OPEN. First commit 00e5780 had a TSL wgslFn parse error (fixed same session).
+- QA cost: captures 221–349 s per 6-view set, photometry 189–203 s.
