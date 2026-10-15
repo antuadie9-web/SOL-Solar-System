@@ -11,6 +11,10 @@ const out = arg('out', 'probe'); fs.mkdirSync(out, { recursive: true });
 const W = 960, H = 540, T0 = Date.now();
 const browser = await chromium.launch({ executablePath: '/usr/lib/chromium/chromium', headless: true, args: ['--enable-unsafe-webgpu', '--ignore-gpu-blocklist', '--enable-features=Vulkan', '--use-vulkan=swiftshader', '--use-angle=vulkan', '--enable-unsafe-swiftshader', '--disable-gpu-watchdog'] });
 const page = await browser.newPage({ viewport: { width: W, height: H }, deviceScaleFactor: 1 });
+// QA-381-03: a shader/pipeline build error means the measured material is a fallback, not the code under test
+const SHADER_ERR = [];
+page.on('console', (m) => { if (m.type() === 'error' && /TSL|WGSL|shader|pipeline|GPUValidation/i.test(m.text())) SHADER_ERR.push(m.text().slice(0, 200)); });
+page.on('pageerror', (e) => SHADER_ERR.push('pageerror: ' + String(e).slice(0, 200)));
 await page.goto(arg('url', 'http://localhost:4175/') + '?qa-off=small,smallcompute' + (arg('extra-off', '') ? ',' + arg('extra-off', '') : '') + '&qa-software-gpu=1');
 await page.waitForFunction(() => window.__sol && window.__frames > 3, null, { timeout: 240000 });
 const boot = Date.now() - T0;
@@ -28,6 +32,7 @@ const JD0 = +arg('jd', '2461314.5');   // --jd: probe epoch (TT); the preflight 
 // X = DISPLAY EXPOSURE (a scale factor, never a flux); hdr.peak/median = scene-linear radiance ÷ X. No tone-mapped pixels.
 function preflight(r, req) {
   const w = [];
+  if (SHADER_ERR.length) w.push(`shader/page errors in session (${SHADER_ERR.length}): ${SHADER_ERR[0]}`);
   if (r.id !== req.id || r.pre?.target !== req.id) w.push(`target ${r.pre?.target} ≠ ${req.id}`);
   if (!(Math.abs(r.alphaDeg - req.alpha) <= 1)) w.push(`phase ${r.alphaDeg?.toFixed(2)}° vs requested ${req.alpha}°`);
   if (r.pre?.jd != null && Math.abs(r.pre.jd - JD0) > 1e-6) w.push(`epoch ${r.pre.jd} ≠ ${JD0}`);

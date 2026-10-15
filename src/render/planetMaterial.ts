@@ -6,7 +6,7 @@ import {
   textureSize, int, step,
   Fn, uniform, texture, positionLocal, normalLocal, vec2, vec3, vec4, float, normalize, dot, max, min, mix, smoothstep, clamp, exp, pow,
   dFdx, dFdy, length, cross, abs, sign, select, If, varying, wgslFn, acos, sin, cos, sqrt, fwidth, attribute,
-  sampler,
+  sampler, log2,
 } from 'three/tsl';
 import { eclipseVis, shadowAll, sunTransmit, ringShadowUV, lunarLambert, ggxSpec, equirect, fbm, craters, vnoise } from './shaderlib';
 import type { BodyDef } from '../data/catalog';
@@ -416,7 +416,7 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
         let ratio: any = float(1);
         if (maps.color) {
           const tw = float(2 * Math.PI * def.radius).div(float(textureSize(texture(maps.color), int(0)).x));
-          const lod = TSL.log2(float(3 * (AT.H ?? 10)).div(tw)).max(0);
+          const lod = log2(float(3 * (AT.H ?? 10)).div(tw)).max(0);
           const Yb = dot(texture(maps.color, uvA).level(lod).rgb, vec3(0.2126, 0.7152, 0.0722)), Y0 = dot(samp(maps.color).rgb, vec3(0.2126, 0.7152, 0.0722));
           ratio = Yb.div(max(Y0, 1e-4)).clamp(0, 4);
         }
