@@ -25,3 +25,25 @@ Metric: `tools/qa/hdr_metric.py` (inverse Neutral tone map; plain sRGB sums mis-
 | 33×33 clip screenshot | 12–20 s | **bottleneck: ≈ 75 % of a travel run** — next optimisation target |
 | full-frame screenshot | ≈ 30 s | skipped in L1 (`--shots 0`) |
 | harness hang (vite inherited the job's stdin) | +1,200 s per job (×3) | fixed in snaplib.sh |
+
+## QA-381-03 — measurement preflight and scientific acceptance (2026-10-15)
+**Preflight (automatic, tools/qa/probe_photometry.mjs).** Every GPU sample records and checks: target body (requested = rig target),
+measured vs requested phase (≤ 1°), epoch (JD 2461314.5 TT), display exposure finite > 0, exposure converged, atmosphere LUTs
+uploaded, CPU disc twin built (engine.qaAtmoState), atmospheres enabled, HDR readback present, point entry found (rpx < 0.55),
+flux ratio plausible. Readiness failures are retried twice (2 s apart); anything still failing is written with `valid:false` and
+its reasons into `photometry.json → invalid[]` and must not enter a conclusion. The first sample of a run is a discarded warm-up.
+
+**Quantities — never mix them.**
+| name | meaning | unit |
+|---|---|---|
+| `Fmeas` | physical flux recovered from the scene-linear HDR target: Σ(L − median)·pxAng² ÷ X | engine flux (Sun irradiance at 1 AU = 1) |
+| `Fpt` | committed point flux (exposure removed) — CPU photometry / disc twin | same |
+| `Fref` | Lambert reference p·Φ_L(α)·π(R/d)²/r² | same |
+| `X` | DISPLAY EXPOSURE — a scale factor, not a flux (the L2a misreading) | dimensionless |
+| `hdr.peak/median` | scene-linear radiance ÷ X | engine radiance |
+| PNG pixels | post-tone-map, sRGB — appearance only, never photometry | 0–255 |
+
+**Scientific acceptance checklist** (for any substantial physical model): governing equations and their approximations; parameter
+conventions (e.g. geometric vs Bond albedo, per-km coefficients); which inputs are MEASURED, DERIVED, FITTED or INFERRED; an
+independent reference that does not share the implementation's assumptions (e.g. Monte Carlo vs LUT RT, published observations not
+used in the fit); a stated tolerance; CPU/GPU parity where both exist (parity proves equivalence of implementations, not physics).

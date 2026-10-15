@@ -165,3 +165,23 @@ numerical trace or unit test, **HW** = owner-supplied real-GPU evidence (none ye
 - L2b results (SW, matched immutable base c57fce9 vs cand snapshot 2d03df4 = 7bfad4d + runner flag): 0 TSL/WGSL errors. Low-altitude mean 46.6 vs base 48.7 (was much darker in L2a). Day/Sci/terminator: thin dark-blue detached halo, no hard outline. Limb view 17 % darker than base.
 - Open: TI-02 (U) low-altitude hue olive-orange (R:G ≈ 1.6 linear, B≈0) — follows from the fitted aerosol spectrum, consistent with MC; no colour-calibrated DISR surface reference checked yet. TI-03 (D?) backlit disc interior grey (~70/255): glare/bloom spill from the ring, also in base — investigate PSF energy. TI-04 (P) daylit disc still fairly uniform (no latitudinal haze asymmetry/polar hood modelled). Venus terminator exposure must be re-verified (meter cap removed).
 - Cost: capture 359 s, photometry 247 s (10 samples + warm-up), CPU/MC experiments ≈ 15 min.
+
+## 2026-10-15 (c) — Titan TI-02/03/04, QA-381-03 preflight (remote 11e21fb)
+- **TI-03 (FIXED, root cause).** Diagnostic captures (work/qa/ti03: none / no-bloom / no-glare / neither): disc interior 74/255 with
+  bloom, 0 without; glare irrelevant. Cause: limbLuminance sampled tangent heights ≤ 0.35 of the shell; Titan's backlit ring peaks
+  at 300–550 km → meter low by 6.5× → ring ≫ bloom threshold (6× white) → bloom filled the disc. Now 20 heights (quadratic
+  spacing 0.002–0.95). CPU: Titan backlit limbL 4.4e-3 → 2.87e-2; Venus/Mars/Earth backlit +8/+31/+6 %, terminators unchanged.
+  Cost: 6 ms (Titan, focus shell) per refresh, refreshed every 8 frames or on > 2° motion.
+- **TI-02 (assessed, no model change).** Evidence: DISR-derived ω0 (Tomasko et al. 2008 as revised by West et al., NAI 2013 report)
+  above 144 km 0.84/0.91/0.95 and 30–80 km 0.93/0.97/0.99 at 450/550/650 nm; our fitted upper ω0 0.91/0.955/0.97 is 0.03–0.07
+  higher (absorbs the 0.72× RT reflectance bias — documented). The model's surface sky R:G:B ≈ 1 : 0.63 : 0.09 linear agrees with
+  the Monte Carlo solution (1 : 0.60 : 0.06). The olive cast on screen is mostly an RGB-rendering limitation: three monochromatic
+  samples of a steeply red spectrum under-represent the 600–700 nm band that dominates a broadband red channel (DISR flux rises
+  steeply toward 700+ nm). A spectrally integrated (CIE-weighted) channel model would be the correct fix; it is a shared-pipeline
+  change, deferred to a Gate C spectral-rendering item (WPE-SPEC-01), not patched with a colour multiplier. Note: DISR first results
+  (2005) quote surface τ(531) ≈ 4.5; the 2008/2013 revised laws used here sum to ≈ 9 — recorded as an uncertainty.
+- **TI-04 (deferred with rationale).** The atmosphere is spherically symmetric (LUTs, disc twin). Default epoch Oct 2026 is ≈ 1.4 yr
+  after Titan's northern autumnal equinox (2025): the hemispheric asymmetry is in reversal and no post-Cassini observation fixes its
+  amplitude for this date; a north polar hood would be inference. Implementing latitude-dependent haze needs non-symmetric
+  transmittance and an updated disc twin (CONT-14d parity). Recorded as WPE-TI-04 (P/U), non-critical to acceptance.
+- **QA-381-03** preflight implemented (docs/v3.8.1/QA_WORKFLOW.md).
