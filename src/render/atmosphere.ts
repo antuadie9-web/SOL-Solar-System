@@ -55,16 +55,18 @@ fn aeroD(h: f32, a: vec4<f32>, b: vec4<f32>) -> f32 {
 // v3.8.1 WP-E: up to three extra aerosol populations (own profile, spectrum, ω0 and phase), and a FOCUS SHELL — the ray is
 // split at the radii bounding a thin layer (Titan's detached haze, ~20 km thick on ~2,000-km limb paths) and the parts
 // inside it get their own sample budget, so the layer is resolved without raising the step count everywhere.
-const atmoMarch = wgslFn(`
+const csPhase = wgslFn(`
 fn csPhase(g: vec3<f32>, mu: f32) -> vec3<f32> {
   let g2 = g * g;
   return 0.1193662 * ((vec3<f32>(1.0) - g2) * (1.0 + mu * mu)) / ((vec3<f32>(2.0) + g2) * pow(max(vec3<f32>(1.0) + g2 - 2.0 * g * mu, vec3<f32>(1e-4)), vec3<f32>(1.5)));
-}
+}`);
+const sphHit = wgslFn(`
 fn sphHit(ro: vec3<f32>, rd: vec3<f32>, R: f32) -> vec2<f32> {
   let b = dot(ro, rd); let c = dot(ro, ro) - R * R; let d = b * b - c;
   if (d <= 0.0) { return vec2<f32>(1e30, -1e30); }
   let q = sqrt(d); return vec2<f32>(-b - q, -b + q);
-}
+}`);
+const atmoMarch = wgslFn(`
 fn atmoMarch(ro: vec3<f32>, rd: vec3<f32>, R: f32, Ra: f32, l: vec3<f32>, bR: vec3<f32>, HR: f32, bMs: vec3<f32>, bMe: vec3<f32>, HM: f32, gM: vec3<f32>, bA: vec3<f32>, ozC: f32, ozW: f32, irr: f32, steps: i32, agL: vec3<f32>, agH: f32, agW: f32,
              tT: texture_2d<f32>, tS: sampler, mT: texture_2d<f32>, mS: sampler, msOn: f32,
              s0: vec3<f32>, e0: vec3<f32>, g0: vec3<f32>, p0a: vec4<f32>, p0b: vec4<f32>,
@@ -130,7 +132,7 @@ fn atmoMarch(ro: vec3<f32>, rd: vec3<f32>, R: f32, Ra: f32, l: vec3<f32>, bR: ve
   // (viewTransmittance), so the shell only ADDS in-scattered light there (alpha 0). Off the disc (limb, sky) the grey alpha
   // still dims what lies behind (stars, rings, other bodies).
   return vec4<f32>(3.14159265 * irr * L + em, (1.0 - hitG) * (1.0 - (Tv.x + Tv.y + Tv.z) / 3.0));
-}`, [transmittanceUVw, aeroD]);
+}`, [transmittanceUVw, aeroD, csPhase, sphHit]);
 /** v3.7 per-channel transmittance between a surface point p and the camera c (both in the atmosphere's sphere frame), from
  *  the transmittance LUT (Bruneton 2017 §2.3): camera above the atmosphere → T(p, μ_p); inside → T(lower)/T(upper) along
  *  the upward-pointing direction of the segment. */
