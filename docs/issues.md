@@ -168,7 +168,7 @@ Classification: **D** = confirmed defect, **P** = visual preference / presentati
 | ID | Sev | Class | Finding (owner) | Reproducible test | Status |
 |---|---|---|---|---|---|
 | REV2-01 SUN-381-07 | P1 | D? (audit) | 20° FOV Mars-distance Sun shows disproportionately large/intense glare; spikes too stylised by default | views sun-ladder-{0p39,1,1p52}AU-f20 (+ fixed-exposure variants); glare-energy table vs angR, EV, FOV | OPEN — audit |
-| REV2-02 AST-381-03 | P1 | D | Uranian observed/reconstructed boundary highly conspicuous (albedo, shading, roughness, texture-frequency mismatch); check Triton/Pluto/Charon | moon381-{ariel,titania,oberon}-1986, triton-limb, pluto-day, charon views | OPEN |
+| REV2-02 AST-381-03 | P1 | D | Uranian observed/reconstructed boundary highly conspicuous (albedo, shading, roughness, texture-frequency mismatch); check Triton/Pluto/Charon | moon381-{ariel,titania,oberon}-1986, triton-limb, pluto-day, charon views | CLOSED at 4e3d06f (SW; see AST-381-03 row, docs/v3.8.1/AST-381-03_ACCEPTANCE.md); residuals → AST-381-04 |
 | REV2-03 AST-381-04 | P1 | D/P | Small moons too bright, uniform, clay-like; facets/creases to check against source | moon381-*-ph70, moon381-* (phase 25°); per-moon photometry table | OPEN |
 | REV2-04 ATM/RING | P1 | D/P | Venus terminator, Titan haze, Mars horizon, Pluto/Triton haze, giant limbs; ring edge-on black bands, transparency, depth order, scattering, shadows, moon–ring integration | reg set (venus-terminator, titan-limb, mars-limb, pluto-haze-backlit, triton-limb, jupiter-limb, sat-*) | OPEN (WP-E/F) |
 | REV2-05 STAR/SKY | P2 | P/U | Proxima disc very uniform; Gaia background flat/brown | xstar-proxima-*, sky views | OPEN |
