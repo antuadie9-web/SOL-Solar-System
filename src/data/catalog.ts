@@ -1,3 +1,4 @@
+import { titanAerosols, TITAN_RAYLEIGH } from './titanAtmo';
 // Curated catalogue of resolved bodies: physical parameters (IAU 2015 / JPL SSD / NASA fact sheets, 2026),
 // texture assignments, atmosphere & ring presets and short descriptions.
 export type Kind = 'star' | 'planet' | 'dwarf' | 'moon' | 'asteroid' | 'comet' | 'tno' | 'xstar'; // xstar = catalogue star beyond the Sun
@@ -149,8 +150,9 @@ export const CATALOG: BodyDef[] = [
     // v3.6 Titan: optically thick orange haze (vertical τ ≈ 3 / 4.5 / 6.5 in R/G/B over H ≈ 65 km, ω₀ 0.95 / 0.88 / 0.72, g 0.65 —
     // APPROXIMATE, after the Huygens DISR aerosol model of Tomasko et al. 2008). v3.5's τ ≈ 0.5 haze let the surface map
     // show through as a blue-grey globe; from space Titan's surface is not visible at visible wavelengths.
-    atmo: { height: 600, rayleigh: [1.2e-3, 2.4e-3, 4.5e-3], rayleighH: 40, mie: 0.072, mieH: 65, mieG: 0.65, mieColor: [0.607, 0.843, 1.0],
-      phys: { mieAlbedo: [0.95, 0.88, 0.72], mieG: [0.65, 0.65, 0.65], groundAlbedo: [0.15, 0.12, 0.08], source: 'Tomasko et al. 2008 (PSS 56) — approximate' } },
+    // v3.8.1 WP-E: measured aerosol populations (src/data/titanAtmo.ts — DISR extinction law, detached haze, fitted SSA)
+    atmo: { height: 750, rayleigh: TITAN_RAYLEIGH, rayleighH: 27, mie: 0, mieH: 65, mieG: 0.73,
+      phys: { aerosols: titanAerosols(), groundAlbedo: [0.15, 0.13, 0.10], source: 'Tomasko et al. 2008 (DISR) τ(λ) per altitude region; Seignovert et al. 2017 / West et al. 2018 detached haze; SSA/g fitted to p_V, B−V and the García Muñoz et al. 2017 phase curve' } },
     subtitle: 'A moon with rain, rivers and seas', desc: 'Wrapped in a nitrogen atmosphere 1.5 times Earth’s surface pressure, Titan has methane rain, rivers and seas — the only other world with stable surface liquids. NASA’s Dragonfly rotorcraft launches in 2028 to fly over its dunes.' },
   { id: 'hyperion', name: 'Hyperion', kind: 'moon', parent: 'saturn', radius: 135, radii: [170.6, 133.6, 126.2], model: 'hyperion', albedo: 0.3, color: [0.6, 0.55, 0.48], procedural: { seed: 7, craters: 1.0, rough: 0.9, tint: [0.62, 0.55, 0.46] }, priority: 45,
     subtitle: 'The sponge moon', desc: 'A porous, chaotically tumbling body whose deep, sharp-rimmed craters give it a sponge-like look. Its rotation is genuinely chaotic, impossible to predict for long.' },

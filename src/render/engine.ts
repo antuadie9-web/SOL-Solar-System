@@ -18,7 +18,8 @@ import { visualProfile, type BodyVisualProfile } from './identity';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 export interface ModelInfo { meshes: number; triangles: number; hasUV: boolean; hasNormals: boolean; textured: boolean; extentKm: number | null }
 import { makeSurfaceMaterial, SurfaceKind } from './planetMaterial';
-import { makeAtmosphere, verticalTau, atmosphereLUTs } from './atmosphere';
+import { makeAtmosphere, verticalTau, atmosphereLUTs, type DiscSurfaceDesc } from './atmosphere';
+import { sampleDisc } from './atmoModel';
 import { makeRingSystem, smoothRingColour, buildProfileLOD, decodeProfile, peakIF, peakIFAt, ringTau, ringShadeIF, type ProfileLOD } from './ringSystem';
 const RS_PROF = (e: any, id: string, def: any) => (def.profile ? e.ringProfiles[id] ?? null : null);
 import { RING_SYSTEMS, ringLabels } from '../data/rings';
@@ -244,6 +245,16 @@ export class Engine {
     return b.id === 'earth' ? 'earth' : ['jupiter', 'saturn', 'uranus', 'neptune'].includes(b.id) ? 'gas' : b.id === 'venus' ? 'venus' : b.id === 'titan' ? 'haze'
       : ['europa', 'enceladus', 'tethys', 'dione', 'rhea', 'mimas', 'ariel', 'titania', 'triton', 'pluto', 'charon', 'eris', 'haumea', 'makemake'].includes(b.id) || icyFamily ? 'icy' : d.procedural || profile.surface !== 'mapped' ? 'procedural' : 'rocky';
   }
+  /** mean surface reflectance the disc is calibrated to (CONT-14c; Venus/Titan/Earth pending WP-E) */
+  discTarget(b: Body, kind = this.surfaceKind(b)) {
+    const d = b.def;
+    return b.id === 'earth' ? 0.075 : (kind === 'venus' || kind === 'haze') ? Math.min(0.92, d.albedo * 1.25) : discReflectance(d.albedo, this.photoKind(kind), d.limb ?? 0.9);
+  }
+  /** CONT-14d: the surface as the CPU disc integral sees it (the surface shader's BRDF, mean calibrated reflectance and tint) */
+  discSurf(b: Body): DiscSurfaceDesc {
+    const k = this.surfaceKind(b), t = this.discTarget(b, k), c = lumNormalised(b.def.procedural?.tint ?? b.def.color);
+    return { refl: [t * c[0], t * c[1], t * c[2]], kind: this.photoKind(k), k: b.def.limb ?? (k === 'venus' ? 0.86 : 0.9), dm: k === 'venus' ? 0.51 : 1 };
+  }
   photoKind(k: SurfaceKind): PhotometricKind { return k === 'gas' || k === 'venus' || k === 'haze' ? 'gas' : k === 'earth' ? 'earth' : k === 'icy' ? 'icy' : 'rocky'; }
   // ── per-body view (lazy) ────────────────────────────────────────────────
   getView(b: Body): BodyView {
@@ -271,7 +282,7 @@ export class Engine {
     let ringSys: ReturnType<typeof makeRingSystem> | null = null;
     if (RS) { ringSys = makeRingSystem(RS, b.radii as any, RS.profile ? this.ringProfiles[b.id] ?? null : null, RS.colorTex === 'saturn_ring' ? (this.ringColour ??= this.ringColourPre ?? (this.assets.ring?.image ? smoothRingColour(this.assets.ring.image) : null) ?? this.assets.ring) : null); maps.ring = ringSys.shadowTex; }
     // v3.6: the body's atmosphere LUTs (transmittance, multiple scattering, skylight) are built first: the surface uses them
-    const AL = d.atmo ? atmosphereLUTs(b.id, d.atmo, b.radii[0]) : null;
+    const AL = d.atmo ? atmosphereLUTs(b.id, d.atmo, b.radii[0], b.id !== 'earth' ? this.discSurf(b) : undefined) : null;
     if (AL) { v.atmoLuts = AL.luts; if (AL.pending) { const vv = v; AL.ready.then(() => { vv.warmFrames = Math.max(vv.warmFrames, 2); }); } }   // v3.8: re-warm once the worker LUTs land (atmosphere shell pipeline)
     const atmoOpt = AL ? { T: AL.T, sky: AL.sky, Rg: AL.luts.A.Rg, Rt: AL.luts.A.Rt } : undefined;
     const { material, U } = makeSurfaceMaterial(d, kind, maps, profile, { atmo: atmoOpt });
@@ -285,7 +296,7 @@ export class Engine {
     // Gas giants likewise (was 1.05·p → disc 0.70–0.73 of the geometric-albedo flux, SW HDR readback; their thin shells add
     // < 3 %). Venus, Titan and Earth keep their calibration until WP-E gives their shells a disc-integral contract; the
     // shell-added light (Titan 2.5×, Mars 3× at α = 120°) is registered as CONT-14d.
-    const target = b.id === 'earth' ? 0.075 : (kind === 'venus' || kind === 'haze') ? Math.min(0.92, d.albedo * 1.25) : discReflectance(d.albedo, this.photoKind(kind), d.limb ?? 0.9);
+    const target = this.discTarget(b, kind);
     const tc = d.procedural?.tint ?? d.color, tl = 0.2126 * tc[0] + 0.7152 * tc[1] + 0.0722 * tc[2];
     // maps with unobserved (black) regions: calibrate against the mean of the OBSERVED part only (baseline divided by
     // the full-map mean, over-brightening Ariel/Titania/Oberon by ~2×)
@@ -588,7 +599,14 @@ export class Engine {
           // v3.5: unresolved worlds belong to the sky domain (they sit among the stars) → sky exposure + compression.
           // v3.8.1 CONT-14: reached through the shared hand-over contract (pointExposure) instead of a jump at the disc.
           const Ept = pointExposure(LS, skyE, rpx);
-          let F = pointBodyFlux(b.albedo, pk0, alpha * 180 / Math.PI, b.radius / dist, rS, mk) * fade * visibilityGain(mode, st.get('bodyBoost') as number) * Ept;
+          // v3.8.1 CONT-14d: a body with an atmosphere shell takes its disc-integrated flux (shell + surface, rgb) from the
+          // CPU twin of what the GPU draws (atmoModel.discTable, built in the LUT worker); until it lands, and for Earth (clouds
+          // not in the twin), the surface-BRDF photometry of CONT-14c answers.
+          const k0 = fade * visibilityGain(mode, st.get('bodyBoost') as number) * Ept;
+          const DS = b.def.atmo && b.id !== 'earth' ? atmosphereLUTs(b.id, b.def.atmo, b.radii[0], this.discSurf(b)) : null;
+          let Frgb: number[] | null = null;
+          if (DS?.disc) { const q = sampleDisc(DS.disc, alpha * 180 / Math.PI), g = Math.pow(DS.luts.A.Rg / dist, 2) / (rS * rS) * k0; Frgb = [q[0] * g, q[1] * g, q[2] * g]; }
+          let F = Frgb ? 0.2126 * Frgb[0] + 0.7152 * Frgb[1] + 0.0722 * Frgb[2] : pointBodyFlux(b.albedo, pk0, alpha * 180 / Math.PI, b.radius / dist, rS, mk) * k0;
           // keep planets findable as points (presentation only — GA-SCI-01: Scientific draws the physical flux, floor 0)
           // v3.8.1 SUN-FAR-01: a findability floor only helps while the body can be told apart from its host (the planet for a
           // moon, the Sun for a planet). Beyond the planetary system every planet/dwarf/moon floor stacked onto the Sun's pixel
@@ -597,8 +615,8 @@ export class Engine {
           const host = b.parent && b.parent.kind !== 'star' ? b.parent : sun, hRel = sub(host.pos, cam);
           const sepPx = Math.acos(Math.max(-1, Math.min(1, dot(rel, hRel) / Math.max(dist * len(hRel), 1e-30)))) / this.pxAng;
           const floor = pointFloor(mode, b.kind, b.radius, this.pxAng, fade) * smooth(2, 6, sepPx);
-          if (F < floor) { F = floor; this.enhancement.pointFloor++; }
-          const c = lumNormalised(b.def.color);   // CONT-14c: was raw tint × 1.6 (Callisto's point 3× too faint, luminance 0.34 × 1.6)
+          if (F < floor) { Frgb = null; F = floor; this.enhancement.pointFloor++; }
+          const c = Frgb ? [Frgb[0] / Math.max(F, 1e-30), Frgb[1] / Math.max(F, 1e-30), Frgb[2] / Math.max(F, 1e-30)] : lumNormalised(b.def.color);   // CONT-14c: was raw tint × 1.6 (Callisto's point 3× too faint, luminance 0.34 × 1.6)
           scr.bright = Math.max(scr.bright, F / (this.pxAng * this.pxAng * 6.283 * 0.56));
           const pk = pointDepthScale(this.viewBound(b), dist); this.points.pos.set([relS.x * pk, relS.y * pk, relS.z * pk], nPts * 3);   // CONT-14 representation/depth contract
           this.points.flux.set([F * c[0], F * c[1], F * c[2]], nPts * 3);
