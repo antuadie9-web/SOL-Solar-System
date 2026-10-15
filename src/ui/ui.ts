@@ -655,7 +655,8 @@ export class UI {
     // m = M + 5·log10(d / 10 pc) with the catalogue absolute magnitude.
     else if (b.kind === 'xstar' && b.info?.absMag !== undefined) mag = parseFloat(b.info.absMag) + 5 * Math.log10(d / 3.0856775814913673e14);
     else { const toSun = sub(this.sys.sun.pos, b.pos), alpha = Math.acos(Math.max(-1, Math.min(1, dot(norm(toSun), norm(scale(rel, -1)))))); const ph = (Math.sin(alpha) + (Math.PI - alpha) * Math.cos(alpha)) / Math.PI;
-      const F = b.albedo * (2 / 3) * Math.pow(b.radius / d, 2) / Math.pow(dSun / AU, 2) * ph; mag = -26.74 - 2.5 * Math.log10(Math.max(F, 1e-40)); }
+      // v3.8.1 CONT-14c: catalog albedo is GEOMETRIC (F(0) = p·(R/d)²·F☉); the ⅔ factor read 0.44 mag faint (Jupiter at opposition −2.33 → −2.77)
+      const F = b.albedo * Math.pow(b.radius / d, 2) / Math.pow(dSun / AU, 2) * ph; mag = -26.74 - 2.5 * Math.log10(Math.max(F, 1e-40)); }
     const cells: [string, string, string][] = [
       ['From camera', ...splitU(fmtDist(d - b.radius))], ['From Sun', ...splitU(fmtDist(dSun))],
       ['From Earth', ...splitU(b === earth ? '—' : fmtDist(dEarth))], ['Light time', fmtDur(dEarth / C_KMS), ''],

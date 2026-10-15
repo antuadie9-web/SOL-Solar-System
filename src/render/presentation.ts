@@ -192,6 +192,49 @@ export function lunarLambert(mu0: number, mu: number, phaseDeg: number, lambertB
 export function minnaert(mu0: number, mu: number, k: number) { return Math.pow(Math.max(mu0, 0), k) * Math.pow(Math.max(mu, 0.02), k - 1); }
 export type PhotometricKind = 'rocky' | 'icy' | 'gas' | 'earth';
 /**
+ * v3.8.1 CONT-14c — shared disc-integrated photometry (one model for the resolved disc and the unresolved point).
+ * Engine radiance convention: L = a · E · f(μ0, μ, α) with f the shader BRDF (shaderlib lunarLambert / minnaert / μ0)
+ * and E the pre-exposed solar term (LS / r²). The disc's integrated flux per unit reflectance a, solar term E and
+ * angular area (R/d)² is I(α) = ∫disc f dΩ (numerical, 1° table, cached per kind).
+ * Physical anchor: the catalog albedo is the GEOMETRIC albedo p, defined by F(0) = p · π · E · (R/d)² in this convention
+ * (Lambert check: f = μ0 ⇒ I(0) = 2π/3 ⇒ a = 3p/2, the textbook relation). Hence
+ *   disc reflectance  a(p)  = p · π / I(0)                       (replaces the inherited a = 1.25 p heuristic)
+ *   point flux        F(α)  = a(p) · E · (R/d)² · I(α)          (replaces ⅔·p·π·Φ_Lambert, which was ⅔ low and used
+ *                                                                  the Lambert phase law whatever the disc used)
+ * so disc and point agree by construction wherever the disc is the surface BRDF. Atmosphere shells add light the
+ * surface BRDF does not contain (e.g. Titan's forward-scattering haze); that residual is measured, not hidden (CONT-14c).
+ */
+const PHOT_TABLE = new Map<string, Float64Array>();
+export function discPhaseIntegral(kind: PhotometricKind, alphaDeg: number, minnaertK = 0.9) {
+  const key = kind + (kind === 'gas' ? ':' + minnaertK.toFixed(3) : '');
+  let T = PHOT_TABLE.get(key);
+  if (!T) {
+    T = new Float64Array(181); const n = 64, h = 2 / n;   // 64² samples: < 0.3 % vs 800² (QA check)
+    for (let ai = 0; ai <= 180; ai++) {
+      const a = ai * Math.PI / 180, lx = Math.sin(a), lz = Math.cos(a); let sum = 0;
+      for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
+        const x = -1 + (i + 0.5) * h, y = -1 + (j + 0.5) * h, r2 = x * x + y * y; if (r2 >= 1) continue;
+        const mu = Math.sqrt(1 - r2), mu0 = x * lx + mu * lz; if (mu0 <= 0) continue;
+        sum += kind === 'gas' ? minnaert(mu0, mu, minnaertK) : kind === 'earth' ? mu0 : lunarLambert(mu0, mu, ai, kind === 'icy' ? 0.45 : 0);
+      }
+      T[ai] = sum * h * h;
+    }
+    PHOT_TABLE.set(key, T);
+  }
+  const x = clamp(alphaDeg, 0, 180), i = Math.min(179, Math.floor(x)), t = x - i;
+  return T[i] * (1 - t) + T[i + 1] * t;
+}
+/** Disc reflectance a that makes the shaded sphere integrate to geometric albedo p at zero phase (capped at 0.92). */
+export function discReflectance(p: number, kind: PhotometricKind, minnaertK = 0.9) {
+  return Math.min(0.92, p * Math.PI / discPhaseIntegral(kind, 0, minnaertK));
+}
+/** Unresolved-body flux (engine units, before exposure): a(p)·I(α)·(R/d)²/r² — the disc's own integral. */
+export function pointBodyFlux(p: number, kind: PhotometricKind, alphaDeg: number, radiusOverDist: number, rSunAU: number, minnaertK = 0.9) {
+  return discReflectance(p, kind, minnaertK) * discPhaseIntegral(kind, alphaDeg, minnaertK) * radiusOverDist * radiusOverDist / (rSunAU * rSunAU);
+}
+/** Point colour from a body tint: luminance-normalised so the tint never changes the integrated luminance. */
+export function lumNormalised(c: readonly number[]) { const Y = Math.max(1e-6, 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]); return [c[0] / Y, c[1] / Y, c[2] / Y]; }
+/**
  * Brightest photometric factor over the VISIBLE, SUNLIT part of a sphere at phase angle α (deg), found by sampling the
  * great circle through the sub-solar and sub-observer points (the maximum of these photometric functions lies on it).
  * Points closer than `minMu` to the limb are ignored: they cover a sub-pixel sliver of the disc.

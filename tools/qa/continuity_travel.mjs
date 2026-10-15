@@ -14,7 +14,7 @@ const ALL = ['sun-f20-auto', 'sun-f20-fixed', 'sun-f50-auto', 'rings-pan', 'sun-
 const seqs = (arg('seq', ALL.join(','))).split(',');
 const W = 960, H = 540;
 // QA-381-02 cost accounting: --shots 0 skips the full-frame images (≈30 s each in software WebGPU); timings go into <seq>.json
-const SHOTS = arg('shots', '1') !== '0', T0 = Date.now(), cost = { bootMs: 0 };
+const SHOTS = arg('shots', '1') !== '0', HDR = arg('hdr', '0') === '1', T0 = Date.now(), cost = { bootMs: 0 };
 const browser = await chromium.launch({ executablePath: exe, headless: true, args: ['--enable-unsafe-webgpu', '--ignore-gpu-blocklist', '--enable-features=Vulkan', '--use-vulkan=swiftshader', '--use-angle=vulkan', '--enable-unsafe-swiftshader', '--disable-gpu-watchdog', '--disable-features=DawnSIRepsUseClientProvidedSemaphores'] });
 const page = await browser.newPage({ viewport: { width: W, height: H }, deviceScaleFactor: 1 });
 await page.addInitScript({ path: 'tools/qa/gpu-errors.js' });
@@ -91,7 +91,10 @@ for (const seq of seqs) {
     const SHOT = seq === 'rings-pan' ? 6 : 10;
     // point regime: a 33×33 centre clip every step (cheap) — integrated and peak displayed Sun signal vs distance
     const t1 = Date.now();
-    if (seq === 'sun-far-auto' || seq.startsWith('titan')) await page.screenshot({ path: `${out}/${seq}/c${String(i).padStart(3, '0')}.png`, clip: { x: W / 2 - 16, y: H / 2 - 16, width: 33, height: 33 }, timeout: 180000 });
+    // QA-381-02: --hdr 1 reads the scene-linear HDR pass (engine.qaReadHDR) instead of an 8-bit clip: no tone-map
+    // inversion, no clipping, and the SwiftShader PNG encode is skipped (clip screenshots were ~75 % of a travel run).
+    if (HDR && (seq === 'sun-far-auto' || seq.startsWith('titan'))) info.hdr = await page.evaluate(async () => { const e = window.__sol.engine, h = await e.qaReadHDR(33); return h && { signal: h.signal / e.displayExposure, peak: h.peak / e.displayExposure, median: h.median / e.displayExposure, X: e.displayExposure, pxAng: e.pxAng }; });
+    else if (seq === 'sun-far-auto' || seq.startsWith('titan')) await page.screenshot({ path: `${out}/${seq}/c${String(i).padStart(3, '0')}.png`, clip: { x: W / 2 - 16, y: H / 2 - 16, width: 33, height: 33 }, timeout: 180000 });
     const t2 = Date.now();
     if (SHOTS && (i % SHOT === 0 || i === N - 1)) await page.screenshot({ path: `${out}/${seq}/${String(i).padStart(3, '0')}.png`, timeout: 180000 });
     info.ms = { step: t1 - t0, clip: t2 - t1, shot: Date.now() - t2 };

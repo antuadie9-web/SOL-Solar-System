@@ -27,3 +27,26 @@ test('point sprite sits just in front of its own bounding sphere, on the line of
   assert.ok(d * k < d - R && d * k > d - 1.05 * R);
   assert.equal(pointDepthScale(R, R / 2), 0);
 });
+import { discPhaseIntegral, discReflectance, pointBodyFlux, lumNormalised } from '../../src/render/presentation';
+test('CONT-14c: Lambert disc integral reproduces the textbook a = 3p/2 relation', () => {
+  assert.ok(Math.abs(discPhaseIntegral('earth', 0) - 2 * Math.PI / 3) < 0.01);
+  assert.ok(Math.abs(discReflectance(0.3, 'earth') - 0.45) < 0.003);
+});
+test('CONT-14c: point flux at zero phase equals the geometric-albedo definition for every kind', () => {
+  for (const k of ['rocky', 'icy', 'gas', 'earth'] as const) {
+    const F = pointBodyFlux(0.2, k, 0, 1e-3, 2);
+    assert.ok(Math.abs(F / (0.2 * Math.PI * 1e-6 / 4) - 1) < 1e-9, k);
+  }
+});
+test('CONT-14c: point = disc integral at every phase (shared model), phase curve monotone', () => {
+  for (const k of ['rocky', 'icy', 'gas'] as const) {
+    let prev = Infinity;
+    for (let a = 0; a <= 170; a += 10) {
+      const F = pointBodyFlux(0.3, k, a, 1, 1), D = discReflectance(0.3, k) * discPhaseIntegral(k, a);
+      assert.ok(Math.abs(F - D) < 1e-12); assert.ok(F <= prev + 1e-12, `${k} ${a}`); prev = F;
+    }
+  }
+});
+test('CONT-14c: point tint is luminance-normalised', () => {
+  const c = lumNormalised([0.38, 0.34, 0.3]); assert.ok(Math.abs(0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2] - 1) < 1e-9);
+});

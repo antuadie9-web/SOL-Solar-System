@@ -4,7 +4,7 @@ import * as THREE from 'three/webgpu';
 import { pass, uniform, vec4, vec3, float, mrt, output, Fn, screenUV } from 'three/tsl';
 import * as TSL from 'three/tsl';
 import { MODE_PARAMS, approachParams, skyExposure, skyExposureV381, sunGlareVeil, meterLuminance, photometricPeak, HIGHLIGHT_TARGET, type ViewMode, type PresentationParams, type MeterBody, type PhotometricKind } from './presentation';
-import { radianceFromSB, visibilityGain, pointFloor, pointExposure, pointDepthScale } from './presentation';
+import { radianceFromSB, visibilityGain, pointFloor, pointExposure, pointDepthScale, pointBodyFlux, discReflectance, lumNormalised } from './presentation';
 import { airglowPeakPerKm } from './atmosphere';
 import { limbLuminance } from './atmoModel';
 import { bloom } from 'three/addons/tsl/display/BloomNode.js';
@@ -144,6 +144,7 @@ export class Engine {
     // post: HDR scene × exposure → bloom → AgX → sRGB
     this.pipeline = new THREE.RenderPipeline(r);
     const sp = pass(this.scene, this.camera, { samples: qaOff('msaa') ? 0 : 4 } as any);
+    this.scenePass = sp;
     const lit = sp.getTextureNode('output').min(4096);
     // Bloom models lens/sensor scattering of sources far above display white (the Sun, specular glints). Threshold 6×
     // display white (was 1.8×) so a correctly exposed extended body (Moon, Earth) is crisp instead of haloed (Phase 1).
@@ -236,6 +237,14 @@ export class Engine {
     // comets
     for (const b of this.sys.bodies) if (b.kind === 'comet') { if (qaOff('comets')) continue; const t = new CometTail(20000, b.id.length * 97 + 3); this.tails.set(b.id, t); this.scene.add(t.mesh); }
   }
+  /** Surface shading kind (shared by the disc material and the CONT-14c point photometry). */
+  surfaceKind(b: Body): SurfaceKind {
+    const d = b.def, profile = visualProfile(d);
+    const icyFamily = profile.surface === 'icy-tectonic' || profile.surface === 'sponge-ice' || profile.surface === 'volatile-dwarf';
+    return b.id === 'earth' ? 'earth' : ['jupiter', 'saturn', 'uranus', 'neptune'].includes(b.id) ? 'gas' : b.id === 'venus' ? 'venus' : b.id === 'titan' ? 'haze'
+      : ['europa', 'enceladus', 'tethys', 'dione', 'rhea', 'mimas', 'ariel', 'titania', 'triton', 'pluto', 'charon', 'eris', 'haumea', 'makemake'].includes(b.id) || icyFamily ? 'icy' : d.procedural || profile.surface !== 'mapped' ? 'procedural' : 'rocky';
+  }
+  photoKind(k: SurfaceKind): PhotometricKind { return k === 'gas' || k === 'venus' || k === 'haze' ? 'gas' : k === 'earth' ? 'earth' : k === 'icy' ? 'icy' : 'rocky'; }
   // ── per-body view (lazy) ────────────────────────────────────────────────
   getView(b: Body): BodyView {
     let v = this.views.get(b.id); if (v) return v;
@@ -247,9 +256,7 @@ export class Engine {
       v.ready = true; return v;
     }
     const profile = visualProfile(d); v.profile = profile;
-    const icyFamily = profile.surface === 'icy-tectonic' || profile.surface === 'sponge-ice' || profile.surface === 'volatile-dwarf';
-    const kind: SurfaceKind = b.id === 'earth' ? 'earth' : ['jupiter', 'saturn', 'uranus', 'neptune'].includes(b.id) ? 'gas' : b.id === 'venus' ? 'venus' : b.id === 'titan' ? 'haze'
-      : ['europa', 'enceladus', 'tethys', 'dione', 'rhea', 'mimas', 'ariel', 'titania', 'triton', 'pluto', 'charon', 'eris', 'haumea', 'makemake'].includes(b.id) || icyFamily ? 'icy' : d.procedural || profile.surface !== 'mapped' ? 'procedural' : 'rocky';
+    const kind = this.surfaceKind(b);
     const maps: any = {};
     const hi = !!d.texHi;
     if (d.tex) maps.color = TS.get(d.tex, { srgb: true, hiAvailable: hi, color: d.color, priority: true });
@@ -273,7 +280,12 @@ export class Engine {
     if (d.terrain) v.terrainMaterial = makeSurfaceMaterial(d, kind, maps, profile, { U, terrainAttr: true, atmo: atmoOpt }).material;
     // albedo calibration against the texture's mean linear reflectance
     const mean = d.tex ? this.assets.texStats[d.tex] : undefined;
-    const target = b.id === 'earth' ? 0.075 : kind === 'gas' ? d.albedo * 1.05 : Math.min(0.92, d.albedo * 1.25);
+    // v3.8.1 CONT-14c: surface-BRDF bodies are calibrated so the shaded disc integrates to the geometric albedo at zero
+    // phase (presentation.discReflectance); the inherited 1.25·p made full-phase airless discs 1.4–1.7× too bright.
+    // Gas giants likewise (was 1.05·p → disc 0.70–0.73 of the geometric-albedo flux, SW HDR readback; their thin shells add
+    // < 3 %). Venus, Titan and Earth keep their calibration until WP-E gives their shells a disc-integral contract; the
+    // shell-added light (Titan 2.5×, Mars 3× at α = 120°) is registered as CONT-14d.
+    const target = b.id === 'earth' ? 0.075 : (kind === 'venus' || kind === 'haze') ? Math.min(0.92, d.albedo * 1.25) : discReflectance(d.albedo, this.photoKind(kind), d.limb ?? 0.9);
     const tc = d.procedural?.tint ?? d.color, tl = 0.2126 * tc[0] + 0.7152 * tc[1] + 0.0722 * tc[2];
     // maps with unobserved (black) regions: calibrate against the mean of the OBSERVED part only (baseline divided by
     // the full-map mean, over-brightening Ariel/Titania/Oberon by ~2×)
@@ -359,9 +371,8 @@ export class Engine {
   }
   /**
    * v3.5 secondary illumination source for body b: the neighbour (parent planet or a large moon) that delivers the most
-   * reflected sunlight. Irradiance of a Lambert sphere of albedo A, radius R at distance d and phase α (SOL irradiance
-   * units, sunlight = 1/r²):  E = (2/3)·A·(R/d)²·Φ(α)/r_AU²,  Φ(α) = [sin α + (π−α) cos α]/π  (the same law SOL uses for
-   * unresolved points). Colour = the neighbour's mean colour. Physical, unshadowed (eclipses of the neighbour ignored).
+   * reflected sunlight. Irradiance (SOL units, sunlight = 1/r²) = the neighbour's disc-integrated flux / π, from the
+   * shared CONT-14c photometry (presentation.pointBodyFlux: geometric albedo p, the neighbour's own phase integral). Colour = the neighbour's mean colour. Physical, unshadowed (eclipses of the neighbour ignored).
    */
   planetshine(b: Body): { dir: V3; rgb: [number, number, number]; E: number; src: string } | null {
     const cand: Body[] = [];
@@ -372,9 +383,8 @@ export class Engine {
       const dv = sub(c.pos, b.pos), d = len(dv); if (!(d > c.radius)) continue;
       const toSun = norm(scale(c.pos, -1)), toB = norm(scale(dv, -1));
       const a = Math.acos(Math.max(-1, Math.min(1, dot(toSun, toB))));
-      const phi = (Math.sin(a) + (Math.PI - a) * Math.cos(a)) / Math.PI;
       const rS = len(c.pos) / AU;
-      const E = (2 / 3) * c.albedo * Math.pow(c.radius / d, 2) * phi / (rS * rS);
+      const ck = this.surfaceKind(c), E = pointBodyFlux(c.albedo, this.photoKind(ck), a * 180 / Math.PI, c.radius / d, rS, c.def.limb ?? (ck === 'venus' ? 0.86 : 0.9)) / Math.PI;   // CONT-14c: same disc integral as the point (was ⅔·p·Φ_Lambert)
       if (!best || E > best.E) { const col = c.def.color, cy = 0.2126 * col[0] + 0.7152 * col[1] + 0.0722 * col[2]; best = { dir: dv, E, src: c.id, rgb: [E * col[0] / cy, E * col[1] / cy, E * col[2] / cy] }; }
     }
     return best && best.E > 0 ? best : null;
@@ -574,18 +584,18 @@ export class Engine {
           const toSun = sub(sun.pos, b.pos), rS = len(toSun) / AU;
           const cosA = dot(norm(toSun), norm(scale(rel, -1)));
           const alpha = Math.acos(Math.max(-1, Math.min(1, cosA)));
-          const phase = (Math.sin(alpha) + (Math.PI - alpha) * Math.cos(alpha)) / Math.PI;
+          const sk = this.surfaceKind(b), pk0 = this.photoKind(sk), mk = b.def.limb ?? (sk === 'venus' ? 0.86 : 0.9);
           // v3.5: unresolved worlds belong to the sky domain (they sit among the stars) → sky exposure + compression.
           // v3.8.1 CONT-14: reached through the shared hand-over contract (pointExposure) instead of a jump at the disc.
           const Ept = pointExposure(LS, skyE, rpx);
-          let F = b.albedo * (2 / 3) * Math.PI * Math.pow(b.radius / dist, 2) / (rS * rS) * phase * fade * visibilityGain(mode, st.get('bodyBoost') as number) * Ept;
+          let F = pointBodyFlux(b.albedo, pk0, alpha * 180 / Math.PI, b.radius / dist, rS, mk) * fade * visibilityGain(mode, st.get('bodyBoost') as number) * Ept;
           // keep planets findable as points (presentation only — GA-SCI-01: Scientific draws the physical flux, floor 0)
           const floor = pointFloor(mode, b.kind, b.radius, this.pxAng, fade);
           if (F < floor) { F = floor; this.enhancement.pointFloor++; }
-          const c = b.def.color;
+          const c = lumNormalised(b.def.color);   // CONT-14c: was raw tint × 1.6 (Callisto's point 3× too faint, luminance 0.34 × 1.6)
           scr.bright = Math.max(scr.bright, F / (this.pxAng * this.pxAng * 6.283 * 0.56));
           const pk = pointDepthScale(this.viewBound(b), dist); this.points.pos.set([relS.x * pk, relS.y * pk, relS.z * pk], nPts * 3);   // CONT-14 representation/depth contract
-          this.points.flux.set([F * c[0] * 1.6, F * c[1] * 1.6, F * c[2] * 1.6], nPts * 3);
+          this.points.flux.set([F * c[0], F * c[1], F * c[2]], nPts * 3);
           this.points.comp[nPts] = fade;    // CONT-14: star highlight compression engages with the point, not at full weight under the disc
           nPts++;
         }
@@ -854,6 +864,21 @@ export class Engine {
   private viewBound(b: Body) {
     const sh = this.views.get(b.id)?.atmo?.U.shell.value as THREE.Vector3 | undefined;
     return Math.max(b.radius, ...b.radii, sh ? Math.max(sh.x, sh.y, sh.z) : 0);
+  }
+  scenePass: any = null;
+  /** QA-381-02: scene-linear (pre-exposed, before bloom/grade/tone map) readback of a centred w×w device-pixel window of the
+   *  HDR scene pass — replaces 8-bit screenshot + inverse-tone-map for photometric diagnostics (cheaper, no clipping). */
+  async qaReadHDR(w = 33) {
+    const rt = this.scenePass?.renderTarget; if (!rt || !this.renderer) return null;
+    const W = rt.width, H = rt.height, x0 = Math.round(W / 2 - (w - 1) / 2), y0 = Math.round(H / 2 - (w - 1) / 2);
+    const raw: any = await (this.renderer as any).readRenderTargetPixelsAsync(rt, x0, y0, w, w);
+    const half = raw instanceof Uint16Array, n = w * w, Y = new Float64Array(n), sum = [0, 0, 0];
+    for (let i = 0; i < n; i++) for (let c = 0; c < 3; c++) {
+      const v = half ? THREE.DataUtils.fromHalfFloat(raw[i * 4 + c]) : raw[i * 4 + c]; sum[c] += v; Y[i] += v / 3;
+    }
+    const srt = Float64Array.from(Y).sort(), med = srt[n >> 1];
+    let sig = 0, peak = 0; for (let i = 0; i < n; i++) { sig += Math.max(0, Y[i] - med); peak = Math.max(peak, Y[i]); }
+    return { w, W, H, sum, median: med, signal: sig, peak, half };
   }
   settleExposure() { this.expSettle = true; }
   private expSettle = false;
