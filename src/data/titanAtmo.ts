@@ -19,7 +19,12 @@
 // λ ≲ 600 nm).)
 // Single-scattering albedo: higher-altitude aerosols darker (tholin-like, strongly absorbing toward the blue), below 80 km
 // less absorbing (Tomasko et al. 2008, Fig. 12.19) — values below FITTED within the figure's ±0.05 band to Titan's
-// geometric albedo p_V = 0.22 and colour B−V = 1.28 (catalog / standard photometry).
+// geometric albedo p_V = 0.22 and colour B−V = 1.28 (catalog / standard photometry). 2026-10-15 refit after the
+// WPE-TI-01 radiative-transfer correction (similarity-scaled orders ≥ 2): the fitted upper-haze ω0 (0.955 at 550 nm) sits
+// ABOVE the DISR high-altitude curve. Part of that offset compensates a measured bias of the LUT multiple-scattering
+// approximation: against a plane-parallel Monte Carlo solution of the same profile and phase functions it under-predicts
+// nadir reflectance by ≈ 0.72× and surface irradiance by ≈ 0.65× (work/exp/mc*.py). These ω0 are therefore effective
+// renderer parameters, not a retrieval, and the p_V / B−V match is a fit, not an independent validation.
 // Phase function: fractal aggregates of ~3000 monomers of 50 nm (DISR solar aureole), strongly forward scattering; a
 // Cornette–Shanks lobe with g decreasing toward the red (larger size parameter in the blue) — INFERRED g = 0.70/0.73/0.76,
 // chosen (with the SSA) against BOTH the full-phase colour and the Cassini ISS high-phase surge (tests). A two-lobe phase
@@ -39,7 +44,7 @@ type V3 = [number, number, number];
 
 const tauAbove80: V3 = [3.21, 3.94, 6.30], tau3080: V3 = [2.47, 2.79, 3.71], tauBelow30: V3 = [1.26, 1.37, 1.67];
 /** FITTED single-scattering albedos (see header). */
-export const TITAN_SSA = { upper: [0.90, 0.85, 0.72] as V3, lower: [0.96, 0.94, 0.86] as V3, detached: [0.94, 0.92, 0.86] as V3 };
+export const TITAN_SSA = { upper: [0.97, 0.955, 0.91] as V3, lower: [0.98, 0.96, 0.88] as V3, detached: [0.94, 0.92, 0.86] as V3 };
 const GAP = { c: 445, w: 32, d: 0.65 };   // depleted layer below the detached haze (West et al. 2018) — INFERRED depth/width
 const upperProf: AeroProfile = { kind: 'exp', base: 80, H0: 65, k: 0, below: 0, gap: GAP };
 /** relative density of the undepleted upper haze at altitude h (1 at 80 km) */

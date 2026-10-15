@@ -64,6 +64,12 @@ export function aeroScatter(A: AtmoPhysical, h: number): V3 {
   for (const a of A.aerosols ?? []) { const d = aeroDensity(a.prof, h); for (let k = 0; k < 3; k++) o[k] += a.scat[k] * d; }
   return o;
 }
+/** Similarity-scaled aerosol scattering Σ σs,i(1 − g_i) — the multiplier of the (scaled-medium) multiple-scattering LUT. */
+export function aeroScatterMS(A: AtmoPhysical, h: number): V3 {
+  const m = Math.exp(-h / A.mie.H), o: V3 = [0, 1, 2].map(k => A.mie.scat[k] * (1 - A.mie.g[k]) * m) as V3;
+  for (const a of A.aerosols ?? []) { const d = aeroDensity(a.prof, h); for (let k = 0; k < 3; k++) o[k] += a.scat[k] * (1 - a.g[k]) * d; }
+  return o;
+}
 /** Phase-weighted aerosol scattering Σ σs,i(h)·P_i(ν) per channel, given each population's phase values PM[i][k]. */
 function aeroScatterPhase(A: AtmoPhysical, h: number, PMleg: number[], PMa: number[][]): V3 {
   const m = Math.exp(-h / A.mie.H), o: V3 = [A.mie.scat[0] * m * PMleg[0], A.mie.scat[1] * m * PMleg[1], A.mie.scat[2] * m * PMleg[2]];
@@ -209,7 +215,20 @@ export function buildMultiScatter(A: AtmoPhysical, T: Float32Array, dirs = 64, s
   }
   return out;
 }
-export function buildLUTs(A: AtmoPhysical): AtmoLUTs { const T = buildTransmittance(A); return { A, T, MS: buildMultiScatter(A, T) }; }
+/** v3.8.1 WPE-TI-01: similarity (transport) scaling σs' = σs(1 − g), σe' = σe − σs·g for the aerosols. Hillaire's
+ *  multiple-scattering LUT assumes isotropic scattering; in a thick, forward-scattering haze (Titan: τ ≈ 9, g ≈ 0.73) that
+ *  assumption throws the forward-scattered light out of the beam and the diffuse field collapses (surface irradiance 24×
+ *  below a plane-parallel Monte Carlo reference with the same profile and phase functions). With the similarity transform
+ *  the isotropic approximation is the classic transport approximation, exact in the diffusive limit. Used ONLY for the
+ *  orders ≥ 2 (MS LUT and its σs' multiplier); single scattering and view transmittance keep the true medium. */
+export function similarityScaled(A: AtmoPhysical): AtmoPhysical {
+  const sm = A.mie.scat.map((x, k) => x * (1 - A.mie.g[k])) as V3, em = A.mie.ext.map((x, k) => x - A.mie.scat[k] * A.mie.g[k]) as V3;
+  return { ...A, mie: { ...A.mie, scat: sm, ext: em }, aerosols: A.aerosols?.map(a => ({ ...a, scat: a.scat.map((x, k) => x * (1 - a.g[k])) as V3, ext: a.ext.map((x, k) => x - a.scat[k] * a.g[k]) as V3 })) };
+}
+export function buildLUTs(A: AtmoPhysical): AtmoLUTs {
+  const T = buildTransmittance(A), As = similarityScaled(A), Ts = buildTransmittance(As);
+  return { A, T, MS: buildMultiScatter(As, Ts) };
+}
 /** Cornette–Shanks phase (normalised over the sphere), used for Mie with a per-channel g. */
 export function cornetteShanks(g: number, mu: number) { const g2 = g * g; return 3 / (8 * Math.PI) * ((1 - g2) * (1 + mu * mu)) / ((2 + g2) * Math.pow(Math.max(1e-4, 1 + g2 - 2 * g * mu), 1.5)); }
 /** CPU twin of the shader march: radiance (per unit solar irradiance) reaching a point at radius r (on the +z axis)
@@ -220,16 +239,17 @@ export function skyRadiance(A: AtmoPhysical, L: AtmoLUTs, r: number, w: V3, sun:
   const tMax = gnd ? (-r * mu - Math.sqrt(Math.max(0, r * r * (mu * mu - 1) + A.Rg * A.Rg))) : distTop(A, r, mu);
   const nu = w[0] * sun[0] + w[1] * sun[1] + w[2] * sun[2];
   const PR = 3 / (16 * Math.PI) * (1 + nu * nu), PM = [0, 1, 2].map(k => cornetteShanks(A.mie.g[k], nu)), PA = aeroPhases(A, nu);
-  const dt = tMax / steps, Tv: V3 = [1, 1, 1], out: V3 = [0, 0, 0];
+  const dt = tMax / steps, Tv: V3 = [1, 1, 1], Tv2: V3 = [1, 1, 1], out: V3 = [0, 0, 0];
   for (let s = 0; s < steps; s++) {
     const t = (s + 0.5) * dt, px = t * w[0], py = t * w[1], pz = r + t * w[2], rx = Math.hypot(px, py, pz), hx = Math.max(0, rx - A.Rg);
     const musx = (px * sun[0] + py * sun[1] + pz * sun[2]) / rx;
-    const e = extinction(A, hx), sr = Math.exp(-hx / A.rayleigh.H), sa = aeroScatter(A, hx), sp = aeroScatterPhase(A, hx, PM, PA);
+    const e = extinction(A, hx), sr = Math.exp(-hx / A.rayleigh.H), sa = aeroScatter(A, hx), sx = aeroScatterMS(A, hx), sp = aeroScatterPhase(A, hx, PM, PA);
     const sh = hitsGround(A, rx, musx) ? 0 : 1, Ts = sampleT(A, L.T, rx, musx), ms = sampleMS(A, L.MS, hx, musx);
     for (let k = 0; k < 3; k++) {
       const scR = A.rayleigh.scat[k] * sr, T1 = Math.exp(-e[k] * dt), Sint = (1 - T1) / Math.max(e[k], 1e-12);
-      out[k] += Tv[k] * ((scR * PR + sp[k]) * Ts[k] * sh + (scR + sa[k]) * ms[k]) * Sint;
-      Tv[k] *= T1;
+      const e2 = Math.max(1e-12, e[k] - (sa[k] - sx[k])), T2 = Math.exp(-e2 * dt), S2 = (1 - T2) / e2;   // scaled medium for orders ≥ 2
+      out[k] += Tv[k] * (scR * PR + sp[k]) * Ts[k] * sh * Sint + Tv2[k] * (scR + sx[k]) * ms[k] * S2;
+      Tv[k] *= T1; Tv2[k] *= T2;
     }
   }
   return out;
@@ -285,15 +305,19 @@ export function rayRadiance(A: AtmoPhysical, L: AtmoLUTs, o: V3, w: V3, sun: V3,
   const t0 = Math.max(0, -b - Math.sqrt(disc)); let t1 = -b + Math.sqrt(disc); if (t1 <= 0) return [0, 0, 0];
   const cg = c + A.Rt * A.Rt - A.Rg * A.Rg, dg = b * b - cg; if (dg > 0) { const tg = -b - Math.sqrt(dg); if (tg > 0) t1 = Math.min(t1, tg); }
   const nu = w[0] * sun[0] + w[1] * sun[1] + w[2] * sun[2], PR = 3 / (16 * Math.PI) * (1 + nu * nu), PM = [0, 1, 2].map(k => cornetteShanks(A.mie.g[k], nu)), PA = aeroPhases(A, nu);
-  const Tv: V3 = [1, 1, 1], out: V3 = [0, 0, 0], segs = raySegments(A, o, w, t0, t1);
+  const Tv: V3 = [1, 1, 1], Tv2: V3 = [1, 1, 1], out: V3 = [0, 0, 0], segs = raySegments(A, o, w, t0, t1);
   const mainLen = segs.reduce((s, [a, bb, f]) => s + (f ? 0 : bb - a), 0);
   for (const [ta, tb, foc] of segs) {
     const n = foc ? focusSteps : Math.max(2, Math.round(steps * (tb - ta) / Math.max(mainLen, 1e-9))), dt = (tb - ta) / n;
     for (let s = 0; s < n; s++) {
       const t = ta + (s + 0.5) * dt, p: V3 = [o[0] + w[0] * t, o[1] + w[1] * t, o[2] + w[2] * t], r = Math.hypot(p[0], p[1], p[2]), h = Math.max(0, r - A.Rg);
-      const mus = (p[0] * sun[0] + p[1] * sun[1] + p[2] * sun[2]) / r, e = extinction(A, h), sr = Math.exp(-h / A.rayleigh.H), sa = aeroScatter(A, h), sp = aeroScatterPhase(A, h, PM, PA);
+      const mus = (p[0] * sun[0] + p[1] * sun[1] + p[2] * sun[2]) / r, e = extinction(A, h), sr = Math.exp(-h / A.rayleigh.H), sa = aeroScatter(A, h), sx = aeroScatterMS(A, h), sp = aeroScatterPhase(A, h, PM, PA);
       const sh = hitsGround(A, r, mus) ? 0 : 1, Ts = sampleT(A, L.T, r, mus), ms = sampleMS(A, L.MS, h, mus);
-      for (let k = 0; k < 3; k++) { const scR = A.rayleigh.scat[k] * sr, T1 = Math.exp(-e[k] * dt), Si = (1 - T1) / Math.max(e[k], 1e-12); out[k] += Tv[k] * ((scR * PR + sp[k]) * Ts[k] * sh + (scR + sa[k]) * ms[k]) * Si; Tv[k] *= T1; }
+      for (let k = 0; k < 3; k++) {
+        const scR = A.rayleigh.scat[k] * sr, T1 = Math.exp(-e[k] * dt), Si = (1 - T1) / Math.max(e[k], 1e-12);
+        const e2 = Math.max(1e-12, e[k] - (sa[k] - sx[k])), T2 = Math.exp(-e2 * dt), S2 = (1 - T2) / e2;
+        out[k] += Tv[k] * (scR * PR + sp[k]) * Ts[k] * sh * Si + Tv2[k] * (scR + sx[k]) * ms[k] * S2; Tv[k] *= T1; Tv2[k] *= T2;
+      }
     }
   }
   return out;
@@ -309,17 +333,22 @@ export function rayTransmittance(A: AtmoPhysical, o: V3, w: V3, t0: number, t1: 
 }
 /** Brightest limb radiance (luminance, per unit irradiance) seen from `cam` (body-centred km) on the sunward limb:
  *  tangent rays at a few altitudes — used by the exposure meter so a backlit haze crescent is highlight-protected. */
-export function limbLuminance(A: AtmoPhysical, L: AtmoLUTs, cam: V3, sun: V3): number {
+/** `steps`/`focusSteps`: the GPU march's budget, so the estimate is the twin of what is drawn (v3.8.1). */
+export function limbLuminance(A: AtmoPhysical, L: AtmoLUTs, cam: V3, sun: V3, steps = 32, focusSteps = 12): number {
   const d = Math.hypot(cam[0], cam[1], cam[2]); if (d < A.Rt) return 0;
   const u: V3 = [cam[0] / d, cam[1] / d, cam[2] / d];
   // limb point direction: Sun direction made perpendicular to the line of sight (bright side of the crescent/limb)
   const sd = sun[0] * u[0] + sun[1] * u[1] + sun[2] * u[2]; let q: V3 = [sun[0] - sd * u[0], sun[1] - sd * u[1], sun[2] - sd * u[2]];
-  const ql = Math.hypot(q[0], q[1], q[2]); if (ql < 1e-6) return 0; q = [q[0] / ql, q[1] / ql, q[2] / ql];
+  // v3.8.1: Sun exactly behind (or in front of) the body → the bright limb is a uniform ring; any perpendicular will do
+  // (was `return 0`: a perfectly backlit Titan metered as night and the ring clipped — titan-backlit, WP-E L2a)
+  let ql = Math.hypot(q[0], q[1], q[2]);
+  if (ql < 1e-6) { q = Math.abs(u[0]) < 0.9 ? [0, -u[2], u[1]] : [-u[1], u[0], 0]; ql = Math.hypot(q[0], q[1], q[2]); }
+  q = [q[0] / ql, q[1] / ql, q[2] / ql];
   let best = 0;
   for (const f of [0.005, 0.02, 0.06, 0.15, 0.35]) {
     const rt = A.Rg + f * (A.Rt - A.Rg), ang = Math.asin(Math.min(1, rt / d));   // tangent ray angle from the centre direction
     const w: V3 = [-u[0] * Math.cos(ang) + q[0] * Math.sin(ang), -u[1] * Math.cos(ang) + q[1] * Math.sin(ang), -u[2] * Math.cos(ang) + q[2] * Math.sin(ang)];
-    const Lr = rayRadiance(A, L, cam, w, sun, 32); best = Math.max(best, 0.2126 * Lr[0] + 0.7152 * Lr[1] + 0.0722 * Lr[2]);
+    const Lr = rayRadiance(A, L, cam, w, sun, steps, focusSteps); best = Math.max(best, 0.2126 * Lr[0] + 0.7152 * Lr[1] + 0.0722 * Lr[2]);
   }
   return best;
 }

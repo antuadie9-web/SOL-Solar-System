@@ -16,9 +16,14 @@ await page.waitForFunction(() => window.__sol && window.__frames > 3, null, { ti
 const boot = Date.now() - T0;
 await page.evaluate((mode) => { const s = window.__sol; s.settings.set('onboarded', true); document.querySelector('#loader .enter, #loader .ld-enter')?.dispatchEvent(new MouseEvent('click', { bubbles: true })); document.body.classList.add('cine'); document.querySelectorAll('.coach').forEach(e => e.remove()); s.settings.set('autoExposure', true); s.settings.set('viewMode', mode); const ck = s.ui.clock; ck.set(2461314.5); ck.paused = true; ck.emit(); }, arg('mode', 'scientific'));
 const rows = [];
+// v3.8.1: the FIRST sample of a run was taken before streaming/ephemerides settled (titan-l2a: requested 20°, measured 84°,
+// flux ×10⁸ — another body in the read window). A discarded warm-up sample now precedes the list, and every row reports
+// the measured phase so a misplaced sample is visible.
+const combos = [];
 for (const id of arg('bodies', 'callisto,rhea,titan').split(','))
   for (const alpha of arg('alpha', '10,60,120').split(',').map(Number))
-    for (const rpx of arg('rpx', '12,0.45').split(',').map(Number)) {
+    for (const rpx of arg('rpx', '12,0.45').split(',').map(Number)) combos.push([id, alpha, rpx]);
+for (const [ci, [id, alpha, rpx]] of [combos[0], ...combos].entries()) {
       const t0 = Date.now();
       const info = await page.evaluate(async ({ id, alpha, rpx }) => {
         const s = window.__sol, r = s.engine.rig, e = s.engine;
@@ -51,7 +56,7 @@ for (const id of arg('bodies', 'callisto,rhea,titan').split(','))
         const Fmeas = hdr ? hdr.signal * pa * pa / X : null;
         return { id, kind: b.def?.kind, p: b.albedo, alphaDeg: al * 180 / Math.PI, rpx, ev: e.diagnostics().exposureEV, X, pxAng: pa, w, Fmeas, Fref, Fpt, meas_ref: Fmeas / Fref, pt_ref: Fpt / Fref, hdr: hdr && { peak: hdr.peak / X, median: hdr.median / X, half: hdr.half, W: hdr.W } };
       }, { id, alpha, rpx });
-      info.ms = Date.now() - t0; rows.push(info); console.log(JSON.stringify(info));
+      info.ms = Date.now() - t0; info.reqAlpha = alpha; if (ci === 0) { console.log('warm-up', JSON.stringify(info)); continue; } rows.push(info); console.log(JSON.stringify(info));
       fs.writeFileSync(`${out}/photometry.json`, JSON.stringify({ bootMs: boot, rows }, null, 1));
     }
 await browser.close();

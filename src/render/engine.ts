@@ -673,10 +673,12 @@ export class Engine {
           const cl = toLocal(b, scale(rel, -1)), sl = toLocal(b, sub(sun.pos, b.pos)).normalize(), cd = cl.length(), cu = cl.clone().divideScalar(cd);
           const lk = (vv as any).limbKey as { c: THREE.Vector3; d: number; s: THREE.Vector3 } | undefined;
           const moved = !lk || cu.dot(lk.c) < 0.99939 || sl.dot(lk.s) < 0.99939 || Math.abs(cd / lk.d - 1) > 0.05;
-          if (!(this.frameNo % 8) || vv.limbL === undefined || moved) { vv.limbL = limbLuminance(vv.atmoLuts.A, vv.atmoLuts, [cl.x, cl.y, cl.z], [sl.x, sl.y, sl.z]); (vv as any).limbKey = { c: cu, d: cd, s: sl.clone() }; }
-          // v3.7: capped at +2 EV of the disc highlight — the GPU march (16 steps) under-samples thin cloud-top hazes at grazing
-          // incidence, so an uncapped CPU limb estimate under-exposed the Venus terminator by ≈ 5.6 EV (v3.7 QA, ATM-011)
-          hr = Math.max(hr, Math.min(Math.PI * vv.limbL / (rS * rS), hr * 4));
+          if (!(this.frameNo % 8) || vv.limbL === undefined || moved) { vv.limbL = limbLuminance(vv.atmoLuts.A, vv.atmoLuts, [cl.x, cl.y, cl.z], [sl.x, sl.y, sl.z], vv.atmo?.U.steps.value ?? 16, vv.atmo?.U.focusSteps.value ?? 10); (vv as any).limbKey = { c: cu, d: cd, s: sl.clone() }; }
+          // v3.7 capped this at +2 EV of the disc highlight because the CPU estimate (32 steps) exceeded what the 16-step GPU
+          // march drew at grazing incidence (Venus terminator −5.6 EV, ATM-011). v3.8.1: the estimate now uses the GPU's own
+          // step budget and segmentation (a twin, not a better integral), so the cap is gone — it also disabled limb protection
+          // entirely when backlit (disc highlight → 0: titan-backlit metered as night and the ring clipped, WP-E L2a).
+          hr = Math.max(hr, Math.PI * vv.limbL / (rS * rS));
         }
         // v3.7.1: a forward-scattering plume is part of the subject's highlights (Enceladus backlit: v3.7 metered only the
         // dark disc and the jets clipped to a white blob)

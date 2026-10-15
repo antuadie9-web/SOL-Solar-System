@@ -48,3 +48,17 @@ test('Titan: focus-shell march resolves the detached layer (limb ray converged)'
     for (let k = 0; k < 3; k++) assert.ok(Math.abs(a[k] - b[k]) / b[k] < 0.05, `h ${h} ch ${k}: ${a[k]} vs ${b[k]}`);
   }
 });
+// WPE-TI-01: multiple-scattering accuracy against an independent plane-parallel Monte Carlo solution of the SAME profile
+// and phase functions (tools/qa/rt/mc.py, mcr.py; 3·10⁵ photons, HG sampling, Lambert ground 0.13; run 2026-10-15).
+// Before the similarity-scaled orders ≥ 2 the LUT model gave 0.04× of the MC surface irradiance at 550 nm.
+import { buildSkyIrradiance, sampleT, rayRadiance as rr } from '../../src/render/atmoModel';
+test('Titan: surface irradiance and nadir reflectance within the documented RT bias of Monte Carlo', () => {
+  const MC_SURF = [0.2967, 0.1783, 0.0167], MC_NADIR = [0.4168, 0.3253, 0.1671];   // μ0 = 1
+  const sky = buildSkyIrradiance(A, L, 96), i = 31, Td = sampleT(A, L.T, A.Rg, 1);
+  const Lr = rr(A, L, [0, 0, A.Rt + 50], [0, 0, -1], [0, 0, 1], 80, 12);
+  for (let k = 0; k < 3; k++) {
+    const surf = (sky[i * 4 + k] + Td[k]) / MC_SURF[k], nad = Math.PI * Lr[k] / MC_NADIR[k];
+    assert.ok(surf > 0.55 && surf < 1.25, `surface ch${k}: ${surf.toFixed(2)}× MC`);
+    assert.ok(nad > 0.6 && nad < 1.2, `nadir ch${k}: ${nad.toFixed(2)}× MC`);
+  }
+});

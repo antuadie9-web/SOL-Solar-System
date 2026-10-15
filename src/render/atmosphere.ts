@@ -93,7 +93,7 @@ fn atmoMarch(ro: vec3<f32>, rd: vec3<f32>, R: f32, Ra: f32, l: vec3<f32>, bR: ve
     f0a = clamp(f0a, t0, t1); f0b = clamp(f0b, t0, t1); f1a = clamp(f1a, t0, t1); f1b = clamp(f1b, t0, t1);
   }
   let mainLen = max((f0a - t0) + (f1a - f0b) + (t1 - f1b), 1e-6);
-  var Tv = vec3<f32>(1.0); var L = vec3<f32>(0.0); var em = vec3<f32>(0.0);
+  var Tv = vec3<f32>(1.0); var Tv2 = vec3<f32>(1.0); var L = vec3<f32>(0.0); var em = vec3<f32>(0.0);
   for (var sg = 0; sg < 5; sg++) {
     var ta = t0; var tb = f0a; var foc = false;
     if (sg == 1) { ta = f0a; tb = f0b; foc = true; } else if (sg == 2) { ta = f0b; tb = f1a; } else if (sg == 3) { ta = f1a; tb = f1b; foc = true; } else if (sg == 4) { ta = f1b; tb = t1; }
@@ -117,15 +117,23 @@ fn atmoMarch(ro: vec3<f32>, rd: vec3<f32>, R: f32, Ra: f32, l: vec3<f32>, bR: ve
       let sh = smoothstep(hor - 0.004, hor + 0.004, mus);
       let Ts = textureSampleLevel(tT, tS, transmittanceUVw(r, mus, R, Ra), 0.0).rgb * sh;
       let scR = bR * dR; let scM = bMs * dM;
+      // v3.8.1 WPE-TI-01: orders ≥ 2 live in the similarity-scaled medium (σs' = σs(1 − g)), both their source (the MS
+      // LUT is built in that medium) and their attenuation toward the camera (Tv2), so forward-scattered diffuse light is not
+      // thrown out of the beam; single scattering keeps the true medium (Tv, P(θ)).
+      let sAs = s0 * (vec3<f32>(1.0) - g0) * d0 + s1 * (vec3<f32>(1.0) - g1) * d1 + s2 * (vec3<f32>(1.0) - g2a) * d2;
+      let scMs = scM * (vec3<f32>(1.0) - gM);
       let sA = s0 * d0 + s1 * d1 + s2 * d2;
+      let ext2 = max(ext - (scM + sA - scMs - sAs), vec3<f32>(1e-9));
+      let Ts2 = exp(-ext2 * ds);
+      let S2 = (vec3<f32>(1.0) - Ts2) / ext2;
       let ms = textureSampleLevel(mT, mS, vec2<f32>(mus * 0.5 + 0.5, clamp(h / (Ra - R), 0.0, 1.0)), 0.0).rgb * msOn;
-      L += Tv * ((scR * PR + scM * PM + s0 * d0 * P0 + s1 * d1 * P1 + s2 * d2 * P2) * Ts + (scR + scM + sA) * ms) * Sint;
+      L += Tv * (scR * PR + scM * PM + s0 * d0 * P0 + s1 * d1 * P1 + s2 * d2 * P2) * Ts * Sint + Tv2 * (scR + scMs + sAs) * ms * S2;
       // v3.5 airglow (Earth OI 557.7 nm-dominated ≈ 95 km layer), night only, attenuated toward the camera
       if (agW > 0.0) {
         let zq = (h - agH) / agW;
         em += agL * exp(-zq * zq) * ds * smoothstep(0.05, -0.12, mus) * Tv;
       }
-      Tv *= Ts1;
+      Tv *= Ts1; Tv2 *= Ts2;
     }
   }
   // v3.7 (ATM-005): over the planet's disc the surface shader applies the per-channel view transmittance itself
