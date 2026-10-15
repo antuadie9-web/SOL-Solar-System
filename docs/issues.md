@@ -252,3 +252,8 @@ Classification: **D** = confirmed defect, **P** = visual preference / presentati
 
 - CONT-14e update 2026-10-15f: hemisphere factor 1.05–1.08 (partial); T consistent (3 %); residual ≈1.18× in Mars surface radiance with T=1 — suspect normal-map/albedo-scale inputs. OPEN.
 - CONT-14e update 2026-10-15g: flat-albedo control matches CPU integral (+1.4 % α30, −5 % α120); normal map not a cause; residual 1.25× is the albedo map as sampled — suspect longitude frame/UV convention (30–60° offset reproduces it). OPEN; may be a map-orientation science defect.
+| CONT-14e | U | RESOLVED (QA-381-04) | residual was the probe's mean-RGB signal (Mars ×1.163) + true visible-hemisphere albedo (×1.07 α30); frame verified vs Horizons (≈2°) |
+| QA-381-04 | D | FIXED | qaReadHDR now Y709 luminance; probe rejects mean-RGB readbacks unless --legacy-ok |
+| CONT-14f | D | OPEN | point/twin uses map-mean albedo; resolved disc shows visible hemisphere (Mars 0.78–1.27 by longitude) → handover step; carry a geometry-weighted factor from a coarse cos-weighted albedo grid |
+| CONT-14g | D/U | OPEN | Titan rendered point vs CPU point +8 % α30 / +5 % α120 under Y709 (GPU disc↔point ≤2 %); samples invalid (texture placeholder, TEX-381-01) |
+

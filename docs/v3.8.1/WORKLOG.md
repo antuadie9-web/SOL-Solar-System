@@ -267,3 +267,32 @@ Matrix (SW): 13 views, base 5df3b3c (pre-MS-fix) vs candidate 11e21fb, + photome
 - Next: render a debug output of equirect UV (and sampled linear albedo) at the sub-observer/sub-solar points to pin the
   GPU convention; check rotation frame vs IAU prime meridian for Mars (also a science issue if the map is shifted);
   then give the CPU twin a geometry-weighted albedo using the same mapping.
+
+## 2026-10-15h — CONT-14e RESOLVED: measurement-definition defect in the HDR probe (QA-381-04) (L1/L2, SW)
+- Frame check first: engine sub-solar point on Mars at JD 2461314.5 = E-lon −71.4°, lat −0.8°; JPL Horizons (Sun-centred,
+  IAU_MARS, W-lon) 69.18° W, +0.14° → −69.2° E. Agreement ≈2° (Horizons' light-time retardation ≈3° of rotation) — the
+  rotation frame / prime meridian are correct; the 30–60° offset hypothesis is REJECTED. Map orientation verified by
+  feature bins (Tharsis bright west of centre, Syrtis dark at +60…90° E).
+- Mip-chain control (?qa-off=mip, level-0 sampling): 0.798 vs 0.802 textured → mips/gradients not a cause.
+- Offline disc renderer (work/exp/hemi.py, GPU equirect convention, probe geometry): hemisphere factor 1.069 (α30) and
+  1.144 (α120). GPU textured/flat was 1.249 / 1.346 → a CONSTANT extra 1.163–1.177 independent of geometry.
+- Cause: engine.qaReadHDR summed (R+G+B)/3 while every reference (albedo calibration texstats, CPU twin, Lambert-p ref)
+  is Rec.709 luminance. Mars map linear mean RGB (0.475, 0.108, 0.053): meanRGB/Y = 1.163 = the residual. Flat-albedo
+  controls are luminance-normalised grey-ish tints (ratio 1.0005), which is why they agreed.
+- Fix (QA-381-04): qaReadHDR returns Y709 (quantity tag); probe preflight rejects mean-RGB readbacks unless --legacy-ok.
+  No renderer change.
+- Re-measured (luminance, one body per session, all preflight-valid; work/qa/qa04):
+  surface only (T=1, no skylight, shell hidden): α30 0.685 vs offline 0.677 (+1.2 %), α120 0.548 vs 0.570 (−3.9 %).
+  full Mars disc rpx40 vs CPU point rpx0.45: α30 0.557 / 0.506 (+10 %; hemisphere factor 1.069 on the surface share →
+  ≈ +3 %), α120 1.112 / 1.036 (+7 %).
+- Consequence: the remaining disc↔point difference is the real visible-hemisphere albedo (0.78–1.27 by sub-observer
+  longitude for Mars); the point uses the map mean. Registered CONT-14f (carry a geometry-weighted albedo factor into the
+  point/twin, from a coarse cos-weighted albedo grid — derived, not fitted).
+- Prior evidence measured with the mean-RGB signal: Mars numbers in 2026-10-15e/f/g (now superseded), Titan acceptance
+  (re-measured below), sun-far/titan-handover travel HDR (relative, same body → unaffected in ratio).
+- Titan re-measure under Y709 (work/qa/qa04/titan; samples flagged INVALID by preflight: titan colour map stayed at
+  placeholder for the whole fresh session — TEX-381-01 also occurs in single-body sessions; Titan surface share < 1 %):
+  GPU disc rpx40 vs GPU rendered point rpx0.45: α30 1.036 / 1.013, α120 2.420 / 2.425 (GPU self-consistent ≤ 2 %), but
+  rendered point vs CPU point flux 1.013 / 0.938 (+8 %), 2.425 / 2.310 (+5 %). The earlier "≤ 4 %" parity was measured in
+  mean-RGB. Registered CONT-14g (point colour/luminance normalisation of the twin for strongly coloured shells). Titan
+  appearance acceptance unaffected; its photometric parity line is reopened as provisional.

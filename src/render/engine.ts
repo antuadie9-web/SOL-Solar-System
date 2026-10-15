@@ -906,13 +906,15 @@ export class Engine {
     const rt = this.scenePass?.renderTarget; if (!rt || !this.renderer) return null;
     const W = rt.width, H = rt.height, x0 = Math.round(W / 2 - (w - 1) / 2), y0 = Math.round(H / 2 - (w - 1) / 2);
     const raw: any = await (this.renderer as any).readRenderTargetPixelsAsync(rt, x0, y0, w, w);
-    const half = raw instanceof Uint16Array, n = w * w, Y = new Float64Array(n), sum = [0, 0, 0];
+    // v3.8.1 QA-381-04 (CONT-14e): the signal is scene-linear LUMINANCE (Rec.709 weights, the quantity the albedo
+    // calibration and the CPU references use). It was (R+G+B)/3, which over-reads red bodies (Mars map: ×1.163).
+    const half = raw instanceof Uint16Array, n = w * w, Y = new Float64Array(n), sum = [0, 0, 0], LW = [0.2126, 0.7152, 0.0722];
     for (let i = 0; i < n; i++) for (let c = 0; c < 3; c++) {
-      const v = half ? THREE.DataUtils.fromHalfFloat(raw[i * 4 + c]) : raw[i * 4 + c]; sum[c] += v; Y[i] += v / 3;
+      const v = half ? THREE.DataUtils.fromHalfFloat(raw[i * 4 + c]) : raw[i * 4 + c]; sum[c] += v; Y[i] += v * LW[c];
     }
     const srt = Float64Array.from(Y).sort(), med = srt[n >> 1];
     let sig = 0, peak = 0; for (let i = 0; i < n; i++) { sig += Math.max(0, Y[i] - med); peak = Math.max(peak, Y[i]); }
-    return { w, W, H, sum, median: med, signal: sig, peak, half };
+    return { w, W, H, sum, median: med, signal: sig, peak, half, quantity: 'Y709' };
   }
   settleExposure() { this.expSettle = true; }
   private expSettle = false;

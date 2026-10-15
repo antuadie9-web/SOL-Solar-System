@@ -44,6 +44,8 @@ function preflight(r, req) {
   if (r.pre?.hasAtmo && !r.pre?.atmospheres && !SETS.some(([k]) => k === 'atmospheres')) w.push('atmospheres disabled');
   if (SETS.length) r.sets = Object.fromEntries(SETS);
   if (r.Fmeas == null || !isFinite(r.Fmeas)) w.push('no HDR readback');
+  // QA-381-04: the HDR signal must be luminance (Y709); older builds summed (R+G+B)/3 (red bodies over-read, Mars ×1.16)
+  else if (r.hdr?.quantity !== 'Y709') { if (arg('legacy-ok', '0') !== '1') w.push('HDR signal is mean-RGB, not luminance (pre QA-381-04 build)'); else r.warn = (r.warn ? r.warn + '; ' : '') + 'HDR signal mean-RGB (pre QA-381-04)'; }
   if (req.rpx < 0.55 && !(r.Fpt > 0)) w.push('point entry not found');
   if (r.Fmeas != null && r.Fref > 0 && (r.meas_ref > 1e4 || r.meas_ref < 1e-4) && req.alpha < 170) w.push(`flux ratio ${r.meas_ref} implausible (contaminated window?)`);
   return w;
@@ -86,7 +88,7 @@ while (queue.length) { const [id, alpha, rpx, tries, warm] = queue.shift();
         const Fmeas = hdr ? hdr.signal * pa * pa / X : null;
         const vU = e.views.get(id)?.U, geo = vU ? { camLocal: vU.cam.value.toArray(), sunLocal: vU.sunPos.value.toArray() } : null;
         const st = e.qaAtmoState ? e.qaAtmoState(b) : { legacy: true }, jd = s.ui.clock.jd ?? null;
-        return { geo, pre: { ...st, jd, evConverged: Math.abs(e.diagnostics().exposureEV - evp) < 0.05, hdrFloat: !!hdr && hdr.half !== undefined, window: hdr?.w, target: s.engine.rig.target?.id }, id, kind: b.def?.kind, p: b.albedo, alphaDeg: al * 180 / Math.PI, rpx, ev: e.diagnostics().exposureEV, X, pxAng: pa, w, Fmeas, Fref, Fpt, meas_ref: Fmeas / Fref, pt_ref: Fpt / Fref, hdr: hdr && { peak: hdr.peak / X, median: hdr.median / X, half: hdr.half, W: hdr.W } };
+        return { geo, pre: { ...st, jd, evConverged: Math.abs(e.diagnostics().exposureEV - evp) < 0.05, hdrFloat: !!hdr && hdr.half !== undefined, window: hdr?.w, target: s.engine.rig.target?.id }, id, kind: b.def?.kind, p: b.albedo, alphaDeg: al * 180 / Math.PI, rpx, ev: e.diagnostics().exposureEV, X, pxAng: pa, w, Fmeas, Fref, Fpt, meas_ref: Fmeas / Fref, pt_ref: Fpt / Fref, hdr: hdr && { peak: hdr.peak / X, median: hdr.median / X, half: hdr.half, W: hdr.W, quantity: hdr.quantity } };
       }, { id, alpha, rpx });
       info.ms = Date.now() - t0; info.reqAlpha = alpha;
       // QA-381-03 preflight: a sample is used only when its measurement conditions are verified; otherwise it is retried

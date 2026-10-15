@@ -16,6 +16,7 @@ import { SURFACE_INDEX, type BodyVisualProfile } from './identity';
 const QA_OFF_T = typeof location !== 'undefined' && (new URLSearchParams(location.search).get('qa-off') ?? '').split(',').includes('surfT');
 const QA_OFF_NRM = typeof location !== 'undefined' && (new URLSearchParams(location.search).get('qa-off') ?? '').split(',').includes('normal');
 const QA_OFF_ALBTEX = typeof location !== 'undefined' && (new URLSearchParams(location.search).get('qa-off') ?? '').split(',').includes('albtex');
+const QA_OFF_MIP = typeof location !== 'undefined' && (new URLSearchParams(location.search).get('qa-off') ?? '').split(',').includes('mip');
 const QA_OFF_SKY = typeof location !== 'undefined' && (new URLSearchParams(location.search).get('qa-off') ?? '').split(',').includes('skylight');
 import { transmittanceUVw, viewTransmittance } from './atmosphere';
 
@@ -193,7 +194,8 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
     const dxA = dFdx(uvA), dyA = dFdy(uvA), dxB = dFdx(uB), dyB = dFdy(uB);
     const gx = vec2(select(abs(dxA.x).lessThan(abs(dxB)), dxA.x, dxB), dxA.y);
     const gy = vec2(select(abs(dyA.x).lessThan(abs(dyB)), dyA.x, dyB), dyA.y);
-    const samp = (t: THREE.Texture) => texture(t, uvA).grad(gx, gy);
+    // QA (CONT-14e): ?qa-off=mip samples level 0 only (isolates mip-chain / gradient bias in the disc-integrated albedo)
+    const samp = (t: THREE.Texture) => QA_OFF_MIP ? texture(t, uvA).level(int(0)) : texture(t, uvA).grad(gx, gy);
     let albedo: any = tint.mul(U.albedoScale), n: any = ng, height: any = float(0);
     let noData: any = float(0), reconW: any = float(0), reconC: any = vec3(0);
     if (maps.color) {
