@@ -148,7 +148,10 @@ function rMuFromUV(A: AtmoPhysical, xm: number, xr: number): [number, number] {
   const mu = d === 0 ? 1 : Math.max(-1, Math.min(1, (H * H - rho * rho - d * d) / (2 * r * d)));
   return [r, mu];
 }
-export interface AtmoLUTs { T: Float32Array; MS: Float32Array; A: AtmoPhysical }
+/** Tsim: transmittance of the similarity-scaled medium (σe − σs·g). Besides building the MS LUT it is the DIFFUSE view
+ *  transmittance of an extended, horizontally uniform surface (WPE-MA-01): light a forward-peaked aerosol scatters out of
+ *  the line of sight is replaced by light scattered in from neighbouring surface points. */
+export interface AtmoLUTs { T: Float32Array; MS: Float32Array; A: AtmoPhysical; Tsim?: Float32Array }
 export function buildTransmittance(A: AtmoPhysical): Float32Array {
   const out = new Float32Array(T_W * T_H * 4);
   for (let j = 0; j < T_H; j++) for (let i = 0; i < T_W; i++) {
@@ -227,7 +230,7 @@ export function similarityScaled(A: AtmoPhysical): AtmoPhysical {
 }
 export function buildLUTs(A: AtmoPhysical): AtmoLUTs {
   const T = buildTransmittance(A), As = similarityScaled(A), Ts = buildTransmittance(As);
-  return { A, T, MS: buildMultiScatter(As, Ts) };
+  return { A, T, MS: buildMultiScatter(As, Ts), Tsim: Ts };
 }
 /** Cornette–Shanks phase (normalised over the sphere), used for Mie with a per-channel g. */
 export function cornetteShanks(g: number, mu: number) { const g2 = g * g; return 3 / (8 * Math.PI) * ((1 - g2) * (1 + mu * mu)) / ((2 + g2) * Math.pow(Math.max(1e-4, 1 + g2 - 2 * g * mu), 1.5)); }
@@ -358,16 +361,24 @@ export function limbLuminance(A: AtmoPhysical, L: AtmoLUTs, cam: V3, sun: V3, st
 
 // ── v3.8.1 CONT-14d: disc-integrated flux of an atmospheric body (shell + surface), CPU twin of what the GPU draws ────────
 export const DISC_STEP = 6, DISC_N = 31;   // phase angle 0…180° every 6°
-export interface DiscSurface { refl: V3; f: (mu0: number, mu: number, phaseDeg: number) => number; dm?: number }
+/** sky: which diffuse-skylight term the surface shader adds (planetMaterial): 'full' = rocky/icy grounds (refl·E(μ0), all μ0 > −0.2),
+ *  'twilight' = Venus/Titan decks (only past the terminator), 'none' = gas giants (WPE-MA-02: the twin omitted it). */
+export interface DiscSurface { refl: V3; f: (mu0: number, mu: number, phaseDeg: number) => number; dm?: number; sky?: 'full' | 'twilight' | 'none' }
+/** skylight irradiance E(μ0) per unit solar irradiance from the SKY_N table, linear in μ0 like the shader's texture fetch */
+export function sampleSky(sky: Float32Array, mu0: number): V3 {
+  const x = Math.max(0, Math.min(1, (mu0 + 0.2) / 1.2)) * (SKY_N - 1), i = Math.min(SKY_N - 2, Math.floor(x)), f = x - i;
+  return [0, 1, 2].map(k => sky[i * 4 + k] * (1 - f) + sky[(i + 1) * 4 + k] * f) as V3;
+}
 /** Surface BRDF of the disc integral from a cloneable description (the same functions the surface shader evaluates). */
-export function discSurface(d: { refl: V3; kind: 'rocky' | 'icy' | 'gas' | 'earth'; k: number; dm: number }): DiscSurface {
+export function discSurface(d: { refl: V3; kind: 'rocky' | 'icy' | 'gas' | 'earth'; k: number; dm: number; sky?: 'full' | 'twilight' | 'none' }): DiscSurface {
   const f = d.kind === 'gas' ? (m0: number, m: number) => minnaertF(m0, m, d.k) : d.kind === 'earth' ? (m0: number) => Math.max(m0, 0)
     : (m0: number, m: number, a: number) => lunarLambertF(m0, m, a, d.kind === 'icy' ? 0.45 : 0);
-  return { refl: d.refl, f, dm: d.dm };
+  return { refl: d.refl, f, dm: d.dm, sky: d.sky ?? 'none' };
 }
 /** Disc-integrated flux per unit solar term `irr` and per (Rg/d)² in engine units (radiance code = shell π·irr·L, surface
  *  refl·f·irr·T☉·T_view), at phase angle α. Polar grid on the impact plane, dense across the atmosphere annulus. */
-export function discFlux(A: AtmoPhysical, L: AtmoLUTs, alphaDeg: number, S: DiscSurface, nB = 44, nPhi = 24): V3 {
+export function discFlux(A: AtmoPhysical, L: AtmoLUTs, alphaDeg: number, S: DiscSurface, nB = 44, nPhi = 24, sky?: Float32Array): V3 {
+  if (S.sky && S.sky !== 'none' && !sky) sky = buildSkyIrradiance(A, L, 48);
   const a = alphaDeg * Math.PI / 180, sun: V3 = [Math.sin(a), 0, Math.cos(a)], w: V3 = [0, 0, -1], Z = A.Rt * 4, out: V3 = [0, 0, 0];
   // radial nodes: 12 across the solid disc (area-weighted), the rest across the annulus [Rg, Rt] (denser low down)
   const nIn = 12, nOut = nB - nIn, nodes: [number, number][] = [];
@@ -380,18 +391,28 @@ export function discFlux(A: AtmoPhysical, L: AtmoLUTs, alphaDeg: number, S: Disc
     let r0 = Math.PI * Ls[0], r1 = Math.PI * Ls[1], r2 = Math.PI * Ls[2];
     if (bb < A.Rg) {
       const z = Math.sqrt(A.Rg * A.Rg - bb * bb), n: V3 = [x / A.Rg, y / A.Rg, z / A.Rg], mu0 = n[0] * sun[0] + n[2] * sun[2], mu = n[2];
-      if (mu0 > 0) { const dm = S.dm ?? 1, Ts0 = sampleT(A, L.T, A.Rg, mu0), Tv0 = sampleT(A, L.T, A.Rg, mu), f = S.f(mu0, mu, alphaDeg);
-        const Tsun = Ts0.map(x => Math.pow(x, dm)), Tv = Tv0.map(x => Math.pow(x, dm));   // Venus' delta-M scaled deck transmittance (planetMaterial DM)
+      // view transmittance of the surface (planetMaterial): Venus' deck uses its δ-M scaled T^dm; other surfaces the diffuse
+      // (similarity-scaled) transmittance for the disc-mean radiance (WPE-MA-01; the adjacency split only redistributes detail)
+      const dm = S.dm ?? 1, Tv = dm !== 1 || !L.Tsim ? sampleT(A, L.T, A.Rg, mu).map(x => Math.pow(x, dm)) : sampleT(A, L.Tsim, A.Rg, mu);
+      if (mu0 > 0) { const Ts0 = sampleT(A, L.T, A.Rg, mu0), f = S.f(mu0, mu, alphaDeg);
+        const Tsun = Ts0.map(x => Math.pow(x, dm));
         r0 += S.refl[0] * f * Tsun[0] * Tv[0]; r1 += S.refl[1] * f * Tsun[1] * Tv[1]; r2 += S.refl[2] * f * Tsun[2] * Tv[2]; }
+      // WPE-MA-02: diffuse skylight, the same term the surface shader adds (refl·E(μ0)·T_view; smooth-sphere normal so the
+      // shader's (n·up)·½+½ factor is 1; the deck variant only past the terminator: 1 − smoothstep(−0.02, 0.1, μ0))
+      if (sky && S.sky !== 'none' && mu0 > -0.2) {
+        const E = sampleSky(sky, mu0), tw = S.sky === 'twilight' ? 1 - smoothstepJS(-0.02, 0.1, mu0) : 1;
+        r0 += S.refl[0] * E[0] * Tv[0] * tw; r1 += S.refl[1] * E[1] * Tv[1] * tw; r2 += S.refl[2] * E[2] * Tv[2] * tw;
+      }
     }
     const k = 2 * wA * dphi / (A.Rg * A.Rg);   // ×2: the y < 0 half by symmetry; wA·dφ = area element
     out[0] += r0 * k; out[1] += r1 * k; out[2] += r2 * k;
   }
   return out;
 }
+const smoothstepJS = (a: number, b: number, x: number) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 export function discTable(A: AtmoPhysical, L: AtmoLUTs, S: DiscSurface): Float32Array {
-  const t = new Float32Array(DISC_N * 3);
-  for (let i = 0; i < DISC_N; i++) { const v = discFlux(A, L, Math.min(178, i * DISC_STEP), S, 36, 18); t.set(v, i * 3); }
+  const t = new Float32Array(DISC_N * 3), sky = S.sky && S.sky !== 'none' ? buildSkyIrradiance(A, L, 48) : undefined;
+  for (let i = 0; i < DISC_N; i++) { const v = discFlux(A, L, Math.min(178, i * DISC_STEP), S, 36, 18, sky); t.set(v, i * 3); }
   return t;
 }
 export function sampleDisc(t: Float32Array, alphaDeg: number): V3 {

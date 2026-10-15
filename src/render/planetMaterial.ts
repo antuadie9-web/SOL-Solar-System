@@ -161,7 +161,7 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
   /** v3.6: `terrainAttr` = geometry is patch-local (terrain tiles); shading reads the body-fixed `bodyPos` attribute.
    *  `U` = share the uniforms of the body's sphere material (one set of lighting state per body). */
   /** `atmo` (v3.6): transmittance LUT + ground skylight table of the body's atmosphere (render/atmoModel.ts) */
-  opts: { U?: SurfaceUniforms; terrainAttr?: boolean; atmo?: { T: THREE.Texture; sky: THREE.Texture; Rg: number; Rt: number } } = {}) {
+  opts: { U?: SurfaceUniforms; terrainAttr?: boolean; atmo?: { T: THREE.Texture; Tsim?: THREE.Texture; sky: THREE.Texture; Rg: number; Rt: number; H?: number } } = {}) {
   const U: SurfaceUniforms = opts.U ?? {
     sunPos: uniform(new THREE.Vector3(1e9, 0, 0)), sunR: uniform(695700), irr: uniform(1), cam: uniform(new THREE.Vector3()), radii: uniform(new THREE.Vector3(1, 1, 1)),
     occ: [0, 1, 2, 3].map(() => uniform(new THREE.Vector4(0, 0, 0, 0))), tau: uniform(new THREE.Vector3(0, 0, 0)),
@@ -404,7 +404,24 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
     if (AT) {
       const rr = def.radii ?? [def.radius, def.radius, def.radius], nv = vec3(1, rr[0] / rr[1], rr[0] / rr[2]);
       const vT = viewTransmittance({ p: p.mul(nv), c: U.cam.mul(nv), Rg: float(AT.Rg), Rt: float(AT.Rt), tT: texture(AT.T), tS: sampler(AT.T) });
-      col = col.mul(DM !== 1 ? pow(vT, vec3(DM, DM, DM)) : vT);
+      if (DM !== 1 || !AT.Tsim) col = col.mul(DM !== 1 ? pow(vT, vec3(DM, DM, DM)) : vT);
+      else {
+        // v3.8.1 WPE-MA-01: an extended surface seen through a forward-scattering aerosol keeps the light its neighbours
+        // scatter INTO the line of sight. Direct (unscattered) part: true transmittance, full detail. Scattered part
+        // (diffuse − direct): similarity-scaled transmittance, carrying an ADJACENCY-blurred image — the albedo map at a mip
+        // whose texel ≈ 3 aerosol scale heights (the horizontal reach of small-angle forward scattering). Mean energy equals
+        // the diffuse-transmittance model (independent MC: Mars nadir I/F 0.68–0.89× → 0.88–1.14×); detail contrast is not
+        // brightened. Venus keeps its δ-M scaled deck (DM), which already is this approximation.
+        const vTs = viewTransmittance({ p: p.mul(nv), c: U.cam.mul(nv), Rg: float(AT.Rg), Rt: float(AT.Rt), tT: texture(AT.Tsim), tS: sampler(AT.Tsim) });
+        let ratio: any = float(1);
+        if (maps.color) {
+          const tw = float(2 * Math.PI * def.radius).div(float(textureSize(texture(maps.color), int(0)).x));
+          const lod = TSL.log2(float(3 * (AT.H ?? 10)).div(tw)).max(0);
+          const Yb = dot(texture(maps.color, uvA).level(lod).rgb, vec3(0.2126, 0.7152, 0.0722)), Y0 = dot(samp(maps.color).rgb, vec3(0.2126, 0.7152, 0.0722));
+          ratio = Yb.div(max(Y0, 1e-4)).clamp(0, 4);
+        }
+        col = col.mul(vT.add(max(vTs.sub(vT), vec3(0, 0, 0)).mul(ratio)));
+      }
     }
     return vec4(col, 1);
   })();

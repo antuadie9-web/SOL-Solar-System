@@ -13,9 +13,9 @@ const toHalf = (a: Float32Array) => { const o = new Uint16Array(a.length); for (
 self.onmessage = (ev: MessageEvent<{ key: string; A: AtmoPhysical; surf?: any }>) => {
   const t0 = performance.now(), { key, A, surf } = ev.data;
   const luts = buildLUTs(A), sky = buildSkyIrradiance(A, luts, 48);
-  const T16 = toHalf(luts.T), MS16 = toHalf(luts.MS), S16 = toHalf(sky);
-  const L2 = { A, T: luts.T.slice(), MS: luts.MS.slice() };
-  (self as any).postMessage({ key, T: luts.T, MS: luts.MS, T16, MS16, S16, ms: performance.now() - t0 }, [luts.T.buffer, luts.MS.buffer, T16.buffer, MS16.buffer, S16.buffer]);
+  const T16 = toHalf(luts.T), MS16 = toHalf(luts.MS), S16 = toHalf(sky), TS16 = toHalf(luts.Tsim!);
+  const L2 = { A, T: luts.T.slice(), MS: luts.MS.slice(), Tsim: luts.Tsim!.slice() };
+  (self as any).postMessage({ key, T: luts.T, MS: luts.MS, Tsim: luts.Tsim, T16, MS16, S16, TS16, ms: performance.now() - t0 }, [luts.T.buffer, luts.MS.buffer, luts.Tsim!.buffer, T16.buffer, MS16.buffer, S16.buffer, TS16.buffer]);
   // v3.8.1 CONT-14d: disc-integrated flux table (shell + surface), posted separately so the shell is not held back by it
   if (surf) { const disc = discTable(A, L2 as any, discSurface(surf)); (self as any).postMessage({ key: key + ':disc', disc }, [disc.buffer]); }
 };

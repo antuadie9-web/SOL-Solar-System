@@ -173,8 +173,8 @@ export function lutTexture(data: Float32Array, w: number, h: number) {
   return t;
 }
 /** v3.8.1 CONT-14d: description of the body's surface for the CPU disc integral (what the surface shader draws). */
-export interface DiscSurfaceDesc { refl: [number, number, number]; kind: 'rocky' | 'icy' | 'gas' | 'earth'; k: number; dm: number }
-type LutEntry = { luts: AtmoLUTs & { ready?: boolean }; T: THREE.DataTexture; MS: THREE.DataTexture; sky: THREE.DataTexture; ms: number; ready: Promise<void>; pending: boolean;
+export interface DiscSurfaceDesc { refl: [number, number, number]; kind: 'rocky' | 'icy' | 'gas' | 'earth'; k: number; dm: number; sky?: 'full' | 'twilight' | 'none' }
+type LutEntry = { luts: AtmoLUTs & { ready?: boolean }; T: THREE.DataTexture; Tsim: THREE.DataTexture; MS: THREE.DataTexture; sky: THREE.DataTexture; ms: number; ready: Promise<void>; pending: boolean;
   /** disc-integrated flux table (DISC_N × rgb, per unit irr and (Rg/d)²) — null until built */ disc: Float32Array | null };
 const lutCache = new Map<string, LutEntry>();
 let worker: Worker | null | undefined;
@@ -199,19 +199,19 @@ export function atmosphereLUTs(key: string, a: AtmoPreset, radiusEq: number, sur
   const t0 = performance.now(), A = physicalFrom(a as any, radiusEq), W = lutWorker();
   if (!W) {
     const luts = buildLUTs(A);
-    e = { luts: Object.assign(luts, { ready: true }), T: lutTexture(luts.T, T_W, T_H), MS: lutTexture(luts.MS, MS_N, MS_N), sky: lutTexture(buildSkyIrradiance(luts.A, luts, 48), SKY_N, 1), ms: performance.now() - t0, ready: Promise.resolve(), pending: false,
+    e = { luts: Object.assign(luts, { ready: true }), T: lutTexture(luts.T, T_W, T_H), Tsim: lutTexture(luts.Tsim!, T_W, T_H), MS: lutTexture(luts.MS, MS_N, MS_N), sky: lutTexture(buildSkyIrradiance(luts.A, luts, 48), SKY_N, 1), ms: performance.now() - t0, ready: Promise.resolve(), pending: false,
       disc: surf ? discTable(A, luts, discSurface(surf)) : null };
     lutCache.set(key, e); return e;
   }
   const one = (n: number) => { const f = new Float32Array(n * 4); for (let i = 0; i < f.length; i++) f[i] = (i % 4 === 3) ? 1 : 1; return f; };
-  const luts: any = { A, T: one(T_W * T_H), MS: new Float32Array(MS_N * MS_N * 4), ready: false };
-  const E: LutEntry = { luts, T: lutTexture(luts.T, T_W, T_H), MS: lutTexture(luts.MS, MS_N, MS_N), sky: lutTexture(new Float32Array(SKY_N * 4), SKY_N, 1), ms: 0, pending: true, ready: Promise.resolve(), disc: null };
+  const luts: any = { A, T: one(T_W * T_H), Tsim: one(T_W * T_H), MS: new Float32Array(MS_N * MS_N * 4), ready: false };
+  const E: LutEntry = { luts, T: lutTexture(luts.T, T_W, T_H), Tsim: lutTexture(luts.Tsim, T_W, T_H), MS: lutTexture(luts.MS, MS_N, MS_N), sky: lutTexture(new Float32Array(SKY_N * 4), SKY_N, 1), ms: 0, pending: true, ready: Promise.resolve(), disc: null };
   E.ready = new Promise<void>(res => {
     waiters.set(key, (d) => {
-      if (d.fallback) { const L = buildLUTs(A); d = { T: L.T, MS: L.MS, T16: null, MS16: null, S16: null, sky: buildSkyIrradiance(A, L, 48), disc: surf ? discTable(A, L, discSurface(surf)) : null }; }
-      luts.T = d.T; luts.MS = d.MS;
+      if (d.fallback) { const L = buildLUTs(A); d = { T: L.T, MS: L.MS, Tsim: L.Tsim, T16: null, MS16: null, S16: null, TS16: null, sky: buildSkyIrradiance(A, L, 48), disc: surf ? discTable(A, L, discSurface(surf)) : null }; }
+      luts.T = d.T; luts.MS = d.MS; luts.Tsim = d.Tsim;
       const fill = (tex: THREE.DataTexture, h16: Uint16Array | null, f32: Float32Array) => { const dst = tex.image.data as Uint16Array; if (h16) dst.set(h16); else for (let i = 0; i < f32.length; i++) dst[i] = THREE.DataUtils.toHalfFloat(Math.min(65000, f32[i])); tex.needsUpdate = true; };
-      fill(E.T, d.T16, d.T); fill(E.MS, d.MS16, d.MS); fill(E.sky, d.S16, d.sky ?? new Float32Array(SKY_N * 4));
+      fill(E.T, d.T16, d.T); fill(E.Tsim, d.TS16, d.Tsim); fill(E.MS, d.MS16, d.MS); fill(E.sky, d.S16, d.sky ?? new Float32Array(SKY_N * 4));
       if (d.disc) E.disc = d.disc; luts.ready = true; E.pending = false; E.ms = d.ms ?? performance.now() - t0; res();
     });
     if (surf) waiters.set(key + ':disc', (d) => { E.disc = d.fallback ? discTable(A, luts as any, discSurface(surf)) : d.disc; });
@@ -220,6 +220,7 @@ export function atmosphereLUTs(key: string, a: AtmoPreset, radiusEq: number, sur
   lutCache.set(key, E);
   return E;
 }
+const QAOFF = (k: string) => typeof location !== 'undefined' && (new URLSearchParams(location.search).get('qa-off') ?? '').split(',').includes(k);
 export function makeAtmosphere(a: AtmoPreset, radiusEq: number, key = 'atmo') {
   const U = {
     cam: uniform(new THREE.Vector3()), sunDir: uniform(new THREE.Vector3(1, 0, 0)), irr: uniform(1),
@@ -251,7 +252,8 @@ export function makeAtmosphere(a: AtmoPreset, radiusEq: number, key = 'atmo') {
       tT: texture(L.T), tS: sampler(L.T), mT: texture(L.MS), mS: sampler(L.MS), msOn: U.ms,
       ...aeroArgs(A), focus: vec3(...(focusShell(A) ?? [0, 0]), focusShell(A) ? U.focusSteps : 0),
     });
-    return vec4(res.rgb.mul(U.boost), res.a);
+    // QA diagnostics (CONT-14e): ?qa-off=atmoalpha → shell never occludes; ?qa-off=atmoL → shell adds no radiance
+    return vec4(QAOFF('atmoL') ? vec3(0, 0, 0) : res.rgb.mul(U.boost), QAOFF('atmoalpha') ? float(0) : res.a);
   })();
   return { material: m, U, R: A.Rg, Ra: A.Rt, luts: L };
 }

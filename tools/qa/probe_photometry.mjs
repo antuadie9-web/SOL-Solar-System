@@ -14,12 +14,15 @@ const page = await browser.newPage({ viewport: { width: W, height: H }, deviceSc
 await page.goto(arg('url', 'http://localhost:4175/') + '?qa-off=small,smallcompute' + (arg('extra-off', '') ? ',' + arg('extra-off', '') : '') + '&qa-software-gpu=1');
 await page.waitForFunction(() => window.__sol && window.__frames > 3, null, { timeout: 240000 });
 const boot = Date.now() - T0;
-await page.evaluate((mode) => { const s = window.__sol; s.settings.set('onboarded', true); document.querySelector('#loader .enter, #loader .ld-enter')?.dispatchEvent(new MouseEvent('click', { bubbles: true })); document.body.classList.add('cine'); document.querySelectorAll('.coach').forEach(e => e.remove()); s.settings.set('autoExposure', true); s.settings.set('viewMode', mode); const ck = s.ui.clock; ck.set(2461314.5); ck.paused = true; ck.emit(); }, arg('mode', 'scientific'));
+await page.evaluate(([mode, jd]) => { const s = window.__sol; s.settings.set('onboarded', true); document.querySelector('#loader .enter, #loader .ld-enter')?.dispatchEvent(new MouseEvent('click', { bubbles: true })); document.body.classList.add('cine'); document.querySelectorAll('.coach').forEach(e => e.remove()); s.settings.set('autoExposure', true); s.settings.set('viewMode', mode); const ck = s.ui.clock; ck.set(+jd); ck.paused = true; ck.emit(); }, [arg('mode', 'scientific'), arg('jd', '2461314.5')]);
+// --set k=v,k2=v2: diagnostic settings (e.g. atmospheres=false to isolate the surface term); recorded in every row
+const SETS = (arg('set', '') || '').split(',').filter(Boolean).map(kv => { const [k, v] = kv.split('='); return [k, v === 'true' ? true : v === 'false' ? false : isNaN(+v) ? v : +v]; });
+if (SETS.length) await page.evaluate((S) => { for (const [k, v] of S) window.__sol.settings.set(k, v); }, SETS);
 const rows = [];
 // v3.8.1: the FIRST sample of a run was taken before streaming/ephemerides settled (titan-l2a: requested 20°, measured 84°,
 // flux ×10⁸ — another body in the read window). A discarded warm-up sample now precedes the list, and every row reports
 // the measured phase so a misplaced sample is visible.
-const JD0 = 2461314.5;
+const JD0 = +arg('jd', '2461314.5');   // --jd: probe epoch (TT); the preflight checks every sample against it
 // Quantities, kept apart: Fmeas = physical flux in engine units recovered from the scene-linear HDR target (signal × pxAng²
 // ÷ displayExposure); Fpt = the committed point flux (exposure removed); Fref = Lambert reference (geometric albedo);
 // X = DISPLAY EXPOSURE (a scale factor, never a flux); hdr.peak/median = scene-linear radiance ÷ X. No tone-mapped pixels.
@@ -33,7 +36,8 @@ function preflight(r, req) {
   // a build older than QA-381-03 cannot report readiness: rejected unless --legacy-ok 1 (then flagged in r.warn)
   if (r.pre?.legacy) { if (arg('legacy-ok', '0') !== '1') w.push('legacy build: LUT/disc readiness unverifiable'); else r.warn = 'legacy build: readiness unverified'; }
   else { if (r.pre?.texReady === false) w.push(`surface textures not ready ${JSON.stringify(r.pre.tex)}`); if (!r.pre?.lutReady) w.push('atmosphere LUTs not ready'); if (!r.pre?.discReady) w.push('CPU disc table not ready'); }
-  if (r.pre?.hasAtmo && !r.pre?.atmospheres) w.push('atmospheres disabled');
+  if (r.pre?.hasAtmo && !r.pre?.atmospheres && !SETS.some(([k]) => k === 'atmospheres')) w.push('atmospheres disabled');
+  if (SETS.length) r.sets = Object.fromEntries(SETS);
   if (r.Fmeas == null || !isFinite(r.Fmeas)) w.push('no HDR readback');
   if (req.rpx < 0.55 && !(r.Fpt > 0)) w.push('point entry not found');
   if (r.Fmeas != null && r.Fref > 0 && (r.meas_ref > 1e4 || r.meas_ref < 1e-4) && req.alpha < 170) w.push(`flux ratio ${r.meas_ref} implausible (contaminated window?)`);

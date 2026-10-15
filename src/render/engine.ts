@@ -253,7 +253,8 @@ export class Engine {
   /** CONT-14d: the surface as the CPU disc integral sees it (the surface shader's BRDF, mean calibrated reflectance and tint) */
   discSurf(b: Body): DiscSurfaceDesc {
     const k = this.surfaceKind(b), t = this.discTarget(b, k), c = lumNormalised(b.def.procedural?.tint ?? b.def.color);
-    return { refl: [t * c[0], t * c[1], t * c[2]], kind: this.photoKind(k), k: b.def.limb ?? (k === 'venus' ? 0.86 : 0.9), dm: k === 'venus' ? 0.51 : 1 };
+    return { refl: [t * c[0], t * c[1], t * c[2]], kind: this.photoKind(k), k: b.def.limb ?? (k === 'venus' ? 0.86 : 0.9), dm: k === 'venus' ? 0.51 : 1,
+      sky: k === 'gas' ? 'none' : (k === 'venus' || k === 'haze') ? 'twilight' : 'full' };
   }
   photoKind(k: SurfaceKind): PhotometricKind { return k === 'gas' || k === 'venus' || k === 'haze' ? 'gas' : k === 'earth' ? 'earth' : k === 'icy' ? 'icy' : 'rocky'; }
   // ── per-body view (lazy) ────────────────────────────────────────────────
@@ -284,7 +285,7 @@ export class Engine {
     // v3.6: the body's atmosphere LUTs (transmittance, multiple scattering, skylight) are built first: the surface uses them
     const AL = d.atmo ? atmosphereLUTs(b.id, d.atmo, b.radii[0], b.id !== 'earth' ? this.discSurf(b) : undefined) : null;
     if (AL) { v.atmoLuts = AL.luts; if (AL.pending) { const vv = v; AL.ready.then(() => { vv.warmFrames = Math.max(vv.warmFrames, 2); }); } }   // v3.8: re-warm once the worker LUTs land (atmosphere shell pipeline)
-    const atmoOpt = AL ? { T: AL.T, sky: AL.sky, Rg: AL.luts.A.Rg, Rt: AL.luts.A.Rt } : undefined;
+    const atmoOpt = AL ? { T: AL.T, Tsim: AL.Tsim, sky: AL.sky, Rg: AL.luts.A.Rg, Rt: AL.luts.A.Rt, H: AL.luts.A.mie.H } : undefined;
     const { material, U } = makeSurfaceMaterial(d, kind, maps, profile, { atmo: atmoOpt });
     v.U = U; v.material = material;
     // v3.6: terrain patches carry patch-local positions + a body-fixed `bodyPos` attribute → own material, SAME uniforms
