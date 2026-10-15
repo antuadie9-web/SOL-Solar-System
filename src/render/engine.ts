@@ -305,6 +305,7 @@ export class Engine {
     U.albedoScale.value = meanObs ? target / meanObs : target / Math.max(0.02, tl);
     // reconstruction brightness = mean of the OBSERVED part of the map after calibration (texture mean includes the black gap)
     if (d.noData && meanObs) U.recAlbedo.value = U.albedoScale.value * meanObs;
+    if (!d.noData && typeof location !== 'undefined' && (new URLSearchParams(location.search).get('qa-off') ?? '').split(',').includes('albtex')) U.recAlbedo.value = target;   // QA CONT-14e
     // v3.5 highlight statistics: calibrated reflectance of the brightest 1 % (max channel) of the map
     const hs = d.tex ? this.assets.texHi?.[d.tex] : undefined;
     v.hiAlb = b.id === 'earth' ? 0.92 : hs ? U.albedoScale.value * hs.p99max : U.albedoScale.value * Math.max(tc[0], tc[1], tc[2]) * 1.3;

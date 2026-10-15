@@ -251,3 +251,4 @@ Classification: **D** = confirmed defect, **P** = visual preference / presentati
 | QA-381-03 | — | EXTENDED | preflight: placeholder textures, legacy builds, shader/page errors |
 
 - CONT-14e update 2026-10-15f: hemisphere factor 1.05–1.08 (partial); T consistent (3 %); residual ≈1.18× in Mars surface radiance with T=1 — suspect normal-map/albedo-scale inputs. OPEN.
+- CONT-14e update 2026-10-15g: flat-albedo control matches CPU integral (+1.4 % α30, −5 % α120); normal map not a cause; residual 1.25× is the albedo map as sampled — suspect longitude frame/UV convention (30–60° offset reproduces it). OPEN; may be a map-orientation science defect.

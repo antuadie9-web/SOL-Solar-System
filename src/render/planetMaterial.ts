@@ -10,9 +10,12 @@ import {
 } from 'three/tsl';
 import { eclipseVis, shadowAll, sunTransmit, ringShadowUV, lunarLambert, ggxSpec, equirect, fbm, craters, vnoise } from './shaderlib';
 import type { BodyDef } from '../data/catalog';
+import { lumNormalised } from './presentation';
 import { SURFACE_INDEX, type BodyVisualProfile } from './identity';
 // QA diagnostic (CONT-14e): ?qa-off=skylight removes the ground skylight term so direct and diffuse can be measured apart
 const QA_OFF_T = typeof location !== 'undefined' && (new URLSearchParams(location.search).get('qa-off') ?? '').split(',').includes('surfT');
+const QA_OFF_NRM = typeof location !== 'undefined' && (new URLSearchParams(location.search).get('qa-off') ?? '').split(',').includes('normal');
+const QA_OFF_ALBTEX = typeof location !== 'undefined' && (new URLSearchParams(location.search).get('qa-off') ?? '').split(',').includes('albtex');
 const QA_OFF_SKY = typeof location !== 'undefined' && (new URLSearchParams(location.search).get('qa-off') ?? '').split(',').includes('skylight');
 import { transmittanceUVw, viewTransmittance } from './atmosphere';
 
@@ -196,6 +199,8 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
     if (maps.color) {
       const c0 = samp(maps.color).rgb;
       albedo = c0.mul(U.albedoScale);
+      // QA (CONT-14e): ?qa-off=albtex replaces the map by its calibrated mean (engine sets recAlbedo = disc target) to isolate BRDF/geometry
+      if (QA_OFF_ALBTEX && !def.noData) { const cn = lumNormalised(def.color as [number, number, number]); albedo = vec3(cn[0], cn[1], cn[2]).mul(U.recAlbedo); }
       // unobserved map regions (pure black in the source mosaic): flag them so they are never shown as real terrain
       if (def.noData) {
         // v3.8.1 cp2 (AST-381-01c): the observed→unobserved boundary is a step from albedo ≈ 0.1 to 0; bilinear filtering
@@ -295,7 +300,7 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
       }
       albedo = mix(albedo, mix(rec, vec3(0.55, 0.62, 0.75).mul(U.recAlbedo), grid), noData);
     }
-    if (maps.normal) n = tangentNormal({ n: ng, t: samp(maps.normal).rgb, strength: float(kind === 'earth' ? 1.0 : 1.4) });
+    if (maps.normal && !QA_OFF_NRM) n = tangentNormal({ n: ng, t: samp(maps.normal).rgb, strength: float(kind === 'earth' ? 1.0 : 1.4) });
     const mu0g = dot(ng, l), mu0 = dot(n, l), mu = dot(n, v);
     // phase angle (deg)
     const phase = acos(clamp(dot(l, v), -1, 1)).mul(57.29578);

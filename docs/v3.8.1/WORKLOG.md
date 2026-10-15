@@ -252,3 +252,18 @@ Matrix (SW): 13 views, base 5df3b3c (pre-MS-fix) vs candidate 11e21fb, + photome
   to ~4 %, so suspect Mars-specific inputs (normal map mars_n in the lunar-Lambert term, albedo-scale/texture mean, mip).
 - Next: per-pixel comparison of the HDR readback against a CPU-rendered expected image of the same geometry, plus a
   normal-map-off switch; then carry the hemisphere factor in the twin (sub-observer weighting).
+
+## 2026-10-15g — CONT-14e: BRDF/calibration cleared; residual is the albedo map as sampled (L1, SW)
+- New QA switches: ?qa-off=normal (no normal map), ?qa-off=albtex (map replaced by its calibrated mean; engine sets recAlbedo = disc target).
+- Mars, rpx 40, shell hidden, skylight off, T=1 (work/qa/mars-geo, all preflight-valid):
+  textured 0.802; normal map off 0.800 (normal map REJECTED as cause); flat albedo 0.642 (α30) / 0.474 (α120)
+  vs CPU airless integral 0.633 / 0.498 → BRDF, geometry, ellipsoid and calibration agree (+1.4 %, −5 %).
+- So the whole ≈1.25× at α30 comes from the albedo texture as the GPU samples it at this geometry. Offline reconstruction
+  of the visible-hemisphere factor gives only 1.05–1.07 (flipV/mirror variants 0.82–1.07), so either the offline
+  convention differs from the GPU's (longitude frame / UV orientation) or texture sampling (mip/decoding) is biased.
+  Shift scan: a 30–60° east offset would reproduce 1.22–1.27 — suggestive of a frame or prime-meridian offset. UNRESOLVED.
+- Earlier claim "airless Callisto within 4 %" was selective: Callisto α60 is +11 %, α120 +2 % vs the integral (its own
+  hemisphere factor unknown). Superseded by the flat-albedo control above.
+- Next: render a debug output of equirect UV (and sampled linear albedo) at the sub-observer/sub-solar points to pin the
+  GPU convention; check rotation frame vs IAU prime meridian for Mars (also a science issue if the map is shifted);
+  then give the CPU twin a geometry-weighted albedo using the same mapping.
