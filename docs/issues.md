@@ -205,7 +205,7 @@ Classification: **D** = confirmed defect, **P** = visual preference / presentati
 | GA-EPH-01 | D (science, continuity) | pending ephemeris windows answered with a ~25-yr two-body edge extrapolation; 471 bodies jumped on payload activation | FIXED 9d1e515 (75 bodies, ≤ 0.09 orbital radii; ephem_activation.ts) |
 | GA-EPH-02 | D (science) | equatorial satellite frames of retrograde rotators (Uranus, Pluto) ran backwards (Ariel/Miranda fallback 74°/149° off after 1 d) | FIXED 9d1e515 |
 | GA-EPH-03 | D (science) | Pluto small-moon fallback orbited Pluto's centre, not the barycentre (Nix 37,000 km after 7 d) | FIXED 9d1e515 (2,800 km) |
-| GA-EPH-04 | U | comets / Pluto barycentre fallbacks still differ by 10⁶–10⁷ km until their payload lands | OPEN (P2) |
+| GA-EPH-04 | U | comets / Pluto barycentre fallbacks still differ by 10⁶–10⁷ km until their payload lands. Mitigated: streaming order planets → comets → pluto (3.7 MB) → moon systems (fallbacks ≤ 0.09 orbital radii); the focused system still streams first; ephemTier keeps labelling the fallback until attachment; orbit/follow camera is target-relative. Residual exposure = seconds after boot on slow links; no science value is shown unlabelled | MITIGATED (accept + label) |
 | GA-ARCH-01 | U | WebGPU-only depends on private `_getFallback` | CONTROLLED: three pinned 0.186.1, post-init GPUDevice assertion, test pins the field |
 | GA-TEX-01 | D | linear-texture placeholders ignored their colour (masks = 0.5 "half no-data" while streaming / after demotion; demoted normal maps grey) | FIXED 1d889aa |
 | GA-RES-01 | U (perf) | body views never released in long sessions | OPEN (needs HW long-session data) |

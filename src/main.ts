@@ -88,7 +88,12 @@ async function boot() {
   // ── stream sampled ephemerides: the focused system first, the rest in the background ──────────────────
   const streamEphem = async () => {
     if (!ephemMan) return;
-    const order = ['planets', ...Object.keys(ephemMan.systems).filter(k => k !== 'planets')];
+    // v3.8.1 GA-EPH-04: after the planets, the systems whose fallback differs most from Horizons stream next — comets
+    // (osculating SBDB two-body: 67P 4.7·10⁷ km, Halley 2.8·10⁷ km) and the Pluto system (barycentre 5.6·10⁶ km) — and are
+    // only 3.7 MB together; the moon systems' fallbacks are within 0.09 orbital radii (docs/qa/ephem-activation.json).
+    // Until a payload lands the body's ephemTier labels the fallback model (data-validity label, unchanged).
+    const first = ['planets', 'comets', 'pluto'];
+    const order = [...first.filter(k => ephemMan.systems[k]), ...Object.keys(ephemMan.systems).filter(k => !first.includes(k))];
     const want = (): string | undefined => {
       const t = engine.rig.target; let b = t; while (b && b.parent && b.parent.kind !== 'star') b = b.parent;
       const sysName = b ? (b.id === 'pluto' ? 'pluto' : b.kind === 'planet' ? b.id : SAMPLED.systemOf(b.id)) : undefined;
