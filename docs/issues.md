@@ -219,3 +219,10 @@ Classification: **D** = confirmed defect, **P** = visual preference / presentati
 - **WPE-TI-01** (D, open) Titan 40-km view much darker after the WP-E model; verify MS LUT at τ≈9 and exposure (SW).
 - **CONT-14d** (update 2026-10-15) contract implemented (CPU disc-integral table → point). GPU disc reads below the twin at
   α ≥ 120° (point/disc 1.4–2.1); open until GPU/CPU parity is shown.
+
+### 2026-10-15 WP-E Titan corrections (7bfad4d)
+- CONT-14d — CLOSED for Titan (SW): GPU disc vs CPU disc-table point ≤ 4 % at α = 20–165° (L2a ratios were a misread exposure column).
+- WPE-TI-01 — FIXED: similarity-scaled multiple scattering; surface irradiance 0.04× → 0.6× Monte Carlo; residual LUT-RT bias documented.
+- WPE-TI-BL — FIXED: backlit limb meter (degenerate anti-Sun direction, twin step budget, cap removed); clip 3.98 % → 0.47 %.
+- WPE-TI-02 (U) low-altitude hue, WPE-TI-03 (D?) backlit disc interior glare, WPE-TI-04 (P) uniform daylit disc (no hemispheric asymmetry / polar hood) — OPEN.
+- WPE-VE-RECHECK — Venus terminator exposure after removal of the v3.7 limb cap — OPEN (verify in Venus phase).
