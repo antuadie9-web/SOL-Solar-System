@@ -226,3 +226,15 @@ Classification: **D** = confirmed defect, **P** = visual preference / presentati
 - WPE-TI-BL — FIXED: backlit limb meter (degenerate anti-Sun direction, twin step budget, cap removed); clip 3.98 % → 0.47 %.
 - WPE-TI-02 (U) low-altitude hue, WPE-TI-03 (D?) backlit disc interior glare, WPE-TI-04 (P) uniform daylit disc (no hemispheric asymmetry / polar hood) — OPEN.
 - WPE-VE-RECHECK — Venus terminator exposure after removal of the v3.7 limb cap — OPEN (verify in Venus phase).
+
+### 2026-10-15 (d)
+| ID | class | status | summary |
+|---|---|---|---|
+| WPE-TI-03 | D | FIXED 11e21fb | backlit disc grey fill = bloom fed by a ring the limb meter missed (tangent heights ≤ 0.35 shell); 20 heights to 0.95 |
+| WPE-TI-02 | U | ASSESSED, no change | olive cast: model agrees with MC and DISR-scale ω0; RGB 3-sample rendering of a steep red spectrum → WPE-SPEC-01 |
+| WPE-SPEC-01 | P/U | OPEN | spectrally integrated (CIE-weighted) channel coefficients for steep-spectrum media (Titan, Mars dust, Venus) |
+| WPE-TI-04 | P/U | DEFERRED | hemispheric asymmetry/polar hood: needs non-symmetric LUTs + disc twin; amplitude for Oct 2026 unobserved |
+| WPE-MA-01 | D | OPEN (next) | surface view transmittance uses the true medium; extended-surface diffuse (scaled) transmittance + adjacency blur missing |
+| WPE-MA-02 | D | OPEN | CPU disc twin omits rocky-surface skylight that the GPU adds |
+| CONT-14e | D/U | OPEN | Mars GPU disc vs CPU point α30 0.158/0.316 |
+| TEX-381-01 | D | OPEN | texture stuck at placeholder after a terrain session (Jupiter in the batch run); gas-giant placeholder renders black |

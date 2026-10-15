@@ -30,8 +30,9 @@ function preflight(r, req) {
   if (r.pre?.jd != null && Math.abs(r.pre.jd - JD0) > 1e-6) w.push(`epoch ${r.pre.jd} ≠ ${JD0}`);
   if (!(r.X > 0 && isFinite(r.X))) w.push(`display exposure ${r.X}`);
   if (!r.pre?.evConverged) w.push('exposure not converged');
-  if (!r.pre?.lutReady) w.push('atmosphere LUTs not ready');
-  if (!r.pre?.discReady) w.push('CPU disc table not ready');
+  // a build older than QA-381-03 cannot report readiness: rejected unless --legacy-ok 1 (then flagged in r.warn)
+  if (r.pre?.legacy) { if (arg('legacy-ok', '0') !== '1') w.push('legacy build: LUT/disc readiness unverifiable'); else r.warn = 'legacy build: readiness unverified'; }
+  else { if (r.pre?.texReady === false) w.push(`surface textures not ready ${JSON.stringify(r.pre.tex)}`); if (!r.pre?.lutReady) w.push('atmosphere LUTs not ready'); if (!r.pre?.discReady) w.push('CPU disc table not ready'); }
   if (r.pre?.hasAtmo && !r.pre?.atmospheres) w.push('atmospheres disabled');
   if (r.Fmeas == null || !isFinite(r.Fmeas)) w.push('no HDR readback');
   if (req.rpx < 0.55 && !(r.Fpt > 0)) w.push('point entry not found');
@@ -74,7 +75,7 @@ while (queue.length) { const [id, alpha, rpx, tries, warm] = queue.shift();
           const c = (q[0] * fw.x + q[1] * fw.y + q[2] * fw.z) / l; if (c > best) { best = c; Fpt = (P.flux[k * 3] + P.flux[k * 3 + 1] + P.flux[k * 3 + 2]) / 3 / X; } }
         if (best < Math.cos(3 * pxAng)) Fpt = 0;
         const Fmeas = hdr ? hdr.signal * pa * pa / X : null;
-        const st = e.qaAtmoState(b), jd = s.ui.clock.jd ?? null;
+        const st = e.qaAtmoState ? e.qaAtmoState(b) : { legacy: true }, jd = s.ui.clock.jd ?? null;
         return { pre: { ...st, jd, evConverged: Math.abs(e.diagnostics().exposureEV - evp) < 0.05, hdrFloat: !!hdr && hdr.half !== undefined, window: hdr?.w, target: s.engine.rig.target?.id }, id, kind: b.def?.kind, p: b.albedo, alphaDeg: al * 180 / Math.PI, rpx, ev: e.diagnostics().exposureEV, X, pxAng: pa, w, Fmeas, Fref, Fpt, meas_ref: Fmeas / Fref, pt_ref: Fpt / Fref, hdr: hdr && { peak: hdr.peak / X, median: hdr.median / X, half: hdr.half, W: hdr.W } };
       }, { id, alpha, rpx });
       info.ms = Date.now() - t0; info.reqAlpha = alpha;

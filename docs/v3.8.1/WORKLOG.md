@@ -185,3 +185,24 @@ numerical trace or unit test, **HW** = owner-supplied real-GPU evidence (none ye
   amplitude for this date; a north polar hood would be inference. Implementing latitude-dependent haze needs non-symmetric
   transmittance and an updated disc twin (CONT-14d parity). Recorded as WPE-TI-04 (P/U), non-critical to acceptance.
 - **QA-381-03** preflight implemented (docs/v3.8.1/QA_WORKFLOW.md).
+
+## 2026-10-15 (d) — shared-change regression (WP-E MS scaling + limb meter), work/qa/wpe-reg
+Matrix (SW): 13 views, base 5df3b3c (pre-MS-fix) vs candidate 11e21fb, + photometry venus/mars/jupiter α30/120/150 × rpx 12/0.45
+(18/18 samples pass the QA-381-03 preflight). Sheet: work/qa/sheets/titan-ti03-backlit.jpg.
+- **Venus**: day/terminator/backlit EV identical (−1.23/−1.32/14.61), display means within 5 %. Limb-cap removal: NO terminator
+  regression. GPU disc vs CPU point 0.57–0.60 / 0.59–0.61 (α30/120), 2.19/2.22 (α150): parity ≤ 3 %.
+- **Earth**: terminator/limb/sunset-limb identical (≤ 0.5 %).
+- **Jupiter**: solo re-capture identical to baseline (31.9 vs 32.0). The black disc in the batch run was a TEXTURE STREAMING fault
+  (`texLevels: placeholder` after the Mars terrain views), not the shader → new TEX-381-01; the probe's Jupiter disc samples
+  (meas/ref 0.026–0.13) are void for the same reason. Preflight now also rejects samples whose surface textures are placeholders.
+- **Titan backlit**: clip 3.98 % (c57fce9) → 0.47 % (d813266) → 0.00 % (11e21fb); disc centre 171 → 75 → 0/255; EV 14.61 → 12.96 → 10.26.
+- **Mars — real change, open (WPE-MA-01)**: day disc display mean R/G/B 33.9/23.2/17.3 → 28.6/16.2/9.2; Jezero ground sky
+  B 33.6 → 11.3 (ochre). GPU disc vs CPU point at α30 0.158 vs 0.316 (α120 0.82/0.89, α150 8.8/10.6). A baseline probe could not
+  arbitrate: the legacy build cannot report LUT readiness and its α30 disc (0.76) is consistent with a sample taken before the LUTs
+  landed (T = 1, no MS) — exactly what the preflight now prevents. Analysis (CPU, work/exp/marsdisc.ts): vertical dust τ ≈ 0.5,
+  surface seen through TRUE-medium two-way transmittance (≈ 0.3 at α30) while the light forward-scattered out of the view beam is
+  never returned (the shell's single scattering adds sunlight only). For an extended, horizontally uniform surface the correct
+  first-order treatment is the diffuse (similarity-scaled) view transmittance exp(−τ(1−ϖg)/μ) for the mean, with the true
+  transmittance for the unblurred detail (adjacency effect). The MS fix exposed this: the old isotropic MS over-returned light and
+  masked it. Also: the CPU disc twin omits the skylight term the GPU adds on rocky surfaces (WPE-MA-02), and the GPU/CPU α30 gap
+  needs its own split (surface vs shell) — CONT-14e. Planned as the first Mars WP-E item; affects Titan's surface visibility too.

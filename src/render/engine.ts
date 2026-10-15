@@ -897,7 +897,8 @@ export class Engine {
   /** QA-381-03 measurement preflight: is this body's photometry fully built (atmosphere LUTs on the GPU, CPU disc twin)? */
   qaAtmoState(b: Body) {
     const vv = this.views.get(b.id) as any, DS = b.def.atmo && b.id !== 'earth' ? atmosphereLUTs(b.id, b.def.atmo, b.radii[0], this.discSurf(b)) : null;
-    return { hasAtmo: !!b.def.atmo, lutReady: !b.def.atmo || !!(vv?.atmoLuts && vv.atmoLuts.ready !== false), discReady: !DS || !!DS.disc, atmospheres: this.settings.get('atmospheres') !== false };
+    const tex = vv?.texNames ? Object.fromEntries(vv.texNames.map((n: string) => [n, this.assets.textures.level(n)])) : {};
+    return { tex, texReady: Object.values(tex).every(l => l !== 'placeholder'), hasAtmo: !!b.def.atmo, lutReady: !b.def.atmo || !!(vv?.atmoLuts && vv.atmoLuts.ready !== false), discReady: !DS || !!DS.disc, atmospheres: this.settings.get('atmospheres') !== false };
   }
   async qaReadHDR(w = 33) {
     const rt = this.scenePass?.renderTarget; if (!rt || !this.renderer) return null;
