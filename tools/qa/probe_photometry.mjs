@@ -84,8 +84,9 @@ while (queue.length) { const [id, alpha, rpx, tries, warm] = queue.shift();
           const c = (q[0] * fw.x + q[1] * fw.y + q[2] * fw.z) / l; if (c > best) { best = c; Fpt = (P.flux[k * 3] + P.flux[k * 3 + 1] + P.flux[k * 3 + 2]) / 3 / X; } }
         if (best < Math.cos(3 * pxAng)) Fpt = 0;
         const Fmeas = hdr ? hdr.signal * pa * pa / X : null;
+        const vU = e.views.get(id)?.U, geo = vU ? { camLocal: vU.cam.value.toArray(), sunLocal: vU.sunPos.value.toArray() } : null;
         const st = e.qaAtmoState ? e.qaAtmoState(b) : { legacy: true }, jd = s.ui.clock.jd ?? null;
-        return { pre: { ...st, jd, evConverged: Math.abs(e.diagnostics().exposureEV - evp) < 0.05, hdrFloat: !!hdr && hdr.half !== undefined, window: hdr?.w, target: s.engine.rig.target?.id }, id, kind: b.def?.kind, p: b.albedo, alphaDeg: al * 180 / Math.PI, rpx, ev: e.diagnostics().exposureEV, X, pxAng: pa, w, Fmeas, Fref, Fpt, meas_ref: Fmeas / Fref, pt_ref: Fpt / Fref, hdr: hdr && { peak: hdr.peak / X, median: hdr.median / X, half: hdr.half, W: hdr.W } };
+        return { geo, pre: { ...st, jd, evConverged: Math.abs(e.diagnostics().exposureEV - evp) < 0.05, hdrFloat: !!hdr && hdr.half !== undefined, window: hdr?.w, target: s.engine.rig.target?.id }, id, kind: b.def?.kind, p: b.albedo, alphaDeg: al * 180 / Math.PI, rpx, ev: e.diagnostics().exposureEV, X, pxAng: pa, w, Fmeas, Fref, Fpt, meas_ref: Fmeas / Fref, pt_ref: Fpt / Fref, hdr: hdr && { peak: hdr.peak / X, median: hdr.median / X, half: hdr.half, W: hdr.W } };
       }, { id, alpha, rpx });
       info.ms = Date.now() - t0; info.reqAlpha = alpha;
       // QA-381-03 preflight: a sample is used only when its measurement conditions are verified; otherwise it is retried

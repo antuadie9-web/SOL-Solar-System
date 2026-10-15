@@ -249,3 +249,5 @@ Classification: **D** = confirmed defect, **P** = visual preference / presentati
 | WPE-MA-04 | U | OPEN | Jezero sky too saturated (dust optics, WPE-SPEC-01) |
 | TEX-381-01 | D | OPEN | long multi-body sessions: placeholder textures/contaminated state (tracked; probes now one body per session) |
 | QA-381-03 | — | EXTENDED | preflight: placeholder textures, legacy builds, shader/page errors |
+
+- CONT-14e update 2026-10-15f: hemisphere factor 1.05–1.08 (partial); T consistent (3 %); residual ≈1.18× in Mars surface radiance with T=1 — suspect normal-map/albedo-scale inputs. OPEN.

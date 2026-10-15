@@ -11,6 +11,9 @@ import {
 import { eclipseVis, shadowAll, sunTransmit, ringShadowUV, lunarLambert, ggxSpec, equirect, fbm, craters, vnoise } from './shaderlib';
 import type { BodyDef } from '../data/catalog';
 import { SURFACE_INDEX, type BodyVisualProfile } from './identity';
+// QA diagnostic (CONT-14e): ?qa-off=skylight removes the ground skylight term so direct and diffuse can be measured apart
+const QA_OFF_T = typeof location !== 'undefined' && (new URLSearchParams(location.search).get('qa-off') ?? '').split(',').includes('surfT');
+const QA_OFF_SKY = typeof location !== 'undefined' && (new URLSearchParams(location.search).get('qa-off') ?? '').split(',').includes('skylight');
 import { transmittanceUVw, viewTransmittance } from './atmosphere';
 
 const TDBG = typeof location !== 'undefined' && new URLSearchParams(location.search).get('qa-tdbg') === '1';
@@ -314,7 +317,7 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
     // v3.6: sunlight reaching the ground from the transmittance LUT (exact spherical path through every layer, ozone in its
     // own layer); v3.5 used exp(−τ_vertical / μ0), which over-darkened and over-reddened grazing sunlight
     const AT = opts.atmo;
-    const T0 = AT ? texture(AT.T, transmittanceUVw({ r: float(AT.Rg + 0.01), mu: mu0g, Rg: float(AT.Rg), Rt: float(AT.Rt) })).rgb : sunTransmit({ mu0: mu0g, tau: U.tau });
+    const T0 = AT && QA_OFF_T ? vec3(1, 1, 1) : AT ? texture(AT.T, transmittanceUVw({ r: float(AT.Rg + 0.01), mu: mu0g, Rg: float(AT.Rg), Rt: float(AT.Rt) })).rgb : sunTransmit({ mu0: mu0g, tau: U.tau });
     // v3.8.1 ATM-381-02 (REV2-04, CONT-08): Venus' deck reflectance (albedo 0.689, Minnaert k 0.86) is a DISC-INTEGRATED
     // observation that already contains the upper haze. Attenuating sun and view paths by the haze's full extinction
     // double-counted it: the strongly forward-scattering haze (g ≈ 0.7) sends most of the light it "removes" on to the
@@ -364,7 +367,7 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
       const f = lunarLambert({ mu0, mu, phaseDeg: phase, lambertBias: float(bias) });
       col = albedo.mul(f).mul(sunL).mul(smoothstep(-0.02, 0.01, mu0g));
     }
-    if (AT && kind !== 'gas' && kind !== 'venus' && kind !== 'haze') col = col.add(shineAlb.mul(skyE).mul(U.irr).mul(dot(n, dirLocal).mul(0.5).add(0.5)).mul(vis));
+    if (AT && kind !== 'gas' && kind !== 'venus' && kind !== 'haze' && !QA_OFF_SKY) col = col.add(shineAlb.mul(skyE).mul(U.irr).mul(dot(n, dirLocal).mul(0.5).add(0.5)).mul(vis));
     // v3.8.1 ATM-381-01 (owner review REV2-04): twilight on thick-atmosphere cloud/haze tops. The deck sits INSIDE the
     // scattering haze (Venus: upper haze 70–90 km above the cloud top; Titan: the main haze), so it keeps receiving
     // diffuse light from the sunlit atmosphere above for several degrees past the geometric terminator. v3.6–cp2 gave
@@ -401,7 +404,7 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
     if (opts.terrainAttr && TDBG) return vec4(vis, max(mu0g, 0), skyE.r.mul(10), 1);
     // v3.7 ATM-005: per-channel transmittance from the surface to the camera (the atmosphere shell adds only in-scatter
     // over the disc) — red Martian ground stays red behind dust, Titan's surface is obscured per channel
-    if (AT) {
+    if (AT && !QA_OFF_T) {
       const rr = def.radii ?? [def.radius, def.radius, def.radius], nv = vec3(1, rr[0] / rr[1], rr[0] / rr[2]);
       const vT = viewTransmittance({ p: p.mul(nv), c: U.cam.mul(nv), Rg: float(AT.Rg), Rt: float(AT.Rt), tT: texture(AT.T), tS: sampler(AT.T) });
       if (DM !== 1 || !AT.Tsim) col = col.mul(DM !== 1 ? pow(vT, vec3(DM, DM, DM)) : vT);

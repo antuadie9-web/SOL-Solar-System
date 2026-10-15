@@ -237,3 +237,18 @@ Matrix (SW): 13 views, base 5df3b3c (pre-MS-fix) vs candidate 11e21fb, + photome
   (Wolff et al. 2009 CRISM/MARCI SSA, g) in Mars WP-E.
 - Process lesson: a TSL build error (TSL global undefined at runtime; tsc accepted it) made the material fall back silently;
   the probe's preflight now invalidates samples when shader/page errors occur in the session.
+
+## 2026-10-15f — CONT-14e residual decomposition (L1, SW)
+- Owner standing directive: continue all of v3.8.1 autonomously; 90-min continuation task with work/.sol-lock guard.
+- Probe now logs geo.camLocal / geo.sunLocal (body-fixed). New QA switches: ?qa-off=skylight (ground skylight term), ?qa-off=surfT (surface T☉ and view T forced to 1).
+- Mars α30, rpx 40, shell hidden (atmospheres=false), one body per session, all preflight-valid (work/qa/mars-geo):
+  GPU surface 0.441 = direct 0.292 + skylight 0.149; GPU direct with T=1: 0.802.
+  CPU twin: direct 0.222, skylight 0.107 (airless direct 0.631).
+- Findings: (1) visible-hemisphere albedo factor with the engine's equirect convention = 1.05–1.08 (geometry-weighted;
+  sub-observer lat 26°, lon −85°) — explains only ~1/3 of the gap; hypothesis PARTLY FAILED. Note the factor swings
+  0.78–1.27 with longitude, so it must be carried per geometry, not as a constant. (2) Transmittance is consistent:
+  GPU T-share 0.364 vs CPU 0.352 (3 %). An earlier progress line attributing the residual to transmittance was wrong.
+  (3) Remaining ≈1.18× lives in the Mars surface radiance itself with atmosphere and T removed; airless Callisto path agrees
+  to ~4 %, so suspect Mars-specific inputs (normal map mars_n in the lunar-Lambert term, albedo-scale/texture mean, mip).
+- Next: per-pixel comparison of the HDR readback against a CPU-rendered expected image of the same geometry, plus a
+  normal-map-off switch; then carry the hemisphere factor in the twin (sub-observer weighting).
