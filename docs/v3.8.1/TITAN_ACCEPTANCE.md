@@ -1,8 +1,6 @@
 # SOL v3.8.1 — Titan atmosphere: Level-2 acceptance (WP-E / Gate C)
 
-Status: **ACCEPTED (software WebGPU, SwiftShader)** at 11e21fb, with the limitations below. No native-GPU (RTX) evidence.
-Pending cross-effect: WPE-MA-01 (extended-surface view transmittance) touches the shared surface/shell contract and will
-change how much of Titan's surface shows through the haze; Titan is re-checked after that change (focused, not re-accepted).
+Status: **ACCEPTED (software WebGPU, SwiftShader)** at 11e21fb, re-checked after WPE-MA-01 at c257166 (disc photometry ±1 %, day and low-altitude views identical), with the limitations below. No native-GPU (RTX) evidence.
 
 ## 1. Model and governing equations
 - Shell radiance: single scattering in the true medium (Rayleigh + three aerosol populations, Cornette–Shanks phase per

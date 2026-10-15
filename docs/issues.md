@@ -238,3 +238,14 @@ Classification: **D** = confirmed defect, **P** = visual preference / presentati
 | WPE-MA-02 | D | OPEN | CPU disc twin omits rocky-surface skylight that the GPU adds |
 | CONT-14e | D/U | OPEN | Mars GPU disc vs CPU point α30 0.158/0.316 |
 | TEX-381-01 | D | OPEN | texture stuck at placeholder after a terrain session (Jupiter in the batch run); gas-giant placeholder renders black |
+
+### 2026-10-15 (e)
+| ID | class | status | summary |
+|---|---|---|---|
+| CONT-14e | U | NARROWED | 0.158 was session contamination; contract verified; residual GPU/CPU surface +22 % at α30 (hemisphere albedo hypothesis) |
+| WPE-MA-01 | D | FIXED c257166 (SW) | diffuse view transmittance + adjacency split; MC nadir I/F 0.68–0.89× → 0.88–1.14× |
+| WPE-MA-02 | D | FIXED c257166 | CPU twin skylight |
+| WPE-MA-03 | D | OPEN | Mars disc calibration ignores the shell's share of p |
+| WPE-MA-04 | U | OPEN | Jezero sky too saturated (dust optics, WPE-SPEC-01) |
+| TEX-381-01 | D | OPEN | long multi-body sessions: placeholder textures/contaminated state (tracked; probes now one body per session) |
+| QA-381-03 | — | EXTENDED | preflight: placeholder textures, legacy builds, shader/page errors |

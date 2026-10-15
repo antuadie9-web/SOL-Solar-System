@@ -206,3 +206,34 @@ Matrix (SW): 13 views, base 5df3b3c (pre-MS-fix) vs candidate 11e21fb, + photome
   transmittance for the unblurred detail (adjacency effect). The MS fix exposed this: the old isotropic MS over-returned light and
   masked it. Also: the CPU disc twin omits the skylight term the GPU adds on rocky surfaces (WPE-MA-02), and the GPU/CPU α30 gap
   needs its own split (surface vs shell) — CONT-14e. Planned as the first Mars WP-E item; affects Titan's surface visibility too.
+
+## 2026-10-15 (e) — CONT-14e diagnosed, WPE-MA-01/02 implemented (remote c257166), Titan acceptance doc
+- **CONT-14e mechanism (measurement, not compositing).** One body per page session, Mars α30: rpx 12 → 0.472, rpx 20 → 0.479,
+  rpx 40 → 0.467 (meas/Lambert-p ref). The 0.158 of the regression run came from a contaminated long multi-body session (not
+  reproducible). Contract check at rpx 12: shell alpha forced 0 → 0.473; shell radiance forced 0 → 0.314 = shell-hidden 0.315
+  → over the disc the shell adds radiance only (alpha 0 holds). QA switches ?qa-off=atmoalpha / atmoL. Rule: photometry runs use
+  one body per session (tools: ma_l2-style `step` scripts).
+- **WPE-MA-02.** The CPU disc twin now carries the shader's skylight (refl·E(μ0)·T_view, rocky/icy 'full', Venus/Titan deck
+  'twilight', gas giants none). Mars α30 CPU 0.324 → 0.393.
+- **WPE-MA-01 — independent reference first.** Plane-parallel MC (work/exp/mars: same dust profile/phase, Lambert ground 0.25,
+  Sun at zenith): nadir I/F MC 0.258/0.209/0.155; model 0.174/0.155/0.138 (0.68/0.74/0.89×). With the diffuse (similarity-scaled)
+  view transmittance 0.227/0.203/0.177 (0.88/0.97/1.14×). Implemented (GPU planetMaterial + CPU twin, Tsim LUT from the worker):
+  direct part T·col (full detail) + (Tsim − T)·col·(adjacency ratio: albedo mip at ≈ 3 aerosol scale heights / local albedo).
+  Venus keeps its δ-M deck (DM 0.51) — the same approximation, not applied twice.
+- **L2 (SW, one body per session, preflight all valid; work/qa/ma-l2, sheet mars-ma01-f102d0a-vs-c257166.jpg):**
+  Mars GPU disc/ref α30/120/150 = 0.623/1.125/10.64 vs CPU twin 0.511/1.071/11.12 (+22 %/+5 %/−4 %). mars-day mean
+  28.6/16.2/9.2 → 34.0/18.4/10.4, surface detail kept; Jezero ground unchanged (camera inside the layer: T ≈ Tsim).
+  Titan disc/ref α30/120 0.940/2.297 (α120 2.270 at acceptance, +1 %); titan-day and low-altitude identical → Titan surface
+  visibility unchanged (τ ≈ 9: Tsim(μ=1) ≈ 0.06 but the haze-deck surface term stays < 1 %).
+- **Residual CONT-14e (open, narrowed):** GPU surface term ≈ 1.2–1.4× the twin at α30 only. Leading hypothesis: the twin uses
+  the map-mean albedo, the GPU the visible hemisphere (hemisphere means of the Mars map range 0.146–0.228, i.e. ±22 % by
+  sub-observer longitude). Test: log sub-observer lon/lat in the probe and weight the twin. Not yet verified.
+- **Mars disc absolute:** model 0.62 vs observed ≈ 0.7–0.8 of the Lambert-p reference at α30 (Mars phase coefficient
+  ≈ 0.016 mag/deg) — the disc calibration (discReflectance of catalogue p) assumes an airless body; the shell's share must be
+  taken out of the surface calibration (as Titan's fit did). Mars WP-E item MA-03.
+- **Earth regression:** earth-day 23.0/24.8/29.8 → 23.0/24.9/29.9, earth-terminator identical, EV unchanged.
+- **Mars ground sky (MA-04, open):** Jezero sky 76/51/11 display — too saturated vs rover-imaged butterscotch; dust ω(B) = 0.77
+  in the preset and the RGB-sampling issue (WPE-SPEC-01) both contribute. To be addressed with literature dust optics
+  (Wolff et al. 2009 CRISM/MARCI SSA, g) in Mars WP-E.
+- Process lesson: a TSL build error (TSL global undefined at runtime; tsc accepted it) made the material fall back silently;
+  the probe's preflight now invalidates samples when shader/page errors occur in the session.
