@@ -590,7 +590,13 @@ export class Engine {
           const Ept = pointExposure(LS, skyE, rpx);
           let F = pointBodyFlux(b.albedo, pk0, alpha * 180 / Math.PI, b.radius / dist, rS, mk) * fade * visibilityGain(mode, st.get('bodyBoost') as number) * Ept;
           // keep planets findable as points (presentation only — GA-SCI-01: Scientific draws the physical flux, floor 0)
-          const floor = pointFloor(mode, b.kind, b.radius, this.pxAng, fade);
+          // v3.8.1 SUN-FAR-01: a findability floor only helps while the body can be told apart from its host (the planet for a
+          // moon, the Sun for a planet). Beyond the planetary system every planet/dwarf/moon floor stacked onto the Sun's pixel
+          // (sun-far-auto, SW HDR readback: displayed solar signal ROSE 13 → 24 from 430 to 66,000 AU). The floor now fades
+          // with the angular separation from the host over 2–6 px; the physical flux is untouched (Scientific has no floor).
+          const host = b.parent && b.parent.kind !== 'star' ? b.parent : sun, hRel = sub(host.pos, cam);
+          const sepPx = Math.acos(Math.max(-1, Math.min(1, dot(rel, hRel) / Math.max(dist * len(hRel), 1e-30)))) / this.pxAng;
+          const floor = pointFloor(mode, b.kind, b.radius, this.pxAng, fade) * smooth(2, 6, sepPx);
           if (F < floor) { F = floor; this.enhancement.pointFloor++; }
           const c = lumNormalised(b.def.color);   // CONT-14c: was raw tint × 1.6 (Callisto's point 3× too faint, luminance 0.34 × 1.6)
           scr.bright = Math.max(scr.bright, F / (this.pxAng * this.pxAng * 6.283 * 0.56));

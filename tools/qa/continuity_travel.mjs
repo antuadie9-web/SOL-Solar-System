@@ -26,7 +26,8 @@ for (const seq of seqs) {
   fs.mkdirSync(`${out}/${seq}`, { recursive: true });
   const rows = [];
   const N = seq === 'rings-pan' ? 60 : seq === 'sun-far-auto' ? 48 : seq.startsWith('titan') ? 40 : 90;
-  for (let i = 0; i < N; i++) {
+  const FROM = +arg('from', '0'), STRIDE = +arg('stride', '1');   // QA-381-02: resume / subsample a sequence (same geometry law)
+  for (let i = FROM; i < N; i += STRIDE) {
     const t0 = Date.now();
     const info = await page.evaluate(async ({ seq, i, N }) => {
       const s = window.__sol, r = s.engine.rig, AU = 149597870.7;
@@ -43,7 +44,7 @@ for (const seq of seqs) {
         r.tFov = r.fov = fov; r.target = sun; r.pos = pos; r.quat.copy(r.lookQuat(pos, sun.pos, [0, 0, 1]));
         await frames(3); r.pos = pos; r.quat.copy(r.lookQuat(pos, sun.pos, [0, 0, 1]));
         const d = s.engine.diagnostics();
-        return { i, au, fov, fixed, ev: d.exposureEV, skyEV: d.view?.skyEV, sunGlare: d.sunGlare };
+        return { i, au, fov, fixed, ev: d.exposureEV, skyEV: d.view?.skyEV, sunGlare: d.sunGlare, floors: s.engine.enhancement.pointFloor };
       } else if (seq.startsWith('titan')) {
         // CONT-14: Titan recedes from 9 px to 0.5 px radius (log-uniform, 20° FOV, 540 px high) while sunlit Saturn stays in
         // frame 1.5–4° away, so the scene exposure is set by Saturn and the sky exposure differs — the point/disc hand-over
