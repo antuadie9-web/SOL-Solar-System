@@ -40,5 +40,13 @@ Photometry in presentation.ts: catalog albedo = geometric p; pointBodyFlux/discR
 - Headless screenshots of the WebGPU canvas come out black in sandbox — don't try to record videos there; the owner judges via the live link.
 - Paths in these scripts assumed the old sandbox; set SOL_WORK / SOL_REPO for a new workspace.
 
+## Git workflow (owner requirement: every account commits + pushes the same way)
+- Connect GitHub as antuadie9-web; clone https://github.com/antuadie9-web/SOL-Solar-System, work on main.
+- Every session ends with its work committed and pushed to main — never leave finished work only in the sandbox.
+- One logical change per commit, message starts with the issue ID (e.g. `MA-03: ...`). Before commit: tsc + 354 tests pass, assets validated if touched, ephemeris-residuals.json reverted.
+- `git pull --ff-only` before starting; push with `bash tools/git/push.sh` (never force, never rewrite history, never move tags).
+- After pushing: append the session to docs/v3.8.1/WORKLOG.md, update docs/issues.md and this file's Status/NEXT, commit + push those too; redeploy Pages if the change is visible.
+- Only one agent/account works on the repo at a time (lease lock); if another is active, don't push.
+
 ## Scheduler pattern (recreate in new environment)
 Recurring task every 90 min: acquire lease (skip if held) → read HANDOFF/WORKLOG tail/issues tail → do the next NEXT item with the time-box rule → tsc + tests → commit + push → append WORKLOG → redeploy Pages if meaningful → release lease. Work is mandatory once the lease is held (no idle runs).
