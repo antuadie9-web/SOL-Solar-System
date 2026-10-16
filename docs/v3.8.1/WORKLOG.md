@@ -368,3 +368,10 @@ Evidence (all SW WebGPU/SwiftShader, Y709 scene-linear, preflight-valid, texture
   = baseline numbers again: EV now monotone and continuous 2→8 px, but the 1.5–2.5 px flare (peak 356→760) REMAINS. Cause: disc is drawn at full
   radiance from 1.5 px while the exposure target blend is only 4–30 % there. CONT-14h stays OPEN. Next: lead the exposure (start the target blend
   at ≈0.8 px, before the disc cross-fade) or lower the disc weight in the 1.2–2.5 px window; re-sweep; Callisto/Titan regressions.
+
+## 2026-10-16 18:10 IST (scheduled run)
+- CONT-14h: led the log-blend (smooth(0.6,2.5,rpx), fade 2.5→28 px; engine.ts:709, commit "lead the exposure-target blend"). tsc + tests pass.
+  Mars α30 Exploration sweep (snap 4106f414fbc9, Y709 valid 10/10): EV 14.61/14.61/14.61/14.61/13.45/11.42/10.26/9.44/7.87/6.2 — IDENTICAL to
+  e9c6820 → the blend does not move the final EV at all, so the EV at 1.5–2.5 px is set by something else (EV clamp/smoothing downstream of
+  meterLuminance, or the max/rate-limiter in engine.ts). Blend tuning is a dead end until that path is traced. Next: log the meter outputs
+  (L, floorLum, subject, hi) vs final EV at rpx 1.5/2/2.5 and find the stage that overrides them; then fix there.
