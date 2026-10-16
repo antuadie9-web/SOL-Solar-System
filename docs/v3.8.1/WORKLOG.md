@@ -375,3 +375,6 @@ Evidence (all SW WebGPU/SwiftShader, Y709 scene-linear, preflight-valid, texture
   e9c6820 → the blend does not move the final EV at all, so the EV at 1.5–2.5 px is set by something else (EV clamp/smoothing downstream of
   meterLuminance, or the max/rate-limiter in engine.ts). Blend tuning is a dead end until that path is traced. Next: log the meter outputs
   (L, floorLum, subject, hi) vs final EV at rpx 1.5/2/2.5 and find the stage that overrides them; then fix there.
+
+## 2026-10-16 evening — CONT-14h root cause fixed
+Root cause: engine.ts used `max(subject, met.subject, met.highlight)` and discarded `met.luminance`, so the log-space handover blend in meterLuminance was inert. Now uses `met.luminance`. SW evidence (qa/c14h/mars.log, Mars α30 exploration, Y709 hdr.peak vs rpx): 0.4→1.1e-3, 1.2→3.1e-3, 1.5→0.021, 2→0.094, 2.5→0.135, 3→0.096, 3.5→0.067, 5→0.088, 8→0.085. Smooth rise, ≤1.6× bump at 2.5 px (no 28→760 flare). tsc + 354 tests pass. TODO: Callisto/Titan regression, remove 2.5 px bump if desired; then MA-03.

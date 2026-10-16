@@ -806,7 +806,7 @@ export class Engine {
     const hlT = this.settings.get('toneMap') === 'agx' ? HIGHLIGHT_TARGET.agx : HIGHLIGHT_TARGET.neutral;
     // an eclipse (Sun partly/fully hidden) meters for the corona: the occulting body's night side must not cap the exposure
     const met = meterLuminance(meterBodies, key, hlT, sunVis < 0.98 ? 40 : P.nightCapEV, avgLum, key / Math.exp(dark));
-    subject = Math.max(subject, met.subject, met.highlight);   // `subject` still carries the Sun / eclipse metering
+    subject = Math.max(subject, met.luminance);   // CONT-14h: met.luminance = max(subject, highlight, ambient) + log-blend of bodies crossing the PSF→disc handover; `subject` still carries the Sun / eclipse metering
     this.meter = { subject: met.subject, highlight: met.highlight, bodies: meterBodies.length };
     const tl0 = Math.min(dark, Math.log(key / Math.max(avgLum, subject, 1e-12)));
     const tlS = sunSubjA > 0 ? Math.min(dark, Math.log(key / Math.max(avgLum, subject, sunSubj, 1e-12))) : tl0;
