@@ -1,6 +1,0 @@
-node_modules
-dist
-.cache
-qa-out
-tools/ingest/raw
-.cache

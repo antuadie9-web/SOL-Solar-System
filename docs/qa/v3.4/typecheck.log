@@ -1,4 +1,0 @@
-
-> sol-solar-system@3.4.0 typecheck
-> tsc --noEmit -p .
-
