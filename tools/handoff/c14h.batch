@@ -1,0 +1,2 @@
+O=../../qa/c14h; mkdir -p $O
+run mars --bodies mars --alpha 30 --mode exploration --rpx 0.4,0.8,1.2,1.5,2,2.5,3,3.5,5,8
