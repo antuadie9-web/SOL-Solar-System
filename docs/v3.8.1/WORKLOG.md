@@ -360,3 +360,11 @@ Evidence (all SW WebGPU/SwiftShader, Y709 scene-linear, preflight-valid, texture
 - CONT-14h: implemented the log-space exposure-target blend (MeterBody.blend = smooth(1.2,3.5,rpx); presentation.ts meterLuminance;
   engine.ts passes it). tsc + unit tests pass. NOT browser-verified: CONT-14h stays OPEN until the Mars α30 Exploration sweep
   (0.4→8 px, peak step ≤ ×1.5) plus Callisto/Titan regressions are run (next run).
+
+## 2026-10-16 17:00 IST (scheduled run)
+- CONT-14h browser check (Mars α30 Exploration, 0.4→8 px, SW, Y709 valid): a83b252 had NO effect (blend skipped at wb=1, and base was below the darkExposure clamp: EV stuck 14.61 to 3.5 px, peak 1687/2748 at 2/2.5 px — worse than baseline 760/305).
+  Fixes: base = max(L, luminance at the dark clamp); blend stays active and fades out 3.5→28 px on top of the linear meter (commits after a83b252).
+  Result (snap e9c6820e95e5): EV 14.61/14.61/14.61/14.61/13.45/11.42/10.26/9.44/7.87/6.2; peak 28/28/28/356/760/305/113/47/21/5.7.
+  = baseline numbers again: EV now monotone and continuous 2→8 px, but the 1.5–2.5 px flare (peak 356→760) REMAINS. Cause: disc is drawn at full
+  radiance from 1.5 px while the exposure target blend is only 4–30 % there. CONT-14h stays OPEN. Next: lead the exposure (start the target blend
+  at ≈0.8 px, before the disc cross-fade) or lower the disc weight in the 1.2–2.5 px window; re-sweep; Callisto/Titan regressions.
