@@ -143,6 +143,14 @@
    "truth": "derived (measured on the shipped maps)"
   },
   {
+   "match": "^assets/data/albedo_grid\\.json$",
+   "source": "SOL v3.8.1 tools/ingest/albedo_grid.py",
+   "licence": "SOL project data (derived statistics)",
+   "commercial": "yes",
+   "content": "64x32 equirect grids of cell-mean linear Y709 / map-mean luminance per colour map (shader equirect convention, noData cells = 1) — point visible-hemisphere albedo factor (CONT-14f)",
+   "truth": "derived (measured on the shipped maps)"
+  },
+  {
    "match": "^assets/catalogs/stars/named-rows\\.(bin|json)$",
    "source": "Extract (SOL v3.5 tools/ingest/named-rows.mjs) of the stars3d shards: Gaia Catalogue of Nearby Stars (Gaia EDR3/DR3) + Hipparcos (van Leeuwen 2007)",
    "url": "https://www.cosmos.esa.int/web/gaia/edr3-gcns",

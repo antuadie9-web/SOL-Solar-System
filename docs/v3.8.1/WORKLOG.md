@@ -296,3 +296,9 @@ Matrix (SW): 13 views, base 5df3b3c (pre-MS-fix) vs candidate 11e21fb, + photome
   rendered point vs CPU point flux 1.013 / 0.938 (+8 %), 2.425 / 2.310 (+5 %). The earlier "≤ 4 %" parity was measured in
   mean-RGB. Registered CONT-14g (point colour/luminance normalisation of the twin for strongly coloured shells). Titan
   appearance acceptance unaffected; its photometric parity line is reopened as provisional.
+
+## 2026-10-15i (sched) — no changes
+Uncommitted CONT-14f WIP present (albedo_grid.json, hemiAlbedo381.test.ts, presentation/engine/atmoModel edits) from an earlier session; left untouched for the next run to finish (tsc, tests, commit).
+
+## 2026-10-16a (sched)
+CONT-14f WIP verified: tsc clean, 353/353 tests pass; committed as unit-verified. GPU/CPU photometry evidence for the geometry-weighted albedo factor still pending (next run: Mars probe alpha30/120, meas_ref vs pt_ref).

@@ -51,6 +51,8 @@ async function boot() {
     { label: 'Saturn ring profile', run: () => loadPNGTexture('tex/saturn_ring.png'), required: false },
     { label: 'Map highlight statistics', run: () => loadJSON('data/texstats_hi.json'), required: false },
     { label: 'Diffuse sky calibration', run: () => loadJSON('data/milkyway_diffuse.json'), required: false },
+    // v3.8.1 CONT-14f: coarse map-albedo grids (tools/ingest/albedo_grid.py) for the point's visible-hemisphere albedo
+    { label: 'Map albedo grids', run: () => loadJSON('data/albedo_grid.json'), required: false },
   ];
   let done = 0; const results: any[] = new Array(jobs.length); const missing: string[] = [], degraded: string[] = [];
   await Promise.all(jobs.map(async (j, i) => {
@@ -59,7 +61,7 @@ async function boot() {
   }));
   if (!missing.length) ui.loader.stage('data', 'done', `${jobs.length - degraded.length} of ${jobs.length} files${degraded.length ? ` · ${degraded.length} optional unavailable` : ''}`);
   if (missing.length) { ui.loader.fail('Required data could not be loaded', `Missing: ${missing.join(', ')}. Check the network connection and that the app's assets/ folder is deployed, then reload.`); return; }
-  const [stars, small, sats, featured, texStats, osc, ephemMan, constellations, names, milky, ring, texHi, skyCal] = results as [Float32Array, Float32Array, any, any, any, OscStates | undefined, SampledManifest | undefined, any, any, THREE.Texture | undefined, THREE.Texture | undefined, any, any];
+  const [stars, small, sats, featured, texStats, osc, ephemMan, constellations, names, milky, ring, texHi, skyCal, albedoGrid] = results as [Float32Array, Float32Array, any, any, any, OscStates | undefined, SampledManifest | undefined, any, any, THREE.Texture | undefined, THREE.Texture | undefined, any, any, any];
   if (milky) milky.colorSpace = THREE.SRGBColorSpace;
   if (ephemMan) SAMPLED.setManifest(ephemMan);
   // ── world ──────────────────────────────────────────────────────────────
@@ -68,7 +70,7 @@ async function boot() {
   const advance = () => sys.update(ttToTdb(clock.jd), ut1FromTT(clock.jd));
   advance();
   const textures = new TextureStore(QA.get('qa-tex-budget') ? +QA.get('qa-tex-budget')! : settings.get('textureBudgetMiB') as number);
-  const engine = new Engine(sys, { textures, stars, constellations: constellations ?? null, small, texStats, milky: milky ?? null, ring: ring ?? null, texHi: texHi ?? null, skyCal: skyCal ?? null }, settings);
+  const engine = new Engine(sys, { textures, stars, constellations: constellations ?? null, small, texStats, milky: milky ?? null, ring: ring ?? null, texHi: texHi ?? null, skyCal: skyCal ?? null, albedoGrid: albedoGrid ?? null }, settings);
   engine.gpuInfo = gpuInfo;
   // warm the opening subject so the first frame is complete
   const earthDef = sys.get('earth')!.def;

@@ -410,10 +410,20 @@ export function discFlux(A: AtmoPhysical, L: AtmoLUTs, alphaDeg: number, S: Disc
   return out;
 }
 const smoothstepJS = (a: number, b: number, x: number) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+/** Disc table: [0, 3·DISC_N) total flux rgb per phase step; [3·DISC_N, 6·DISC_N) the SHELL-ONLY part (surface reflectance 0),
+ *  so the point can weight the surface share alone (CONT-14f). The surface term is linear in refl, so total − shell = surface. */
 export function discTable(A: AtmoPhysical, L: AtmoLUTs, S: DiscSurface): Float32Array {
-  const t = new Float32Array(DISC_N * 3), sky = S.sky && S.sky !== 'none' ? buildSkyIrradiance(A, L, 48) : undefined;
-  for (let i = 0; i < DISC_N; i++) { const v = discFlux(A, L, Math.min(178, i * DISC_STEP), S, 36, 18, sky); t.set(v, i * 3); }
+  const t = new Float32Array(DISC_N * 6), sky = S.sky && S.sky !== 'none' ? buildSkyIrradiance(A, L, 48) : undefined;
+  const S0: DiscSurface = { ...S, refl: [0, 0, 0] };
+  for (let i = 0; i < DISC_N; i++) {
+    const a = Math.min(178, i * DISC_STEP);
+    t.set(discFlux(A, L, a, S, 36, 18, sky), i * 3); t.set(discFlux(A, L, a, S0, 36, 18, sky), DISC_N * 3 + i * 3);
+  }
   return t;
+}
+export function sampleDiscShell(t: Float32Array, alphaDeg: number): V3 | null {
+  if (t.length < DISC_N * 6) return null;
+  return sampleDisc(t.subarray(DISC_N * 3), alphaDeg);
 }
 export function sampleDisc(t: Float32Array, alphaDeg: number): V3 {
   const x = Math.max(0, Math.min(180, alphaDeg)) / DISC_STEP, i = Math.min(DISC_N - 2, Math.floor(x)), f = x - i;

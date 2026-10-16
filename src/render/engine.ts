@@ -4,7 +4,7 @@ import * as THREE from 'three/webgpu';
 import { pass, uniform, vec4, vec3, float, mrt, output, Fn, screenUV } from 'three/tsl';
 import * as TSL from 'three/tsl';
 import { MODE_PARAMS, approachParams, skyExposure, skyExposureV381, sunGlareVeil, meterLuminance, photometricPeak, HIGHLIGHT_TARGET, type ViewMode, type PresentationParams, type MeterBody, type PhotometricKind } from './presentation';
-import { radianceFromSB, visibilityGain, pointFloor, pointExposure, pointDepthScale, pointBodyFlux, discReflectance, lumNormalised } from './presentation';
+import { radianceFromSB, visibilityGain, pointFloor, pointExposure, pointDepthScale, pointBodyFlux, discReflectance, lumNormalised, hemisphereAlbedoFactor } from './presentation';
 import { airglowPeakPerKm } from './atmosphere';
 import { limbLuminance } from './atmoModel';
 import { bloom } from 'three/addons/tsl/display/BloomNode.js';
@@ -19,7 +19,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 export interface ModelInfo { meshes: number; triangles: number; hasUV: boolean; hasNormals: boolean; textured: boolean; extentKm: number | null }
 import { makeSurfaceMaterial, SurfaceKind } from './planetMaterial';
 import { makeAtmosphere, verticalTau, atmosphereLUTs, type DiscSurfaceDesc } from './atmosphere';
-import { sampleDisc } from './atmoModel';
+import { sampleDisc, sampleDiscShell } from './atmoModel';
 import { makeRingSystem, smoothRingColour, buildProfileLOD, decodeProfile, peakIF, peakIFAt, ringTau, ringShadeIF, type ProfileLOD } from './ringSystem';
 const RS_PROF = (e: any, id: string, def: any) => (def.profile ? e.ringProfiles[id] ?? null : null);
 import { RING_SYSTEMS, ringLabels } from '../data/rings';
@@ -50,7 +50,8 @@ import { selectDetail, TIER_NAMES, sphereSegmentsForTier, type DetailTier } from
 
 export interface Assets { stars3d?: Star3DCatalog | null; textures: TextureStore; stars: Float32Array; constellations: any | null; small: Float32Array; texStats: Record<string, number>; milky: THREE.Texture | null; ring: THREE.Texture | null;
   /** v3.5: per-map highlight statistics (tools/ingest/texstats_hi.py) and the diffuse-sky calibration (sky_diffuse.py) */
-  texHi?: Record<string, { p99max: number; mean: number }> | null; skyCal?: { bandMedianY: number } | null }
+  texHi?: Record<string, { p99max: number; mean: number }> | null; skyCal?: { bandMedianY: number } | null;
+  albedoGrid?: { w: number; h: number; maps: Record<string, number[]> } | null }
 /** Device-pixel-ratio formula shared by boot and the settings panel (fixes the inconsistent initial formula, P1). */
 export const pixelRatioFor = (renderScale: number) => Math.min(2, window.devicePixelRatio || 1) * renderScale;
 const S = new THREE.Matrix4();
@@ -255,6 +256,18 @@ export class Engine {
     const k = this.surfaceKind(b), t = this.discTarget(b, k), c = lumNormalised(b.def.procedural?.tint ?? b.def.color);
     return { refl: [t * c[0], t * c[1], t * c[2]], kind: this.photoKind(k), k: b.def.limb ?? (k === 'venus' ? 0.86 : 0.9), dm: k === 'venus' ? 0.51 : 1,
       sky: k === 'gas' ? 'none' : (k === 'venus' || k === 'haze') ? 'twilight' : 'full' };
+  }
+  /** CONT-14f: visible-hemisphere albedo factor of the body's colour map for the current geometry (surface-BRDF kinds only;
+   *  gas/cloud decks and Earth's cloud-covered disc keep 1). Recomputed when either body-fixed direction moves > 0.1°. */
+  private hemiCache = new Map<string, { c: number[]; s: number[]; H: number }>();
+  hemiAlbedo(b: Body, pk: PhotometricKind, cam: V3, sun: Body): number {
+    const g = this.assets.albedoGrid, tex = b.def.tex;
+    if (!g || !tex || !g.maps[tex] || (pk !== 'rocky' && pk !== 'icy') || qaOff('hemi')) return 1;
+    const c = toLocal(b, sub(cam, b.pos)).normalize().toArray(), s = toLocal(b, sub(sun.pos, b.pos)).normalize().toArray();
+    const e = this.hemiCache.get(b.id), close = (u: number[], v: number[]) => u[0] * v[0] + u[1] * v[1] + u[2] * v[2] > 0.9999985;
+    if (e && close(e.c, c) && close(e.s, s)) return e.H;
+    const H = hemisphereAlbedoFactor({ w: g.w, h: g.h, v: g.maps[tex] }, c, s, pk);
+    this.hemiCache.set(b.id, { c, s, H }); return H;
   }
   photoKind(k: SurfaceKind): PhotometricKind { return k === 'gas' || k === 'venus' || k === 'haze' ? 'gas' : k === 'earth' ? 'earth' : k === 'icy' ? 'icy' : 'rocky'; }
   // ── per-body view (lazy) ────────────────────────────────────────────────
@@ -607,8 +620,14 @@ export class Engine {
           const k0 = fade * visibilityGain(mode, st.get('bodyBoost') as number) * Ept;
           const DS = b.def.atmo && b.id !== 'earth' ? atmosphereLUTs(b.id, b.def.atmo, b.radii[0], this.discSurf(b)) : null;
           let Frgb: number[] | null = null;
-          if (DS?.disc) { const q = sampleDisc(DS.disc, alpha * 180 / Math.PI), g = Math.pow(DS.luts.A.Rg / dist, 2) / (rS * rS) * k0; Frgb = [q[0] * g, q[1] * g, q[2] * g]; }
-          let F = Frgb ? 0.2126 * Frgb[0] + 0.7152 * Frgb[1] + 0.0722 * Frgb[2] : pointBodyFlux(b.albedo, pk0, alpha * 180 / Math.PI, b.radius / dist, rS, mk) * k0;
+          // v3.8.1 CONT-14f: the disc shows the albedo of the lit visible hemisphere, the photometry above the map mean →
+          // the surface share (never the shell) carries the visible-hemisphere factor H of the same map (1 for no map)
+          const H = this.hemiAlbedo(b, pk0, cam, sun);
+          if (DS?.disc) {
+            const q = sampleDisc(DS.disc, alpha * 180 / Math.PI), sh = sampleDiscShell(DS.disc, alpha * 180 / Math.PI), g = Math.pow(DS.luts.A.Rg / dist, 2) / (rS * rS) * k0;
+            Frgb = sh ? [0, 1, 2].map(i => (sh[i] + H * (q[i] - sh[i])) * g) : [q[0] * g, q[1] * g, q[2] * g];
+          }
+          let F = Frgb ? 0.2126 * Frgb[0] + 0.7152 * Frgb[1] + 0.0722 * Frgb[2] : pointBodyFlux(b.albedo, pk0, alpha * 180 / Math.PI, b.radius / dist, rS, mk) * k0 * H;
           // keep planets findable as points (presentation only — GA-SCI-01: Scientific draws the physical flux, floor 0)
           // v3.8.1 SUN-FAR-01: a findability floor only helps while the body can be told apart from its host (the planet for a
           // moon, the Sun for a planet). Beyond the planetary system every planet/dwarf/moon floor stacked onto the Sun's pixel

@@ -321,3 +321,29 @@ export function pointFloor(mode: ViewMode, kind: string, radiusKm: number, pxAng
   const k: FindabilityKind = kind === 'planet' ? 'planet' : kind === 'dwarf' ? 'dwarf' : kind === 'moon' && radiusKm > 500 ? 'moon' : 'other';
   return POINT_FLOOR[k] * pxAng * pxAng * 4.54 * fade;
 }
+
+/**
+ * v3.8.1 CONT-14f — visible-hemisphere albedo factor for the unresolved point.
+ * The point flux (pointBodyFlux / the disc twin) uses the map-MEAN reflectance; the resolved disc shows the albedo of the
+ * illuminated visible hemisphere. H = Σ A·f(μ0,μ,α)·μ·dS / Σ f·μ·dS over the cells of a coarse equirect grid of the
+ * map's luminance relative to its mean (tools/ingest/albedo_grid.py, same convention as the shader's equirect()), so the
+ * point carries the same surface albedo weighting as the disc it hands over to. Derived, no fit; equals 1 for a uniform
+ * map. Directions are body-fixed (the shader's camLocal / sunLocal), any length.
+ */
+export interface AlbedoGrid { w: number; h: number; v: ArrayLike<number> }
+export function hemisphereAlbedoFactor(G: AlbedoGrid, cam: readonly number[], sun: readonly number[], kind: PhotometricKind) {
+  const cl = Math.hypot(cam[0], cam[1], cam[2]) || 1, sl = Math.hypot(sun[0], sun[1], sun[2]) || 1;
+  const vx = cam[0] / cl, vy = cam[1] / cl, vz = cam[2] / cl, sx = sun[0] / sl, sy = sun[1] / sl, sz = sun[2] / sl;
+  const aDeg = Math.acos(clamp(vx * sx + vy * sy + vz * sz, -1, 1)) * 180 / Math.PI;
+  let num = 0, den = 0;
+  for (let j = 0; j < G.h; j++) {
+    const lat = Math.PI / 2 - (j + 0.5) / G.h * Math.PI, cl2 = Math.cos(lat), z = Math.sin(lat);
+    for (let i = 0; i < G.w; i++) {
+      const lon = ((i + 0.5) / G.w - 0.5) * 2 * Math.PI, x = cl2 * Math.cos(lon), y = cl2 * Math.sin(lon);
+      const mu = x * vx + y * vy + z * vz, mu0 = x * sx + y * sy + z * sz; if (mu <= 0 || mu0 <= 0) continue;
+      const f = kind === 'earth' ? mu0 : lunarLambert(mu0, mu, aDeg, kind === 'icy' ? 0.45 : 0), wgt = f * mu * cl2;
+      num += G.v[j * G.w + i] * wgt; den += wgt;
+    }
+  }
+  return den > 0 ? num / den : 1;
+}

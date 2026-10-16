@@ -1,6 +1,6 @@
 {
- "generated": "2026-10-14",
- "count": 1549,
+ "generated": "2026-10-15",
+ "count": 1550,
  "unmatched": [],
  "exactDuplicates": [],
  "nonCommercial": [],
@@ -1260,6 +1260,16 @@
    "projection": "ICRS → parsec",
    "coverage": "< 100 pc (GCNS) + bright Hipparcos",
    "truth": "observed positions; derived distances"
+  },
+  {
+   "path": "assets/data/albedo_grid.json",
+   "bytes": 392862,
+   "sha256": "8c9e92d3c66843d363b79c4f3fe959a400e456ebd3c68b5701040d8f8b71ef35",
+   "source": "SOL v3.8.1 tools/ingest/albedo_grid.py",
+   "licence": "SOL project data (derived statistics)",
+   "commercial": "yes",
+   "content": "64x32 equirect grids of cell-mean linear Y709 / map-mean luminance per colour map (shader equirect convention, noData cells = 1) — point visible-hemisphere albedo factor (CONT-14f)",
+   "truth": "derived (measured on the shipped maps)"
   },
   {
    "path": "assets/data/comets.json",

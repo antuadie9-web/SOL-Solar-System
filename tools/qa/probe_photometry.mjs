@@ -15,6 +15,9 @@ const page = await browser.newPage({ viewport: { width: W, height: H }, deviceSc
 const SHADER_ERR = [];
 page.on('console', (m) => { if (m.type() === 'error' && /TSL|WGSL|shader|pipeline|GPUValidation/i.test(m.text())) SHADER_ERR.push(m.text().slice(0, 200)); });
 page.on('pageerror', (e) => SHADER_ERR.push('pageerror: ' + String(e).slice(0, 200)));
+// TEX-381-01: asset/texture warnings are recorded with their session time (diagnosis of placeholder maps)
+const ASSET_WARN = [];
+page.on('console', (m) => { if ((m.type() === 'warning' || m.type() === 'error') && /texture|asset|unavailable|HTTP|decode/i.test(m.text())) ASSET_WARN.push(((Date.now() - T0) / 1000).toFixed(1) + 's ' + m.text().slice(0, 200)); });
 await page.goto(arg('url', 'http://localhost:4175/') + '?qa-off=small,smallcompute' + (arg('extra-off', '') ? ',' + arg('extra-off', '') : '') + '&qa-software-gpu=1');
 await page.waitForFunction(() => window.__sol && window.__frames > 3, null, { timeout: 240000 });
 const boot = Date.now() - T0;
@@ -80,10 +83,10 @@ while (queue.length) { const [id, alpha, rpx, tries, warm] = queue.shift();
         const al = Math.acos(-(toSun[0] * rel[0] + toSun[1] * rel[1] + toSun[2] * rel[2]) / (Math.hypot(...toSun) * dist));
         const phiL = (Math.sin(al) + (Math.PI - al) * Math.cos(al)) / Math.PI, X = e.displayExposure, pa = e.pxAng;
         const Fref = b.albedo * phiL * Math.PI * Math.pow(b.radius / dist, 2) / (rS * rS);   // Lambert phase law, geometric albedo p
-        const P = e.points; let Fpt = 0, best = 0;   // the body's committed point flux (mean RGB, exposure removed): the entry nearest the view axis
+        const P = e.points; let Fpt = 0, best = 0;   // the body's committed point flux (Y709 luminance like qaReadHDR — QA-381-04b, was mean RGB; exposure removed): the entry nearest the view axis
         const fw = e.camera.getWorldDirection(e.camera.position.clone());
         for (let k = 0; k < P.count; k++) { const q = [P.pos[k * 3], P.pos[k * 3 + 1], P.pos[k * 3 + 2]], l = Math.hypot(...q); if (!l) continue;
-          const c = (q[0] * fw.x + q[1] * fw.y + q[2] * fw.z) / l; if (c > best) { best = c; Fpt = (P.flux[k * 3] + P.flux[k * 3 + 1] + P.flux[k * 3 + 2]) / 3 / X; } }
+          const c = (q[0] * fw.x + q[1] * fw.y + q[2] * fw.z) / l; if (c > best) { best = c; Fpt = (0.2126 * P.flux[k * 3] + 0.7152 * P.flux[k * 3 + 1] + 0.0722 * P.flux[k * 3 + 2]) / X; } }
         if (best < Math.cos(3 * pxAng)) Fpt = 0;
         const Fmeas = hdr ? hdr.signal * pa * pa / X : null;
         const vU = e.views.get(id)?.U, geo = vU ? { camLocal: vU.cam.value.toArray(), sunLocal: vU.sunPos.value.toArray() } : null;
@@ -99,6 +102,6 @@ while (queue.length) { const [id, alpha, rpx, tries, warm] = queue.shift();
       info.tries = tries + 1;
       if (!info.valid && tries < 2 && why.some(w => /ready|converg/.test(w))) { console.log('retry', why.join('; ')); queue.unshift([id, alpha, rpx, tries + 1, false]); await new Promise(r => setTimeout(r, 2000)); continue; }
       rows.push(info); console.log(JSON.stringify(info));
-      fs.writeFileSync(`${out}/photometry.json`, JSON.stringify({ bootMs: boot, rows, valid: rows.filter(r => r.valid).length, invalid: rows.filter(r => !r.valid).map(r => ({ id: r.id, alpha: r.reqAlpha, rpx: r.rpx, why: r.invalid })) }, null, 1));
+      fs.writeFileSync(`${out}/photometry.json`, JSON.stringify({ bootMs: boot, assetWarnings: ASSET_WARN, rows, valid: rows.filter(r => r.valid).length, invalid: rows.filter(r => !r.valid).map(r => ({ id: r.id, alpha: r.reqAlpha, rpx: r.rpx, why: r.invalid })) }, null, 1));
     }
 await browser.close();

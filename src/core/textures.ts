@@ -13,7 +13,7 @@ import * as THREE from 'three/webgpu';
 import { decodeImage, configureMapTexture } from './assets';
 
 type Level = 'placeholder' | 'base' | 'hi';
-interface Entry { name: string; tex: THREE.Texture; srgb: boolean; level: Level; loading: Level | null; bmp: ImageBitmap | null; baseBmp: ImageBitmap | null; bytes: number; lastUse: number; hiAvailable: boolean; phColor: [number, number, number]; failed: Set<Level>; ready: Promise<void>; resolveReady: () => void }
+interface Entry { name: string; tex: THREE.Texture; srgb: boolean; level: Level; loading: Level | null; bmp: ImageBitmap | null; baseBmp: ImageBitmap | null; bytes: number; lastUse: number; hiAvailable: boolean; phColor: [number, number, number]; failed: Set<Level>; failCount: number; failAt: number; ready: Promise<void>; resolveReady: () => void }
 const MiB = 1024 * 1024;
 const estBytes = (w: number, h: number) => Math.round(w * h * 4 * 4 / 3);
 
@@ -40,15 +40,28 @@ export class TextureStore {
       (tex as any).image = this.placeholder(opts.color ?? (opts.srgb ? [0.5, 0.5, 0.5] : [0.5, 0.5, 1.0]), opts.srgb);
       tex.generateMipmaps = false; tex.minFilter = THREE.LinearFilter;
       let resolveReady!: () => void; const ready = new Promise<void>(r => (resolveReady = r));
-      e = { name, tex, srgb: opts.srgb, level: 'placeholder', loading: null, bmp: null, baseBmp: null, bytes: 4, lastUse: this.frame, hiAvailable: !!opts.hiAvailable, phColor: opts.color ?? (opts.srgb ? [0.5, 0.5, 0.5] : [0.5, 0.5, 1.0]), failed: new Set(), ready, resolveReady };
+      e = { name, tex, srgb: opts.srgb, level: 'placeholder', loading: null, bmp: null, baseBmp: null, bytes: 4, lastUse: this.frame, hiAvailable: !!opts.hiAvailable, phColor: opts.color ?? (opts.srgb ? [0.5, 0.5, 0.5] : [0.5, 0.5, 1.0]), failed: new Set(), failCount: 0, failAt: 0, ready, resolveReady };
       this.map.set(name, e);
     }
     e.lastUse = this.frame;
-    if (e.level === 'placeholder' && !e.loading && !e.failed.has('base')) void this.load(e, 'base', opts.priority);
+    if (e.level === 'placeholder' && !e.loading) { if (e.failed.has('base')) this.heal(e); else void this.load(e, 'base', opts.priority); }
     return e.tex;
   }
   ready(name: string) { return this.map.get(name)?.ready ?? Promise.resolve(); }
-  touch(name: string) { const e = this.map.get(name); if (e) e.lastUse = this.frame; }
+  /** TEX-381-01: a map in use must never stay a placeholder. Every path that leaves an entry at the placeholder level with no
+   *  load in flight (eviction of an idle base map, a superseded or failed decode) is healed here: the view touches its maps
+   *  every frame it is drawn, so a drawn map re-requests its base level. Failed base loads retry with back-off (≥ 20 s,
+   *  doubling, at most 4 attempts) instead of being given up for the whole session. */
+  touch(name: string) { const e = this.map.get(name); if (!e) return; e.lastUse = this.frame; this.heal(e); }
+  reloads = 0;
+  private heal(e: Entry) {
+    if (e.level !== 'placeholder' || e.loading) return;
+    if (e.failed.has('base')) {
+      if (e.failCount >= 4 || performance.now() - e.failAt < 20000 * 2 ** (e.failCount - 1)) return;
+      e.failed.delete('base');
+    }
+    this.reloads++; void this.load(e, 'base', true);
+  }
   level(name: string): Level | 'absent' { return this.map.get(name)?.level ?? 'absent'; }
   /** Ask for the high-resolution map (no-op if unavailable, already resident, or over budget). */
   requestHi(name: string) {
@@ -66,7 +79,7 @@ export class TextureStore {
       this.swap(e, bmp, level);
       if (level === 'base') e.resolveReady();
     } catch (err) {
-      e.failed.add(level); console.warn(`texture ${e.name} (${level}) unavailable`, err);
+      e.failed.add(level); if (level === 'base') { e.failCount++; e.failAt = performance.now(); } console.warn(`texture ${e.name} (${level}) unavailable`, err);
       if (level === 'base') e.resolveReady();
     } finally { if (e.loading === level) e.loading = null; }
   }
@@ -102,6 +115,6 @@ export class TextureStore {
   stats() {
     const lv = { placeholder: 0, base: 0, hi: 0 } as Record<Level, number>;
     for (const e of this.map.values()) lv[e.level]++;
-    return { entries: this.map.size, ...lv, residentMiB: +(this.residentBytes() / MiB).toFixed(1), budgetMiB: +(this.budgetBytes / MiB).toFixed(0), loading: [...this.map.values()].filter(e => e.loading).map(e => `${e.name}:${e.loading}`) };
+    return { entries: this.map.size, ...lv, residentMiB: +(this.residentBytes() / MiB).toFixed(1), budgetMiB: +(this.budgetBytes / MiB).toFixed(0), loading: [...this.map.values()].filter(e => e.loading).map(e => `${e.name}:${e.loading}`), reloads: this.reloads, failed: [...this.map.values()].filter(e => e.failed.size).map(e => `${e.name}:${[...e.failed].join('+')}`) };
   }
 }
