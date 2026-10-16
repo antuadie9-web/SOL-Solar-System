@@ -291,7 +291,7 @@ export interface MeterBody {
   /** v3.8.1 RING-381-02: explicit highlight-protection weight (default smooth(0.25, 1, weight)) */
   hiWeight?: number;
   /** v3.8.1 CONT-14h: PSF→disc cross-fade weight smooth(1.2,3.5,rpx); < 1 → this body's exposure target is blended in log space */
-  blend?: number;
+  blend?: number; // (1.2→3.5 px fade-in, 3.5→28 px fade-out into the linear path)
 }
 /**
  * Scene metering (EXP-002 fix). Returns the luminance the key is divided by.
@@ -307,7 +307,7 @@ export function meterLuminance(bodies: MeterBody[], key: number, highlightTarget
   const cap = Math.pow(2, -Math.max(0, nightCapEV));
   const blending: MeterBody[] = [];
   for (const b of bodies) {
-    if (b.blend !== undefined && b.blend < 1) { blending.push(b); continue; }
+    if (b.blend !== undefined && b.blend > 0) blending.push(b);
     if (!(b.weight > 0) && !(b.hiWeight! > 0)) continue;
     const s = b.subjectFull * Math.max(b.litWeight, cap) * b.weight;
     if (s > subject) subject = s;
