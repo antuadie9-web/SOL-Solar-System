@@ -302,7 +302,7 @@ export interface MeterBody {
  *    this is what removes the clipping of Io, Triton, Europa, Vesta… without darkening dark bodies (their highlights
  *    are far below the target, so the cap is inactive for them).
  */
-export function meterLuminance(bodies: MeterBody[], key: number, highlightTarget: number, nightCapEV: number, ambient = 0) {
+export function meterLuminance(bodies: MeterBody[], key: number, highlightTarget: number, nightCapEV: number, ambient = 0, floorLum = 0) {
   let subject = 0, hi = 0;
   const cap = Math.pow(2, -Math.max(0, nightCapEV));
   const blending: MeterBody[] = [];
@@ -322,7 +322,7 @@ export function meterLuminance(bodies: MeterBody[], key: number, highlightTarget
     if (wb <= 0) continue;
     const full = Math.max(b.subjectFull * Math.max(b.litWeight, cap), key * b.highlightRadiance / highlightTarget);
     if (!(full > 0)) continue;
-    const base = Math.max(L, 1e-12);
+    const base = Math.max(L, floorLum, 1e-12);   // floorLum = luminance at the darkExposure clamp: the point-domain target the blend starts from
     const Lb = Math.exp((1 - wb) * Math.log(base) + wb * Math.log(full));
     if (Lb > L) L = Lb;
   }
