@@ -706,7 +706,7 @@ export class Engine {
         // v3.7.1: a forward-scattering plume is part of the subject's highlights (Enceladus backlit: v3.7 metered only the
         // dark disc and the jets clipped to a white blob)
         if (vv?.plumePeakIF && this.settings.get('plumes') !== false) hr = Math.max(hr, vv.plumePeakIF * 0.5 / (rS * rS));
-        meterBodies.push({ subjectFull: Ls * 0.26 * tmK, litWeight: Math.pow(lit, 0.6), highlightRadiance: hr, weight: w, blend: smooth(1.2, 3.5, rpx) * (1 - smooth(3.5, 28, rpx)) * Math.min(1, frameFrac * 2) });
+        meterBodies.push({ subjectFull: Ls * 0.26 * tmK, litWeight: Math.pow(lit, 0.6), highlightRadiance: hr, weight: w, blend: smooth(0.6, 2.5, rpx) * (1 - smooth(2.5, 28, rpx)) * Math.min(1, frameFrac * 2) });
         if (b === this.rig.target) nightView = 1 - lit;
       }
       // v3.8.1 RING-381-01 (CONT-09): the ring system is a meter subject of its own. Until cp2 only the planet's disc was
