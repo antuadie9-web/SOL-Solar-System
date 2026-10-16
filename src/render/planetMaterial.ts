@@ -17,6 +17,8 @@ const QA_OFF_T = typeof location !== 'undefined' && (new URLSearchParams(locatio
 const QA_OFF_NRM = typeof location !== 'undefined' && (new URLSearchParams(location.search).get('qa-off') ?? '').split(',').includes('normal');
 const QA_OFF_ALBTEX = typeof location !== 'undefined' && (new URLSearchParams(location.search).get('qa-off') ?? '').split(',').includes('albtex');
 const QA_OFF_MIP = typeof location !== 'undefined' && (new URLSearchParams(location.search).get('qa-off') ?? '').split(',').includes('mip');
+const QA_OFF_TSIM = typeof location !== 'undefined' && (new URLSearchParams(location.search).get('qa-off') ?? '').split(',').includes('tsim');
+const QA_OFF_SUNT = typeof location !== 'undefined' && (new URLSearchParams(location.search).get('qa-off') ?? '').split(',').includes('sunT');
 const QA_OFF_SKY = typeof location !== 'undefined' && (new URLSearchParams(location.search).get('qa-off') ?? '').split(',').includes('skylight');
 import { transmittanceUVw, viewTransmittance } from './atmosphere';
 
@@ -324,7 +326,7 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
     // v3.6: sunlight reaching the ground from the transmittance LUT (exact spherical path through every layer, ozone in its
     // own layer); v3.5 used exp(−τ_vertical / μ0), which over-darkened and over-reddened grazing sunlight
     const AT = opts.atmo;
-    const T0 = AT && QA_OFF_T ? vec3(1, 1, 1) : AT ? texture(AT.T, transmittanceUVw({ r: float(AT.Rg + 0.01), mu: mu0g, Rg: float(AT.Rg), Rt: float(AT.Rt) })).rgb : sunTransmit({ mu0: mu0g, tau: U.tau });
+    const T0 = AT && (QA_OFF_T || QA_OFF_SUNT) ? vec3(1, 1, 1) : AT ? texture(AT.T, transmittanceUVw({ r: float(AT.Rg + 0.01), mu: mu0g, Rg: float(AT.Rg), Rt: float(AT.Rt) })).rgb : sunTransmit({ mu0: mu0g, tau: U.tau });
     // v3.8.1 ATM-381-02 (REV2-04, CONT-08): Venus' deck reflectance (albedo 0.689, Minnaert k 0.86) is a DISC-INTEGRATED
     // observation that already contains the upper haze. Attenuating sun and view paths by the haze's full extinction
     // double-counted it: the strongly forward-scattering haze (g ≈ 0.7) sends most of the light it "removes" on to the
@@ -414,7 +416,7 @@ export function makeSurfaceMaterial(def: BodyDef, kind: SurfaceKind, maps: { col
     if (AT && !QA_OFF_T) {
       const rr = def.radii ?? [def.radius, def.radius, def.radius], nv = vec3(1, rr[0] / rr[1], rr[0] / rr[2]);
       const vT = viewTransmittance({ p: p.mul(nv), c: U.cam.mul(nv), Rg: float(AT.Rg), Rt: float(AT.Rt), tT: texture(AT.T), tS: sampler(AT.T) });
-      if (DM !== 1 || !AT.Tsim) col = col.mul(DM !== 1 ? pow(vT, vec3(DM, DM, DM)) : vT);
+      if (DM !== 1 || !AT.Tsim || QA_OFF_TSIM) col = col.mul(DM !== 1 ? pow(vT, vec3(DM, DM, DM)) : vT);
       else {
         // v3.8.1 WPE-MA-01: an extended surface seen through a forward-scattering aerosol keeps the light its neighbours
         // scatter INTO the line of sight. Direct (unscattered) part: true transmittance, full detail. Scattered part

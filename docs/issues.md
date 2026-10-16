@@ -247,7 +247,7 @@ Classification: **D** = confirmed defect, **P** = visual preference / presentati
 | WPE-MA-02 | D | FIXED c257166 | CPU twin skylight |
 | WPE-MA-03 | D | OPEN | Mars disc calibration ignores the shell's share of p |
 | WPE-MA-04 | U | OPEN | Jezero sky too saturated (dust optics, WPE-SPEC-01) |
-| TEX-381-01 | D | FIXED (SW) | root cause in QA = server death (QA-381-05); loader hardened: heal on touch, stall watchdog 45 s, back-off 20/40/80 s then 300 s while drawn, stats; selftest tools/qa/tex_diag.mjs --selftest 1 (browser run pending) |
+| TEX-381-01 | D | FIXED (SW) | root cause in QA = server death (QA-381-05); loader hardened: heal on touch, stall watchdog 45 s, back-off 20/40/80 s then 300 s while drawn, stats; selftest tools/qa/tex_diag.mjs --selftest 1 — live selftest passed (WORKLOG 2026-10-16b) |
 | QA-381-03 | — | EXTENDED | preflight: placeholder textures, legacy builds, shader/page errors |
 
 - CONT-14e update 2026-10-15f: hemisphere factor 1.05–1.08 (partial); T consistent (3 %); residual ≈1.18× in Mars surface radiance with T=1 — suspect normal-map/albedo-scale inputs. OPEN.
@@ -258,6 +258,7 @@ Classification: **D** = confirmed defect, **P** = visual preference / presentati
 | CONT-14g | D/U | CLOSED (SW) | 2026-10-16: valid-texture Titan Y709 α30 disc 1.036 / rendered point 1.013 / CPU point 1.024, α120 2.420 / 2.425 / 2.453 (≤ 2.3 %); the +8/+5 % came from placeholder sessions (work/qa/c14f-acc/titan) |
 
 | CONT-14f-H | D | FIXED (SW) | own sphere depth-occluded the point sprite from ~1.2 px (−15 % mid-handover); sprite now ≥ 5e-4·d in front of the bounding sphere (pointDepthScale). Callisto α60 0.685–0.710, Iapetus 0.513–0.554 across 0.6–5 px |
-| CONT-14f-S | D | OPEN | Mars disc flux rises at small sizes with MSAA (flat albedo, atmospheres off: +35 % at 3 px, +20 % at 5 px vs 40 px; MSAA off ±9 %); Moon, Callisto, Iapetus, Titan flat → Mars-material edge-sample term |
+| CONT-14f-S | D | OPEN | Mars 2–8 px disc too bright under MSAA (full render +15 % at 5 px, +2 % at 8 px vs 40 px); isolated to the surface transmittance path (view T ≈2× too transparent at 3 px, flat with MSAA off); next: analytic ray–sphere p for the T lookup / centroid. Point regime and ≥12 px unaffected |
 | TEX-381-01b | D | FIXED | Earth ocean mask requested at hi-res but no earth_ocean_hi exists (decode error each session); manifest test |
 | QA-381-05 | D | FIXED | snapshot vite server killed mid-session (exit 137) → "Failed to fetch" → placeholder maps; persistent built snapshots served in-process (--snap) |
+| CONT-14h | D | OPEN | Exploration: displayed peak 28 (knee-compressed PSF) → 760 (2-px disc) → 5.7 (8 px): bloom flare at handover; needs log-space blend of exposure targets over the 1.2–3.5 px cross-fade (direct highlight-weight change overshoots: −8 EV step) |

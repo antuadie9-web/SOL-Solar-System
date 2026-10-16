@@ -108,4 +108,33 @@ while (queue.length) { const [id, alpha, rpx, tries, warm] = queue.shift();
       rows.push(info); console.log(JSON.stringify(info));
       fs.writeFileSync(`${out}/photometry.json`, JSON.stringify({ bootMs: boot, assetWarnings: ASSET_WARN, rows, valid: rows.filter(r => r.valid).length, invalid: rows.filter(r => !r.valid).map(r => ({ id: r.id, alpha: r.reqAlpha, rpx: r.rpx, why: r.invalid })) }, null, 1));
     }
+// TEX-381-01 selftest on the live store, after the samples (the body's view exists): see tools/qa/tex_diag.mjs
+if (arg('texselftest', '0') === '1') {
+  const r = await page.evaluate(async (id) => {
+    const s = window.__sol, e = s.engine, T = e.assets.textures, v = e.views.get(id); if (!v) return { error: 'no view for ' + id };
+    const names = v.texNames, out = {}, wait = (ms) => new Promise(r => setTimeout(r, ms));
+    const until = async (f, ms) => { const t0 = performance.now(); while (performance.now() - t0 < ms) { if (f()) return Math.round(performance.now() - t0); await wait(200); } return -1; };
+    for (const n of names) await until(() => T.level(n) !== 'placeholder', 60000);
+    const E = (n) => T.map.get(n), r0 = T.reloads;
+    // 1 eviction: idle base → placeholder; the view keeps touching it
+    for (const n of names) { const x = E(n); x.loading = null; T.swap(x, null, 'placeholder'); }
+    out.evict = Object.fromEntries(await Promise.all(names.map(async n => [n, await until(() => T.level(n) !== 'placeholder', 60000)])));
+    // 2 superseded: a load in flight is cancelled (loading cleared) before it lands
+    { const n = names[0], x = E(n); x.loading = null; T.swap(x, null, 'placeholder'); x.loading = 'base'; await wait(50); x.loading = null;
+      out.superseded = await until(() => T.level(n) !== 'placeholder', 60000); }
+    // 3 failed decode: within back-off it must wait; after back-off it retries
+    { const n = names[0], x = E(n); x.loading = null; T.swap(x, null, 'placeholder'); x.failed.add('base'); x.failCount = 1; x.failAt = performance.now();
+      await wait(3000); out.failedHeldInBackoff = T.level(n) === 'placeholder' && !x.loading;
+      x.failAt = performance.now() - 25000; out.failedRetried = await until(() => T.level(n) !== 'placeholder', 60000); out.failCountAfter = x.failCount; }
+    // 4 long outage: after many failures it waits ≤ 5 min, REPORTS the placeholder (stats.failed) and then retries
+    { const n = names[0], x = E(n); x.loading = null; T.swap(x, null, 'placeholder'); x.failed.add('base'); x.failCount = 9; x.failAt = performance.now();
+      await wait(2000); out.capHolds = T.level(n) === 'placeholder'; out.capReported = T.stats().failed.includes(n + ':base');
+      x.failAt = performance.now() - 301000; out.capRestored = await until(() => T.level(n) !== 'placeholder', 60000); }
+    // 5 stall: a load that never settles is aborted by the watchdog and retried
+    { const n = names[0], x = E(n); x.loading = null; T.swap(x, null, 'placeholder'); x.loading = 'base'; x.ctl = new AbortController(); x.loadT0 = performance.now() - 46000;
+      out.stallRecovered = await until(() => T.level(n) !== 'placeholder', 90000); out.stalls = T.stalls; }
+    out.reloads = T.reloads - r0; out.final = names.map(n => n + ':' + T.level(n)); return out;
+  }, arg('bodies', 'callisto').split(',').pop());
+  console.log('SELFTEST', JSON.stringify(r));
+}
 await browser.close(); if (SRV) { console.log('snapserver', JSON.stringify({ requests: SRV.stats.requests, missing: SRV.stats.missing.slice(0, 20) })); SRV.close(); }

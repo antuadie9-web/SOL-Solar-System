@@ -149,7 +149,10 @@ fn viewTransmittance(p: vec3<f32>, c: vec3<f32>, Rg: f32, Rt: f32, tT: texture_2
   let rp = max(length(p), Rg + 0.01); let rc = length(c);
   let d = normalize(c - p);
   let mup = dot(p / length(p), d);
-  if (rc >= Rt) { return textureSampleLevel(tT, tS, transmittanceUVw(rp, mup, Rg, Rt), 0.0).rgb; }
+  // CONT-14f-S guard: a camera outside the atmosphere never sees a surface point below that point's own horizon; samples
+  // shaded at attributes extrapolated beyond the limb (multisampled edge pixels) take the grazing value instead of the
+  // below-horizon LUT entry. (Measured: no change to the Mars small-disc excess, which is still open — WORKLOG 2026-10-16b.)
+  if (rc >= Rt) { return textureSampleLevel(tT, tS, transmittanceUVw(rp, max(mup, 0.0), Rg, Rt), 0.0).rgb; }
   let muc = dot(c / rc, d);
   // segment pointing upward from p (camera higher): T(p→top)/T(c→top); otherwise use the reversed direction from c
   if (mup >= 0.0) {

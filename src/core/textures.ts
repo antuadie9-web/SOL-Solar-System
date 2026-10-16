@@ -87,7 +87,7 @@ export class TextureStore {
       const bmp = await decodeImage(`tex/${e.name}${level === 'hi' ? '_hi' : ''}.jpg`, { priority, signal: ctl.signal });
       if (ctl.signal.aborted) { bmp.close(); return; }      // TEX-381-01c: abandoned by the stall watchdog
       if (e.loading !== level) { bmp.close(); return; }       // superseded (evicted meanwhile)
-      if (level === 'base') e.baseBmp = bmp;
+      if (level === 'base') { e.baseBmp = bmp; e.failCount = 0; }      // a success restarts the back-off ladder
       this.swap(e, bmp, level);
       if (level === 'base') e.resolveReady();
     } catch (err) {

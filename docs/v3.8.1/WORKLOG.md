@@ -326,3 +326,25 @@ Evidence (all SW WebGPU/SwiftShader, Y709 scene-linear, preflight-valid, texture
   stall watchdog (45 s → abort → back-off retry), back-off 20/40/80 s then every 300 s while drawn (was: give up after 4),
   stats report stalls/failed; qaAtmoState returns texStats+net when a map is a placeholder. TEX-381-01b: Earth ocean mask
   was requested at hi-res though no earth_ocean_hi exists (decode error each session) → fixed + manifest test.
+- CONT-14f-S decomposition (Mars α30, flat albedo, atmospheres=false, meas_ref 3 px / 40 px; 3 px includes 0.072 point):
+  baseline 0.452/0.336; MSAA off 0.364/0.333 (excess gone → multisample-specific); surfT+skylight off 0.619/0.641 (flat);
+  skylight off 0.329/0.227; surfT off 0.744/0.784; sunT only off 0.732/0.587; Tsim adjacency off 0.443/0.218. → the surface
+  transmittance path (view T dominant, sun T partly) is ≈2× too transparent on 3-px discs under MSAA; Moon/Callisto/Iapetus
+  (no AT) and Titan (haze kind) flat. Horizon clamp for below-limb samples added (correct, but no measurable change).
+  Atmosphere march steps at D≤2 tested (no change, reverted). Status: OPEN, bounded to 2–8 px Mars discs (+15 % at 5 px,
+  +2 % at 8 px in the full render); point regime and ≥ 12 px unaffected. Next hypothesis: per-sample attribute
+  extrapolation of p/n at MSAA edges inside the AT branch (centroid interpolation or analytic ray-sphere p for the T lookup).
+- New QA switches: ?qa-off=tsim (adjacency part of WPE-MA-01), ?qa-off=sunT (sun-path T only).
+- TEX-381-01 live selftest (probe --texselftest 1, Mars store): eviction heals in 0.2 s, superseded 1.6 s, failed decode held
+  in back-off then retried 0.4 s, long outage reported (stats.failed) and restored 1.6 s, stalled fetch aborted by the
+  watchdog and recovered 23 s. Bug found by the selftest and fixed: failCount was never reset after a success, so a later
+  failure jumped straight to the 300 s back-off. TEX-381-01 FIXED (SW).
+- Exploration continuity (new CONT-14h, OPEN): Mars α30 displayed peak (HDR peak × exposure) 28.5 for the compressed PSF at
+  0.4–1.2 px, then the uncompressed disc 356 at 1.5 px, 760 at 2, 305 at 2.5, 113 at 3, 21 at 5, 5.7 at 8 (EV 14.6 → 6.2):
+  a bloom flare at the handover, because highlight protection ramps with the subject weight smooth(1.5, 28 px) while the
+  PSF is knee-compressed. Scientific: point 176–1128 → disc 853 (physical, continuous within ×1.5). Tried: highlight
+  weight = cross-fade weight → overshoots the other way (EV 14.6 → 6.6 between 1.2 and 1.5 px: the meter takes the MAX of
+  linear weighted highlights, so a 5 % weight on a 10⁴× highlight already sets the exposure). Reverted. Needed: blend the
+  exposure TARGETS in log space across the cross-fade (point-domain target ↔ protected-disc target), the same pattern as
+  pointExposure / Esun. Callisto Exploration also showed a 9 EV exposure change between 0.6 and 0.7 px caused by Jupiter
+  leaving the frame (scene content, not a defect).
