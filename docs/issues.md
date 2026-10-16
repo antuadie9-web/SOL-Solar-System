@@ -247,13 +247,17 @@ Classification: **D** = confirmed defect, **P** = visual preference / presentati
 | WPE-MA-02 | D | FIXED c257166 | CPU twin skylight |
 | WPE-MA-03 | D | OPEN | Mars disc calibration ignores the shell's share of p |
 | WPE-MA-04 | U | OPEN | Jezero sky too saturated (dust optics, WPE-SPEC-01) |
-| TEX-381-01 | D | OPEN | long multi-body sessions: placeholder textures/contaminated state (tracked; probes now one body per session) |
+| TEX-381-01 | D | FIXED (SW) | root cause in QA = server death (QA-381-05); loader hardened: heal on touch, stall watchdog 45 s, back-off 20/40/80 s then 300 s while drawn, stats; selftest tools/qa/tex_diag.mjs --selftest 1 (browser run pending) |
 | QA-381-03 | — | EXTENDED | preflight: placeholder textures, legacy builds, shader/page errors |
 
 - CONT-14e update 2026-10-15f: hemisphere factor 1.05–1.08 (partial); T consistent (3 %); residual ≈1.18× in Mars surface radiance with T=1 — suspect normal-map/albedo-scale inputs. OPEN.
 - CONT-14e update 2026-10-15g: flat-albedo control matches CPU integral (+1.4 % α30, −5 % α120); normal map not a cause; residual 1.25× is the albedo map as sampled — suspect longitude frame/UV convention (30–60° offset reproduces it). OPEN; may be a map-orientation science defect.
 | CONT-14e | U | RESOLVED (QA-381-04) | residual was the probe's mean-RGB signal (Mars ×1.163) + true visible-hemisphere albedo (×1.07 α30); frame verified vs Horizons (≈2°) |
 | QA-381-04 | D | FIXED | qaReadHDR now Y709 luminance; probe rejects mean-RGB readbacks unless --legacy-ok |
-| CONT-14f | D | OPEN | point/twin uses map-mean albedo; resolved disc shows visible hemisphere (Mars 0.78–1.27 by longitude) → handover step; carry a geometry-weighted factor from a coarse cos-weighted albedo grid |
-| CONT-14g | D/U | OPEN | Titan rendered point vs CPU point +8 % α30 / +5 % α120 under Y709 (GPU disc↔point ≤2 %); samples invalid (texture placeholder, TEX-381-01) |
+| CONT-14f | D | PARTIAL (SW) | geometry-weighted factor validated in browser: Iapetus α30/120 point↔disc +4.0/−2.9 % (factor off −11/+19 %), Mars +6.8/+2.1 % (was +10/+7); handover sweeps continuous after CONT-14f-H. Remaining: Mars small-disc MSAA overshoot CONT-14f-S |
+| CONT-14g | D/U | CLOSED (SW) | 2026-10-16: valid-texture Titan Y709 α30 disc 1.036 / rendered point 1.013 / CPU point 1.024, α120 2.420 / 2.425 / 2.453 (≤ 2.3 %); the +8/+5 % came from placeholder sessions (work/qa/c14f-acc/titan) |
 
+| CONT-14f-H | D | FIXED (SW) | own sphere depth-occluded the point sprite from ~1.2 px (−15 % mid-handover); sprite now ≥ 5e-4·d in front of the bounding sphere (pointDepthScale). Callisto α60 0.685–0.710, Iapetus 0.513–0.554 across 0.6–5 px |
+| CONT-14f-S | D | OPEN | Mars disc flux rises at small sizes with MSAA (flat albedo, atmospheres off: +35 % at 3 px, +20 % at 5 px vs 40 px; MSAA off ±9 %); Moon, Callisto, Iapetus, Titan flat → Mars-material edge-sample term |
+| TEX-381-01b | D | FIXED | Earth ocean mask requested at hi-res but no earth_ocean_hi exists (decode error each session); manifest test |
+| QA-381-05 | D | FIXED | snapshot vite server killed mid-session (exit 137) → "Failed to fetch" → placeholder maps; persistent built snapshots served in-process (--snap) |

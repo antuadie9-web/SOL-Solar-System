@@ -171,8 +171,18 @@ export function pointExposure(sceneExposure: number, skyExp: number, rpx: number
  *  front of the body's bounding sphere (camera-relative scale), so its own disc never occludes it while geometry nearer
  *  than the body's limb (another body, rings) still does. Depth testing is never disabled. The bound includes the
  *  atmosphere shell: its premultiplied-over blend keeps absorbing (τ > 3 for Titan) after its emission fades with the disc. */
+/** CONT-14f-H (2026-10-16): a margin of 2 % of the radius is below the depth-comparison resolution of the rasterised sphere
+ *  at sub-3-px sizes. SW A/B on Callisto α60° at 1.2–1.5 px (work/qa/c14f-ho): pull 1.02 R / 1.1 R → the sprite still loses
+ *  15 % of its flux to its own sphere; 1.4 R, 3 R, 30 R or depth test off → identical, continuous flux (0.685 → 0.688). The
+ *  failing margins in front of the limb are 1.6e-5–7.8e-5 of the distance, the passing ones ≥ 3.1e-4. The sprite therefore
+ *  sits at least POINT_DEPTH_REL × distance in front of the bounding sphere. A body behind another's disc stays occluded
+ *  while that margin is below √(a² − R²) (the smallest line-of-sight separation of a satellite behind its primary's disc):
+ *  Phobos–Mars 8,740 km vs 4,700 km at Mars' 0.55-px distance; Amalthea–Jupiter 166,000 vs 100,000 km; Pan–Saturn
+ *  119,000 vs 80,000 km. Grazing ring-plane geometry (a moon just behind the ring sheet) can be mis-ordered: documented. */
+export const POINT_DEPTH_REL = 5e-4;
 export function pointDepthScale(boundRadius: number, dist: number) {
-  return Math.max(0, 1 - 1.02 * boundRadius / Math.max(dist, 1e-9));
+  const D = Math.max(dist, 1e-9);
+  return Math.max(0, 1 - Math.max(1.02 * boundRadius / D, (boundRadius + POINT_DEPTH_REL * D) / D));
 }
 /** Star highlight compression (matches the WGSL in points.ts). Monotonic; identity below the knee. */
 export function compressPeak(peak: number, knee: number, gamma: number) {

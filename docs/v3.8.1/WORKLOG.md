@@ -302,3 +302,27 @@ Uncommitted CONT-14f WIP present (albedo_grid.json, hemiAlbedo381.test.ts, prese
 
 ## 2026-10-16a (sched)
 CONT-14f WIP verified: tsc clean, 353/353 tests pass; committed as unit-verified. GPU/CPU photometry evidence for the geometry-weighted albedo factor still pending (next run: Mars probe alpha30/120, meas_ref vs pt_ref).
+
+## 2026-10-16b (interactive, owner resumption directive) — CONT-14f browser acceptance, handover depth, TEX-381-01 root cause
+State on entry: HEAD = origin/main = 21d2682, tree clean, lease free. Scheduled runs 01:35–09:04 had acquired/released the
+lease without doing work → scheduler prompt rewritten (work mandatory once the lease is held).
+Evidence (all SW WebGPU/SwiftShader, Y709 scene-linear, preflight-valid, textures `base`): work/qa/c14f, c14f-ho, c14f-acc.
+- CONT-14f point vs 40-px disc (meas_ref): Mars α30 0.521 / 0.557 (+6.8 %, was +10 % before the factor), α120 1.089 / 1.112
+  (+2.1 %, was +7 %); Iapetus α30 0.536 / 0.557 (+4.0 %; factor off −11 %), α120 0.589 / 0.572 (−2.9 %; off +19 %).
+- Handover sweep found CONT-14f-H: the body's own sphere still depth-occluded its PSF sprite from ~1.2 px (Callisto α60:
+  0.584 vs 0.685 point-only; Iapetus 0.445). Controls: ?qa-off=discdraw and ?qa-off=pointdepth (new) → continuous; pull
+  ×1.1 fails, ×1.4/×3/×30 pass. The 2 %·R margin is below the SW depth-comparison resolution (failing margins 1.6e-5–7.8e-5
+  of distance, passing ≥ 3.1e-4). Fix: pointDepthScale keeps the sprite ≥ 5e-4·d in front of the bounding sphere (smaller
+  than √(a²−R²) for every satellite/primary pair while the primary is resolved; documented in presentation.ts).
+  After: Callisto α60 0.687 0.686 0.685 0.688 0.705 0.684 0.704 0.710 (0.6→5 px); Iapetus 0.513–0.554; no step.
+- CONT-14f-S: Mars small-disc overshoot 0.642 at 5 px, 0.568 at 8, 0.545–0.561 at 12–40 px (airless bodies flat). D≤2 tier
+  halved the atmosphere march steps; now never below the preset (fix under test).
+- CONT-14g: Titan Y709 α30 disc 1.036, rendered point 1.013, CPU point 1.024; α120 2.420 / 2.425 / 2.453 → GPU disc↔point
+  ≤ 2.3 %, rendered↔CPU point −1.1 %. The +8 %/+5 % of 2026-10-15h came from invalid (placeholder) sessions → CLOSED.
+- TEX-381-01 root cause (QA): "TypeError: Failed to fetch" for every map requested after ~57 s — the snapshot vite server
+  was killed (exit 137; sandbox reaping/wipes), so maps stayed placeholder. Fixes: QA-381-05 persistent built snapshots
+  (snaplib build_snap → work/qa/snaps/<sha12>, git-blob verified, vite build without copying public/) served in-process by
+  tools/qa/lib/snapserver.mjs (`--snap`), real 404s; per-job server ownership in serve_snap. Loader hardening (product):
+  stall watchdog (45 s → abort → back-off retry), back-off 20/40/80 s then every 300 s while drawn (was: give up after 4),
+  stats report stalls/failed; qaAtmoState returns texStats+net when a map is a placeholder. TEX-381-01b: Earth ocean mask
+  was requested at hi-res though no earth_ocean_hi exists (decode error each session) → fixed + manifest test.

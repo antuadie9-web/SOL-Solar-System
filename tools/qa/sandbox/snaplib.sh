@@ -36,11 +36,33 @@ serve_snap() {  # commit port
     echo "$(date -u +%FT%TZ) snapshot built: $c -> $d" >> $Q/snapshot-identity.txt
     qa_cost snapshot-build $(qa_dt $t) ${c:0:12}
   fi
-  if [ "$(cat /tmp/port-$2 2>/dev/null)" != "$c" ] || ! curl -s -o /dev/null localhost:$2/; then
+  # QA-381-05: a server started by an earlier background job dies when that job's process tree is reaped (often a minute
+  # into the next job: "Failed to fetch" for every texture, maps stuck at placeholder). Each job owns its own server.
+  [ -n "$QA_JOB" ] || export QA_JOB="$$-$(date +%s%N)"
+  if [ "$(cat /tmp/port-$2 2>/dev/null)" != "$c $QA_JOB" ] || ! curl -s -o /dev/null localhost:$2/; then
     t=$(qa_t0); local P=$(pgrep -f "[v]ite --port $2"); [ -n "$P" ] && kill $P; sleep 1
-    (cd $d && setsid nohup npx vite --port $2 --strictPort < /dev/null > /tmp/vite-$2.log 2>&1 &)
+    (cd $d && setsid nohup sh -c "npx vite --port $2 --strictPort; echo \"\$(date +%T) vite exit \$?\"" < /dev/null >> /tmp/vite-$2.log 2>&1 &)
     for k in $(seq 60); do curl -s -o /dev/null localhost:$2/ && break; sleep 0.5; done
-    echo $c > /tmp/port-$2; qa_cost server-start $(qa_dt $t) "${c:0:12}:$2"
+    echo "$c $QA_JOB" > /tmp/port-$2; qa_cost server-start $(qa_dt $t) "${c:0:12}:$2"
   fi
   verify_snap $d
+}
+# QA-381-05: build_snap <commit> → echo dir. A PERSISTENT built snapshot (work/qa/snaps/<sha12>, survives /tmp wipes):
+# git-archive of PATHS + blob manifest (verified like serve_snap) + `vite build` into dist/ without copying public/.
+# Probes serve it in-process: node tools/qa/probe_photometry.mjs --snap $(build_snap $C) ...
+build_snap() {
+  local c=$(git -C $R rev-parse $1) t=$(qa_t0) d; d=$Q/snaps/${c:0:12}
+  if [ ! -f $d/dist/index.html ]; then
+    rm -rf $d && mkdir -p $d && git -C $R archive $c -- $PATHS | tar -x -C $d
+    git -C $R ls-tree -r $c -- $PATHS | awk '{print $3" "$4}' > $d/manifest.tmp && mv $d/manifest.tmp $d/manifest.txt
+    ln -sfn $R/node_modules $d/node_modules
+    printf "import base from './vite.config.ts';\nexport default { ...base, build: { ...base.build, copyPublicDir: false, outDir: 'dist' } };\n" > $d/vite.qa.config.mjs
+    (cd $d && npx vite build -c vite.qa.config.mjs > build.log 2>&1) || { echo "build FAILED $d" >&2; return 1; }
+    echo "$(date -u +%FT%TZ) snapshot built+compiled: $c -> $d" >> $Q/snapshot-identity.txt
+    qa_cost snapshot-build-dist $(qa_dt $t) ${c:0:12}
+    # keep the 4 newest snapshots
+    ls -dt $Q/snaps/*/ 2>/dev/null | tail -n +5 | xargs -r rm -rf
+  fi
+  verify_snap $d >&2 || return 1
+  echo $d
 }

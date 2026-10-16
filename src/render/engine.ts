@@ -39,6 +39,8 @@ import { guideRelevance, guideExtras, approach, screenFade, type GuideMode } fro
 import { SmallBodies } from './smallbodies';
 import { CometTail } from './comets';
 import { CameraRig, sceneVec } from './camera';
+// QA control (CONT-14f handover diagnosis): ?qa-pull=K multiplies the point-depth pull radius
+const QA_PULL = typeof location !== 'undefined' ? +(new URLSearchParams(location.search).get('qa-pull') ?? 1) || 1 : 1;
 import { conicPolyline, trueAnomalyOf, trueToMeanFraction, rotOrbit } from '../astro/kepler';
 import { mulMtV as mulMtV3 } from '../astro/vec';
 import type { TextureStore } from '../core/textures';
@@ -566,7 +568,7 @@ export class Engine {
       }
       if (v) {
         const warm = !resolved && v.warmFrames > 0; if (warm) v.warmFrames--;
-        v.group.visible = resolved || warm;
+        v.group.visible = (resolved || warm) && !qaOff('discdraw');   // QA: ?qa-off=discdraw hides resolved views (point-only control)
         if (!resolved && (v.rings as any)?.patch) (v.rings as any).patch.visible = false;
         if (v.terrain) v.terrain.group.visible = false;   // updateView re-enables it in the near-surface tier
         v.discWeight = 1 - fade;
@@ -639,7 +641,7 @@ export class Engine {
           if (F < floor) { Frgb = null; F = floor; this.enhancement.pointFloor++; }
           const c = Frgb ? [Frgb[0] / Math.max(F, 1e-30), Frgb[1] / Math.max(F, 1e-30), Frgb[2] / Math.max(F, 1e-30)] : lumNormalised(b.def.color);   // CONT-14c: was raw tint × 1.6 (Callisto's point 3× too faint, luminance 0.34 × 1.6)
           scr.bright = Math.max(scr.bright, F / (this.pxAng * this.pxAng * 6.283 * 0.56));
-          const pk = pointDepthScale(this.viewBound(b), dist); this.points.pos.set([relS.x * pk, relS.y * pk, relS.z * pk], nPts * 3);   // CONT-14 representation/depth contract
+          const pk = pointDepthScale(this.viewBound(b) * QA_PULL, dist); this.points.pos.set([relS.x * pk, relS.y * pk, relS.z * pk], nPts * 3);   // CONT-14 representation/depth contract
           this.points.flux.set([F * c[0], F * c[1], F * c[2]], nPts * 3);
           this.points.comp[nPts] = fade;    // CONT-14: star highlight compression engages with the point, not at full weight under the disc
           nPts++;
@@ -919,7 +921,8 @@ export class Engine {
   qaAtmoState(b: Body) {
     const vv = this.views.get(b.id) as any, DS = b.def.atmo && b.id !== 'earth' ? atmosphereLUTs(b.id, b.def.atmo, b.radii[0], this.discSurf(b)) : null;
     const tex = vv?.texNames ? Object.fromEntries(vv.texNames.map((n: string) => [n, this.assets.textures.level(n)])) : {};
-    return { tex, texReady: Object.values(tex).every(l => l !== 'placeholder'), hasAtmo: !!b.def.atmo, lutReady: !b.def.atmo || !!(vv?.atmoLuts && vv.atmoLuts.ready !== false), discReady: !DS || !!DS.disc, atmospheres: this.settings.get('atmospheres') !== false };
+    const texReady = Object.values(tex).every(l => l !== 'placeholder');
+    return { tex, texReady, ...(texReady ? {} : { texStats: this.assets.textures.stats(), net: this.diagnostics().net }), hasAtmo: !!b.def.atmo, lutReady: !b.def.atmo || !!(vv?.atmoLuts && vv.atmoLuts.ready !== false), discReady: !DS || !!DS.disc, atmospheres: this.settings.get('atmospheres') !== false };
   }
   async qaReadHDR(w = 33) {
     const rt = this.scenePass?.renderTarget; if (!rt || !this.renderer) return null;

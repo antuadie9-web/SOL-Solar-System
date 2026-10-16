@@ -6,6 +6,10 @@
 // usage: node tools/qa/probe_photometry.mjs --out <dir> --bodies callisto,rhea,titan --alpha 10,60,120 --rpx 12,0.45
 import { chromium } from 'playwright-core';
 import fs from 'node:fs';
+import { startSnapServer } from './lib/snapserver.mjs';
+// QA-381-05: --snap <built snapshot dir> serves it from inside this process (preferred); --url keeps the old external server
+const SNAPSRV = (() => { const i = process.argv.indexOf('--snap'); return i > 0 ? process.argv[i + 1] : null; })();
+const SRV = SNAPSRV ? await startSnapServer(SNAPSRV) : null;
 const arg = (k, d) => { const i = process.argv.indexOf('--' + k); return i > 0 ? process.argv[i + 1] : d; };
 const out = arg('out', 'probe'); fs.mkdirSync(out, { recursive: true });
 const W = 960, H = 540, T0 = Date.now();
@@ -18,7 +22,7 @@ page.on('pageerror', (e) => SHADER_ERR.push('pageerror: ' + String(e).slice(0, 2
 // TEX-381-01: asset/texture warnings are recorded with their session time (diagnosis of placeholder maps)
 const ASSET_WARN = [];
 page.on('console', (m) => { if ((m.type() === 'warning' || m.type() === 'error') && /texture|asset|unavailable|HTTP|decode/i.test(m.text())) ASSET_WARN.push(((Date.now() - T0) / 1000).toFixed(1) + 's ' + m.text().slice(0, 200)); });
-await page.goto(arg('url', 'http://localhost:4175/') + '?qa-off=small,smallcompute' + (arg('extra-off', '') ? ',' + arg('extra-off', '') : '') + '&qa-software-gpu=1');
+await page.goto((SRV ? SRV.url : arg('url', 'http://localhost:4175/')) + '?qa-off=small,smallcompute' + (arg('extra-off', '') ? ',' + arg('extra-off', '') : '') + '&qa-software-gpu=1' + (arg('qs', '') ? '&' + arg('qs', '') : ''));
 await page.waitForFunction(() => window.__sol && window.__frames > 3, null, { timeout: 240000 });
 const boot = Date.now() - T0;
 await page.evaluate(([mode, jd]) => { const s = window.__sol; s.settings.set('onboarded', true); document.querySelector('#loader .enter, #loader .ld-enter')?.dispatchEvent(new MouseEvent('click', { bubbles: true })); document.body.classList.add('cine'); document.querySelectorAll('.coach').forEach(e => e.remove()); s.settings.set('autoExposure', true); s.settings.set('viewMode', mode); const ck = s.ui.clock; ck.set(+jd); ck.paused = true; ck.emit(); }, [arg('mode', 'scientific'), arg('jd', '2461314.5')]);
@@ -104,4 +108,4 @@ while (queue.length) { const [id, alpha, rpx, tries, warm] = queue.shift();
       rows.push(info); console.log(JSON.stringify(info));
       fs.writeFileSync(`${out}/photometry.json`, JSON.stringify({ bootMs: boot, assetWarnings: ASSET_WARN, rows, valid: rows.filter(r => r.valid).length, invalid: rows.filter(r => !r.valid).map(r => ({ id: r.id, alpha: r.reqAlpha, rpx: r.rpx, why: r.invalid })) }, null, 1));
     }
-await browser.close();
+await browser.close(); if (SRV) { console.log('snapserver', JSON.stringify({ requests: SRV.stats.requests, missing: SRV.stats.missing.slice(0, 20) })); SRV.close(); }

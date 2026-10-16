@@ -24,8 +24,11 @@ test('a sky darker than the scene is approached symmetrically (no step down at t
 import { pointDepthScale } from '../../src/render/presentation';
 test('point sprite sits just in front of its own bounding sphere, on the line of sight', () => {
   const d = 3e6, R = 2574.7, k = pointDepthScale(R, d);
-  assert.ok(d * k < d - R && d * k > d - 1.05 * R);
+  assert.ok(d * k < d - R && d * k > d - R - 6e-4 * d);
   assert.equal(pointDepthScale(R, R / 2), 0);
+  // CONT-14f-H: the pull never drops below the measured depth-resolution floor, yet stays inside any occulting pair's separation
+  const far = 3e6, kf = pointDepthScale(R, far);
+  assert.ok(far * (1 - kf) >= R + 5e-4 * far * 0.999 && far * (1 - kf) < R + 6e-4 * far);
 });
 import { discPhaseIntegral, discReflectance, pointBodyFlux, lumNormalised } from '../../src/render/presentation';
 test('CONT-14c: Lambert disc integral reproduces the textbook a = 3p/2 relation', () => {

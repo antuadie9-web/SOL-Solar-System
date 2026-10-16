@@ -74,7 +74,7 @@ async function boot() {
   engine.gpuInfo = gpuInfo;
   // warm the opening subject so the first frame is complete
   const earthDef = sys.get('earth')!.def;
-  for (const n of [earthDef.tex, earthDef.normal, earthDef.night, earthDef.clouds, earthDef.ocean]) if (n) textures.get(n, { srgb: n === earthDef.tex, hiAvailable: !!earthDef.texHi, color: earthDef.color, priority: true });
+  for (const n of [earthDef.tex, earthDef.normal, earthDef.night, earthDef.clouds, earthDef.ocean]) if (n) textures.get(n, { srgb: n === earthDef.tex, hiAvailable: !!earthDef.texHi && n !== earthDef.ocean, color: earthDef.color, priority: true });
   ui.loader.stage('scene', 'active', 'Earth surface maps');
   await Promise.race([Promise.all([earthDef.tex, earthDef.normal, earthDef.night, earthDef.clouds].filter(Boolean).map(n => textures.ready(n!))), new Promise(r => setTimeout(r, 8000))]);
   ui.loader.stage('scene', 'done', 'Earth maps'); ui.loader.stage('shaders', 'active', 'device + render pipelines');

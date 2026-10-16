@@ -113,6 +113,7 @@ export class PointLayer {
     g.instanceCount = 0;
     this.mesh = new THREE.Mesh(g, psfMaterial(attribute('aPos', 'vec3'), attribute('aFlux', 'vec3'), { gain, maxSize: 64, wing: PSF_WING.body, compress: attribute('aComp', 'float') }));
     this.mesh.frustumCulled = false; this.mesh.renderOrder = 5;
+    if (typeof location !== 'undefined' && /[?&]qa-off=[^&]*\bpointdepth\b/.test(location.search)) (this.mesh.material as any).depthTest = false;   // QA control
   }
   commit(n: number) { this.count = n; (this.mesh.geometry as THREE.InstancedBufferGeometry).instanceCount = n; this.aPos.needsUpdate = true; this.aFlux.needsUpdate = true; this.aPos.clearUpdateRanges(); this.aFlux.clearUpdateRanges(); this.aPos.addUpdateRange(0, n * 3); this.aFlux.addUpdateRange(0, n * 3); this.aComp.needsUpdate = true; this.aComp.clearUpdateRanges(); this.aComp.addUpdateRange(0, n); }
 }

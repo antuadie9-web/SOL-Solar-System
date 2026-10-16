@@ -13,7 +13,7 @@ import * as THREE from 'three/webgpu';
 import { decodeImage, configureMapTexture } from './assets';
 
 type Level = 'placeholder' | 'base' | 'hi';
-interface Entry { name: string; tex: THREE.Texture; srgb: boolean; level: Level; loading: Level | null; bmp: ImageBitmap | null; baseBmp: ImageBitmap | null; bytes: number; lastUse: number; hiAvailable: boolean; phColor: [number, number, number]; failed: Set<Level>; failCount: number; failAt: number; ready: Promise<void>; resolveReady: () => void }
+interface Entry { name: string; tex: THREE.Texture; srgb: boolean; level: Level; loading: Level | null; bmp: ImageBitmap | null; baseBmp: ImageBitmap | null; bytes: number; lastUse: number; hiAvailable: boolean; phColor: [number, number, number]; failed: Set<Level>; failCount: number; failAt: number; ready: Promise<void>; resolveReady: () => void; loadT0: number; ctl: AbortController | null; }
 const MiB = 1024 * 1024;
 const estBytes = (w: number, h: number) => Math.round(w * h * 4 * 4 / 3);
 
@@ -40,7 +40,7 @@ export class TextureStore {
       (tex as any).image = this.placeholder(opts.color ?? (opts.srgb ? [0.5, 0.5, 0.5] : [0.5, 0.5, 1.0]), opts.srgb);
       tex.generateMipmaps = false; tex.minFilter = THREE.LinearFilter;
       let resolveReady!: () => void; const ready = new Promise<void>(r => (resolveReady = r));
-      e = { name, tex, srgb: opts.srgb, level: 'placeholder', loading: null, bmp: null, baseBmp: null, bytes: 4, lastUse: this.frame, hiAvailable: !!opts.hiAvailable, phColor: opts.color ?? (opts.srgb ? [0.5, 0.5, 0.5] : [0.5, 0.5, 1.0]), failed: new Set(), failCount: 0, failAt: 0, ready, resolveReady };
+      e = { name, tex, srgb: opts.srgb, level: 'placeholder', loading: null, bmp: null, baseBmp: null, bytes: 4, lastUse: this.frame, hiAvailable: !!opts.hiAvailable, phColor: opts.color ?? (opts.srgb ? [0.5, 0.5, 0.5] : [0.5, 0.5, 1.0]), failed: new Set(), failCount: 0, failAt: 0, loadT0: 0, ctl: null, ready, resolveReady };
       this.map.set(name, e);
     }
     e.lastUse = this.frame;
@@ -50,14 +50,25 @@ export class TextureStore {
   ready(name: string) { return this.map.get(name)?.ready ?? Promise.resolve(); }
   /** TEX-381-01: a map in use must never stay a placeholder. Every path that leaves an entry at the placeholder level with no
    *  load in flight (eviction of an idle base map, a superseded or failed decode) is healed here: the view touches its maps
-   *  every frame it is drawn, so a drawn map re-requests its base level. Failed base loads retry with back-off (≥ 20 s,
-   *  doubling, at most 4 attempts) instead of being given up for the whole session. */
+   *  every frame it is drawn, so a drawn map re-requests its base level. Failed base loads retry with back-off (20 s,
+   *  doubling, capped at 5 min) instead of being given up for the whole session. */
   touch(name: string) { const e = this.map.get(name); if (!e) return; e.lastUse = this.frame; this.heal(e); }
   reloads = 0;
+  stalls = 0;
+  /** TEX-381-01c: a base load that has neither landed nor failed after LOAD_STALL_MS (a fetch or decode that never settles
+   *  left `loading` set forever, so the map stayed a placeholder for the whole session) is aborted and treated as a failed
+   *  attempt: it enters the same back-off retry as a decode error. */
+  static LOAD_STALL_MS = 45000;
   private heal(e: Entry) {
+    if (e.level === 'placeholder' && e.loading === 'base' && performance.now() - e.loadT0 > TextureStore.LOAD_STALL_MS) {
+      this.stalls++; console.warn(`texture ${e.name} (base) load stalled ${((performance.now() - e.loadT0) / 1000).toFixed(0)} s — aborted, will retry`);
+      e.ctl?.abort(); e.ctl = null; e.loading = null; e.failed.add('base'); e.failCount++; e.failAt = performance.now();
+    }
     if (e.level !== 'placeholder' || e.loading) return;
     if (e.failed.has('base')) {
-      if (e.failCount >= 4 || performance.now() - e.failAt < 20000 * 2 ** (e.failCount - 1)) return;
+      // back-off 20, 40, 80 s, then every 300 s for as long as the map is drawn (a network outage longer than the fast
+      // retries no longer leaves the body a placeholder for the rest of the session; stats() keeps reporting it as failed)
+      if (performance.now() - e.failAt < Math.min(300000, 20000 * 2 ** (e.failCount - 1))) return;
       e.failed.delete('base');
     }
     this.reloads++; void this.load(e, 'base', true);
@@ -71,17 +82,19 @@ export class TextureStore {
     void this.load(e, 'hi', true); return true;
   }
   private async load(e: Entry, level: 'base' | 'hi', priority = false) {
-    e.loading = level;
+    e.loading = level; e.loadT0 = performance.now(); const ctl = new AbortController(); e.ctl = ctl;
     try {
-      const bmp = await decodeImage(`tex/${e.name}${level === 'hi' ? '_hi' : ''}.jpg`, { priority });
+      const bmp = await decodeImage(`tex/${e.name}${level === 'hi' ? '_hi' : ''}.jpg`, { priority, signal: ctl.signal });
+      if (ctl.signal.aborted) { bmp.close(); return; }      // TEX-381-01c: abandoned by the stall watchdog
       if (e.loading !== level) { bmp.close(); return; }       // superseded (evicted meanwhile)
       if (level === 'base') e.baseBmp = bmp;
       this.swap(e, bmp, level);
       if (level === 'base') e.resolveReady();
     } catch (err) {
+      if (ctl.signal.aborted) return;                      // already counted as a failed attempt by the watchdog
       e.failed.add(level); if (level === 'base') { e.failCount++; e.failAt = performance.now(); } console.warn(`texture ${e.name} (${level}) unavailable`, err);
       if (level === 'base') e.resolveReady();
-    } finally { if (e.loading === level) e.loading = null; }
+    } finally { if (e.ctl === ctl) { e.ctl = null; if (e.loading === level) e.loading = null; } }
   }
   // GA-TEX-01: demotion to placeholder keeps the entry's own placeholder colour (was grey for every map: a flat-normal map
   // became tilted, a data mask became 50 % "no data")
@@ -115,6 +128,6 @@ export class TextureStore {
   stats() {
     const lv = { placeholder: 0, base: 0, hi: 0 } as Record<Level, number>;
     for (const e of this.map.values()) lv[e.level]++;
-    return { entries: this.map.size, ...lv, residentMiB: +(this.residentBytes() / MiB).toFixed(1), budgetMiB: +(this.budgetBytes / MiB).toFixed(0), loading: [...this.map.values()].filter(e => e.loading).map(e => `${e.name}:${e.loading}`), reloads: this.reloads, failed: [...this.map.values()].filter(e => e.failed.size).map(e => `${e.name}:${[...e.failed].join('+')}`) };
+    return { entries: this.map.size, ...lv, residentMiB: +(this.residentBytes() / MiB).toFixed(1), budgetMiB: +(this.budgetBytes / MiB).toFixed(0), loading: [...this.map.values()].filter(e => e.loading).map(e => `${e.name}:${e.loading}`), reloads: this.reloads, stalls: this.stalls, failed: [...this.map.values()].filter(e => e.failed.size).map(e => `${e.name}:${[...e.failed].join('+')}`) };
   }
 }
