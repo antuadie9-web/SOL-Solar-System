@@ -290,6 +290,8 @@ export interface MeterBody {
   weight: number;
   /** v3.8.1 RING-381-02: explicit highlight-protection weight (default smooth(0.25, 1, weight)) */
   hiWeight?: number;
+  /** v3.8.1 CONT-14h: PSF→disc cross-fade weight smooth(1.2,3.5,rpx); < 1 → this body's exposure target is blended in log space */
+  blend?: number;
 }
 /**
  * Scene metering (EXP-002 fix). Returns the luminance the key is divided by.
@@ -303,14 +305,28 @@ export interface MeterBody {
 export function meterLuminance(bodies: MeterBody[], key: number, highlightTarget: number, nightCapEV: number, ambient = 0) {
   let subject = 0, hi = 0;
   const cap = Math.pow(2, -Math.max(0, nightCapEV));
+  const blending: MeterBody[] = [];
   for (const b of bodies) {
+    if (b.blend !== undefined && b.blend < 1) { blending.push(b); continue; }
     if (!(b.weight > 0) && !(b.hiWeight! > 0)) continue;
     const s = b.subjectFull * Math.max(b.litWeight, cap) * b.weight;
     if (s > subject) subject = s;
     const h = key * b.highlightRadiance / highlightTarget * (b.hiWeight ?? smooth(0.25, 1, b.weight));
     if (h > hi) hi = h;
   }
-  return { subject, highlight: hi, luminance: Math.max(subject, hi, ambient) };
+  let L = Math.max(subject, hi, ambient);
+  // CONT-14h: while a body crosses the PSF→disc handover (1.2–3.5 px) its fully protected target (subject, highlight at
+  // hiWeight 1) is blended with the rest of the scene in LOG space — no linear MAX of a 10⁴× highlight at a few % weight.
+  for (const b of blending) {
+    const wb = Math.max(0, b.blend!);
+    if (wb <= 0) continue;
+    const full = Math.max(b.subjectFull * Math.max(b.litWeight, cap), key * b.highlightRadiance / highlightTarget);
+    if (!(full > 0)) continue;
+    const base = Math.max(L, 1e-12);
+    const Lb = Math.exp((1 - wb) * Math.log(base) + wb * Math.log(full));
+    if (Lb > L) L = Lb;
+  }
+  return { subject, highlight: hi, luminance: L };
 }
 
 /**

@@ -348,3 +348,15 @@ Evidence (all SW WebGPU/SwiftShader, Y709 scene-linear, preflight-valid, texture
   exposure TARGETS in log space across the cross-fade (point-domain target ↔ protected-disc target), the same pattern as
   pointExposure / Esun. Callisto Exploration also showed a 9 EV exposure change between 0.6 and 0.7 px caused by Jupiter
   leaving the frame (scene content, not a defect).
+
+## 2026-10-16 13:40 IST (scheduled run, short)
+- Lease acquired; tree clean at 2595e1f. Re-read CONT-14h code path (engine.ts ~685 meterBodies; presentation.ts meterLuminance:
+  subject/hi are linear MAX over bodies). Design for next run (not implemented, no evidence yet): add per-body log-space blend in
+  meterLuminance — Lbase = max(ambient, other bodies); Lfull_b = max(subject_b, key·highlightRadiance_b/target [hiWeight=1]);
+  L = exp((1−wb)·ln Lbase + wb·ln Lfull_b), wb = smooth(1.2, 3.5, rpx) (same cross-fade as the PSF→disc handover), then keep the
+  existing linear path for rpx ≥ 3.5. Verify with the Mars α30 exploration sweep (0.4→8 px) peak ≤ ×1.5 steps, plus Callisto/Titan regressions.
+
+## 2026-10-16 15:10 IST (scheduled run)
+- CONT-14h: implemented the log-space exposure-target blend (MeterBody.blend = smooth(1.2,3.5,rpx); presentation.ts meterLuminance;
+  engine.ts passes it). tsc + unit tests pass. NOT browser-verified: CONT-14h stays OPEN until the Mars α30 Exploration sweep
+  (0.4→8 px, peak step ≤ ×1.5) plus Callisto/Titan regressions are run (next run).
